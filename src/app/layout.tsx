@@ -18,13 +18,20 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "INFINITE",
+  title: {
+    default: "DevLog",
+    template: "%s | DevLog",
+  },
   description: "一个极简风格的个人博客",
+  icons: {
+    icon: "/icon.png",
+    apple: "/apple-touch-icon.png",
+  },
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "INFINITE",
+    title: "DevLog",
   },
 };
 
@@ -51,7 +58,7 @@ export default function RootLayout({
     >
       <head>
         <ThemeScript />
-        <link rel="apple-touch-icon" href="/icons/icon-192.svg" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
       </head>

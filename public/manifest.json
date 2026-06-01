@@ -1,6 +1,6 @@
 {
-  "name": "INFINITE",
-  "short_name": "INFINITE",
+  "name": "DevLog",
+  "short_name": "DevLog",
   "description": "一个极简风格的个人博客",
   "start_url": "/",
   "display": "standalone",

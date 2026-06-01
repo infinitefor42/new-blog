@@ -51,7 +51,7 @@ export function Navbar() {
         <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20">
             {/* Logo */}
-            <Link href="/" className="relative group flex items-center">
+            <Link href="/" className="relative group flex items-center mr-6">
               <span className="font-song text-xl lg:text-2xl font-bold text-ink-black dark:text-rice-white tracking-[0.15em]">
                 INFINITE
               </span>
@@ -59,7 +59,7 @@ export function Navbar() {
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-6">
+            <div className="hidden md:flex items-center gap-4 pl-4">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
