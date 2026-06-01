@@ -10,6 +10,8 @@
   "scope": "/",
   "lang": "zh-CN",
   "categories": ["blog", "personal", "reading"],
+  "prefer_related_applications": false,
+  "related_applications": [],
   "icons": [
     {
       "src": "/icons/icon-192.png",
@@ -36,33 +38,11 @@
       "purpose": "maskable"
     }
   ],
-  "screenshots": [
-    {
-      "src": "/screenshots/desktop.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "桌面端预览"
-    },
-    {
-      "src": "/screenshots/mobile.png",
-      "sizes": "750x1334",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "移动端预览"
-    }
-  ],
   "shortcuts": [
     {
       "name": "博客",
       "short_name": "博客",
-      "url": "/blog",
-      "icons": [
-        {
-          "src": "/icons/blog-shortcut.png",
-          "sizes": "96x96"
-        }
-      ]
+      "url": "/blog"
     }
   ]
 }

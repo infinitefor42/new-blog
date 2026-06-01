@@ -132,14 +132,14 @@ export function Navbar() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-40 md:hidden"
+            className="fixed inset-0 z-[100] md:hidden"
           >
             <div
-              className="absolute inset-0 bg-black/20 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/30 backdrop-blur-md"
               onClick={() => setIsMenuOpen(false)}
             />
-            <div className="absolute right-0 top-0 bottom-0 w-[75%] max-w-sm
-              bg-paper-bg dark:bg-ink-deep
+            <div className="absolute right-0 top-0 bottom-0 z-10 w-[75%] max-w-sm
+              bg-paper-bg/95 dark:bg-ink-deep/95 backdrop-blur-xl
               border-l border-warm-gray/20 dark:border-rice-white/10
               shadow-2xl"
             >

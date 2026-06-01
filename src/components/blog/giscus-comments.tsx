@@ -1,63 +1,66 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { useTheme } from "next-themes";
-
-/**
- * Giscus 评论组件
- *
- * 使用前请在 .env.local 中配置以下环境变量：
- *
- *   NEXT_PUBLIC_GISCUS_REPO=你的用户名/仓库名
- *   NEXT_PUBLIC_GISCUS_REPO_ID=R_xxxxxxxx
- *   NEXT_PUBLIC_GISCUS_CATEGORY=Announcements
- *   NEXT_PUBLIC_GISCUS_CATEGORY_ID=DIC_xxxxxxxx
- *
- * 获取方式：https://giscus.app/zh-CN
- */
 
 const GISCUS_CONFIG = {
   repo: process.env.NEXT_PUBLIC_GISCUS_REPO as `${string}/${string}`,
   repoId: process.env.NEXT_PUBLIC_GISCUS_REPO_ID || "",
   category: process.env.NEXT_PUBLIC_GISCUS_CATEGORY || "",
   categoryId: process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID || "",
+  mapping: (process.env.NEXT_PUBLIC_GISCUS_MAPPING || "pathname") as string,
 };
+
+function getGiscusTheme(resolvedTheme: string | undefined) {
+  return resolvedTheme === "dark" ? "noborder_dark" : "noborder_light";
+}
 
 export function GiscusComments() {
   const { resolvedTheme } = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
   const scriptLoaded = useRef(false);
+  const currentTheme = useRef(getGiscusTheme(resolvedTheme));
 
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    const giscusTheme = resolvedTheme === "dark" ? "noborder_dark" : "noborder_light";
-
-    // 如果脚本已加载，只切换主题
-    if (scriptLoaded.current) {
-      const iframe = containerRef.current.querySelector<HTMLIFrameElement>("iframe.giscus-frame");
-      if (iframe?.contentWindow) {
-        iframe.contentWindow.postMessage(
-          { giscus: { setConfig: { theme: giscusTheme } } },
-          "https://giscus.app"
-        );
-      }
-      return;
+  const updateTheme = useCallback((theme: string) => {
+    const iframe = containerRef.current?.querySelector<HTMLIFrameElement>(
+      "iframe.giscus-frame"
+    );
+    if (iframe?.contentWindow) {
+      iframe.contentWindow.postMessage(
+        { giscus: { setConfig: { theme } } },
+        "https://giscus.app"
+      );
     }
+  }, []);
 
-    // 首次加载：注入 Giscus script
+  // 主题切换：脚本已加载时通过 postMessage 实时同步
+  useEffect(() => {
+    const newTheme = getGiscusTheme(resolvedTheme);
+    if (scriptLoaded.current && currentTheme.current !== newTheme) {
+      currentTheme.current = newTheme;
+      updateTheme(newTheme);
+    }
+  }, [resolvedTheme, updateTheme]);
+
+  // 首次加载：注入 Giscus 脚本
+  useEffect(() => {
+    if (!containerRef.current || scriptLoaded.current) return;
+
+    const theme = getGiscusTheme(resolvedTheme);
+    currentTheme.current = theme;
+
     const script = document.createElement("script");
     script.src = "https://giscus.app/client.js";
     script.setAttribute("data-repo", GISCUS_CONFIG.repo);
     script.setAttribute("data-repo-id", GISCUS_CONFIG.repoId);
     script.setAttribute("data-category", GISCUS_CONFIG.category);
     script.setAttribute("data-category-id", GISCUS_CONFIG.categoryId);
-    script.setAttribute("data-mapping", "pathname");
+    script.setAttribute("data-mapping", GISCUS_CONFIG.mapping);
     script.setAttribute("data-strict", "0");
     script.setAttribute("data-reactions-enabled", "1");
     script.setAttribute("data-emit-metadata", "0");
     script.setAttribute("data-input-position", "top");
-    script.setAttribute("data-theme", giscusTheme);
+    script.setAttribute("data-theme", theme);
     script.setAttribute("data-lang", "zh-CN");
     script.setAttribute("data-loading", "lazy");
     script.crossOrigin = "anonymous";
@@ -69,8 +72,21 @@ export function GiscusComments() {
   }, [resolvedTheme]);
 
   return (
-    <div className="mt-12">
-      <div ref={containerRef} className="giscus" />
-    </div>
+    <section className="mt-16 mb-8">
+      {/* 分割线 + 标题 */}
+      <div className="flex items-center gap-4 mb-8">
+        <div className="flex-1 h-px bg-warm-gray/30 dark:bg-rice-white/10" />
+        <h2 className="text-sm font-medium tracking-widest text-ink-gray/50 dark:text-rice-white-dim/50 uppercase">
+          发表评论
+        </h2>
+        <div className="flex-1 h-px bg-warm-gray/30 dark:bg-rice-white/10" />
+      </div>
+
+      {/* Giscus 容器 */}
+      <div
+        ref={containerRef}
+        className="giscus-wrapper"
+      />
+    </section>
   );
 }

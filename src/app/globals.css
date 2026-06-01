@@ -415,3 +415,32 @@ body > * {
   background: rgba(245, 240, 232, 0.2);
   color: var(--color-rice-white);
 }
+
+/* ========================================
+   Giscus 评论区样式修正
+   ======================================== */
+.giscus-wrapper {
+  border-radius: var(--radius-3xl);
+  overflow: hidden;
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  padding: 0.5rem;
+}
+
+.giscus-wrapper .giscus-frame {
+  border: none !important;
+  width: 100%;
+  color-scheme: light;
+}
+
+.dark .giscus-wrapper .giscus-frame {
+  color-scheme: dark;
+}
+
+/* 移除 Giscus 内部多余边距 */
+.giscus-wrapper .giscus {
+  margin: 0;
+}

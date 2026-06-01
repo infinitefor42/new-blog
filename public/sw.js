@@ -4,11 +4,11 @@ const CACHE_NAME = "infinite-blog-v1";
 // 需要预缓存的资源
 const PRECACHE_ASSETS = [
   "/",
-  "/zh",
-  "/en",
   "/manifest.json",
-  "/icons/icon-192.svg",
-  "/icons/icon-512.svg",
+  "/icons/icon-192.png",
+  "/icons/icon-512.png",
+  "/icons/icon-maskable-192.png",
+  "/icons/icon-maskable-512.png",
 ];
 
 // 安装事件 - 预缓存关键资源

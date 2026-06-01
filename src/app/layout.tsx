@@ -33,6 +33,9 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
     title: "DevLog",
   },
+  other: {
+    "mobile-web-app-capable": "yes",
+  },
 };
 
 export const viewport: Viewport = {
