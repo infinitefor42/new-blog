@@ -56,36 +56,49 @@ export function Header() {
           </div>
         </div>
 
-        {/* Mobile Dropdown Menu */}
-        {isMenuOpen && (
-          <div
-            className="fixed inset-0 bg-black/10 z-40 md:hidden pointer-events-auto"
-            onClick={() => setIsMenuOpen(false)}
-          />
-        )}
+        {/* Mobile Drawer Menu */}
+        {/* 1. 背景遮罩层：菜单打开时，左侧剩余的屏幕区域必须有一个半透明的灰色遮罩层 */}
+        <div
+          className={`fixed inset-0 bg-black/40 z-40 md:hidden transition-opacity duration-300 ${
+            isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          }`}
+          onClick={() => setIsMenuOpen(false)}
+        />
 
+        {/* 2. 右侧全屏滑出抽屉 */}
         <div
           className={`
-            absolute right-4 top-16 z-50
-            w-40 rounded-2xl
+            fixed right-0 top-0 h-full w-64 z-50
             bg-[#f3eee5] dark:bg-ink-deep
-            shadow-xl border border-black/5 dark:border-rice-white/10
-            transition-all duration-200 md:hidden
-            ${isMenuOpen
-              ? "opacity-100 scale-100 pointer-events-auto visible"
-              : "opacity-0 scale-95 pointer-events-none invisible"
-            }
+            shadow-2xl border-l border-black/5 dark:border-rice-white/10
+            transition-transform duration-300 md:hidden
+            ${isMenuOpen ? "translate-x-0 pointer-events-auto" : "translate-x-full pointer-events-none"}
           `}
         >
-          <nav className="flex flex-col items-start px-4 py-3 space-y-3">
+          {/* 顶部关闭按钮区域（位于抽屉右上角） */}
+          <div className="flex justify-end items-center h-16 px-4">
+            <button
+              onClick={() => setIsMenuOpen(false)}
+              className="flex items-center justify-center w-10 h-10 rounded-xl
+                text-ink-gray dark:text-rice-white-dim
+                hover:bg-ink-black/5 dark:hover:bg-rice-white/10
+                transition-all duration-200"
+              aria-label="关闭菜单"
+            >
+              <FiX className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* 导航菜单项 */}
+          <nav className="pl-6 pt-8 flex flex-col space-y-6 text-lg">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setIsMenuOpen(false)}
-                className={`transition-colors py-1 block
+                className={`transition-colors py-1 block w-fit
                   ${isActive(item.href)
-                    ? "text-ink-black dark:text-rice-white font-semibold border-b-2 border-black dark:border-rice-white w-fit pb-0.5"
+                    ? "text-ink-black dark:text-rice-white font-semibold border-b-2 border-black dark:border-rice-white pb-0.5"
                     : "text-ink-gray/70 dark:text-rice-white-dim/70 hover:text-ink-black dark:hover:text-rice-white font-medium"
                   }`}
               >

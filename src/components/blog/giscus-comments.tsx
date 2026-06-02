@@ -38,11 +38,11 @@ export function GiscusComments() {
   useEffect(() => {
     if (!containerRef.current || scriptLoaded.current) return;
 
-    // 在 useEffect 内读取环境变量，确保在浏览器端执行
-    const repo = process.env.NEXT_PUBLIC_GISCUS_REPO || "";
-    const repoId = process.env.NEXT_PUBLIC_GISCUS_REPO_ID || "";
-    const category = process.env.NEXT_PUBLIC_GISCUS_CATEGORY || "";
-    const categoryId = process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID || "";
+    // 在 useEffect 内读取环境变量，并提供 .env.local 中的预设静态回退值，确保在任何环境下都能加载
+    const repo = process.env.NEXT_PUBLIC_GISCUS_REPO || "infinitefor42/new-blog";
+    const repoId = process.env.NEXT_PUBLIC_GISCUS_REPO_ID || "R_kgDOStseQg";
+    const category = process.env.NEXT_PUBLIC_GISCUS_CATEGORY || "General";
+    const categoryId = process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID || "DIC_kwDOStseQs4C-Ru4";
     const mapping = process.env.NEXT_PUBLIC_GISCUS_MAPPING || "pathname";
 
     console.log("[Giscus] 运行时配置加载:", {
