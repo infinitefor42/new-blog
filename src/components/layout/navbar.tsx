@@ -143,30 +143,43 @@ export function Navbar() {
               border-l border-warm-gray/20 dark:border-rice-white/10
               shadow-2xl"
             >
-              <div className="flex flex-col h-full pt-28 px-6 overflow-y-auto">
-                <nav className="flex flex-col gap-2">
-                  {navItems.map((item, index) => (
-                    <motion.div
-                      key={item.href}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                    >
-                      <Link
-                        href={item.href}
-                        onClick={() => setIsMenuOpen(false)}
-                        className={`block px-4 py-3 rounded-xl text-lg font-medium transition-all
-                          ${isActive(item.href)
-                            ? "bg-ink-black/5 dark:bg-rice-white/10 text-ink-black dark:text-rice-white"
-                            : "text-ink-gray dark:text-rice-white-dim hover:bg-ink-black/5 dark:hover:bg-rice-white/5"
-                          }`}
-                      >
-                        {item.label}
-                      </Link>
-                    </motion.div>
-                  ))}
-                </nav>
+              {/* 顶部关闭按钮区域 */}
+              <div className="flex items-center justify-end px-6 h-16">
+                <button
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center justify-center w-10 h-10 rounded-xl
+                    text-ink-gray dark:text-rice-white-dim
+                    hover:bg-ink-black/5 dark:hover:bg-rice-white/10
+                    transition-all duration-200"
+                  aria-label="关闭菜单"
+                >
+                  <FiX className="w-5 h-5" />
+                </button>
               </div>
+
+              {/* 导航链接 */}
+              <nav className="flex flex-col gap-2 px-6">
+                {navItems.map((item, index) => (
+                  <motion.div
+                    key={item.href}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <Link
+                      href={item.href}
+                      onClick={() => setIsMenuOpen(false)}
+                      className={`block px-4 py-3.5 rounded-xl text-lg font-medium transition-all
+                        ${isActive(item.href)
+                          ? "bg-ink-black/5 dark:bg-rice-white/10 text-ink-black dark:text-rice-white"
+                          : "text-ink-gray dark:text-rice-white-dim hover:bg-ink-black/5 dark:hover:bg-rice-white/5"
+                        }`}
+                    >
+                      {item.label}
+                    </Link>
+                  </motion.div>
+                ))}
+              </nav>
             </div>
           </motion.div>
         )}
