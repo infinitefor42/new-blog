@@ -57,31 +57,27 @@ export function Header() {
 
             {/* Mobile Dropdown Card */}
             {isMenuOpen && (
-              <div 
+              <div
                 className="fixed right-0 top-14 z-[999999] w-32 py-3 px-4
                   bg-[#f3eee5] dark:bg-ink-deep
                   rounded-xl shadow-lg border border-black/5 dark:border-rice-white/10
                   pointer-events-auto touch-manipulation
                   md:hidden"
-                onClick={(e) => e.stopPropagation()}
               >
                 <nav className="flex flex-col items-start space-y-3">
                   {navItems.map((item) => (
-                    <Link
+                    <a
                       key={item.href}
                       href={item.href}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setIsMenuOpen(false);
-                      }}
-                      className={`block w-full text-left text-sm py-2 px-1 ${
+                      className={`block w-full text-left text-sm py-2 px-1 cursor-pointer no-underline ${
                         isActive(item.href)
                           ? "text-ink-black dark:text-rice-white font-semibold border-b-2 border-black dark:border-rice-white"
                           : "text-gray-400 dark:text-gray-500 hover:text-ink-black dark:hover:text-rice-white"
                       }`}
+                      onClick={() => setIsMenuOpen(false)}
                     >
                       {item.label}
-                    </Link>
+                    </a>
                   ))}
                 </nav>
               </div>

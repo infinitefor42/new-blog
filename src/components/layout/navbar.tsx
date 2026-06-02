@@ -130,42 +130,35 @@ export function Navbar() {
               </button>
 
               {isMenuOpen && (
-                <div 
+                <div
                   className="fixed right-4 top-14 z-[999999] w-32 py-3 px-4
                     bg-[#f3eee5] dark:bg-ink-deep
                     rounded-xl shadow-lg border border-black/5 dark:border-rice-white/10
                     pointer-events-auto touch-manipulation
                     md:hidden"
-                  onClick={(e) => e.stopPropagation()}
                 >
-                  <Link
+                  <a
                     href="/"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsMenuOpen(false);
-                    }}
-                    className={`block w-full text-left text-sm py-2 px-1 ${
-                      isActive("/")
+                    className={`block w-full text-left text-sm py-2 px-1 cursor-pointer no-underline
+                      ${isActive("/")
                         ? "text-ink-black dark:text-rice-white font-semibold border-b-2 border-black dark:border-rice-white"
                         : "text-gray-400 dark:text-gray-500 hover:text-ink-black dark:hover:text-rice-white"
-                    }`}
+                      }`}
+                    onClick={() => setIsMenuOpen(false)}
                   >
                     首页
-                  </Link>
-                  <Link
+                  </a>
+                  <a
                     href="/blog"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsMenuOpen(false);
-                    }}
-                    className={`block w-full text-left text-sm py-2 px-1 mt-2 ${
-                      isActive("/blog")
+                    className={`block w-full text-left text-sm py-2 px-1 mt-2 cursor-pointer no-underline
+                      ${isActive("/blog")
                         ? "text-ink-black dark:text-rice-white font-semibold border-b-2 border-black dark:border-rice-white"
                         : "text-gray-400 dark:text-gray-500 hover:text-ink-black dark:hover:text-rice-white"
-                    }`}
+                      }`}
+                    onClick={() => setIsMenuOpen(false)}
                   >
                     博客
-                  </Link>
+                  </a>
                 </div>
               )}
             </div>
