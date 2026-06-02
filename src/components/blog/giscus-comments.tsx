@@ -46,8 +46,23 @@ export function GiscusComments() {
   useEffect(() => {
     if (!containerRef.current || scriptLoaded.current) return;
 
+    // 配置校验：缺少核心参数时在控制台警告
+    if (!GISCUS_CONFIG.repo || !GISCUS_CONFIG.repoId || !GISCUS_CONFIG.categoryId) {
+      console.warn("[Giscus] 配置不完整，请检查 .env.local 中的 NEXT_PUBLIC_GISCUS_* 变量:", {
+        repo: GISCUS_CONFIG.repo || "❌ 缺失",
+        repoId: GISCUS_CONFIG.repoId || "❌ 缺失",
+        category: GISCUS_CONFIG.category || "❌ 缺失",
+        categoryId: GISCUS_CONFIG.categoryId || "❌ 缺失",
+      });
+      return;
+    }
+
     const theme = getGiscusTheme(resolvedTheme);
     currentTheme.current = theme;
+
+    // 清除已有的 giscus iframe（防止重复加载 / 缓存旧配置）
+    const existingIframe = containerRef.current.querySelector("iframe.giscus-frame");
+    if (existingIframe) existingIframe.remove();
 
     const script = document.createElement("script");
     script.src = "https://giscus.app/client.js";

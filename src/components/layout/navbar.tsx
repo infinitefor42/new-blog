@@ -128,51 +128,46 @@ export function Navbar() {
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-[100] md:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-[200] md:hidden"
           >
+            {/* 全屏半透明毛玻璃背景 */}
             <div
-              className="absolute inset-0 bg-black/30 backdrop-blur-md"
+              className="absolute inset-0 bg-paper-bg/70 dark:bg-ink-deep/70 backdrop-blur-xl"
               onClick={() => setIsMenuOpen(false)}
             />
-            <div className="absolute right-0 top-0 bottom-0 z-10 w-[75%] max-w-sm
-              bg-paper-bg dark:bg-ink-deep
-              border-l border-warm-gray/20 dark:border-rice-white/10
-              shadow-2xl"
-            >
-              {/* 顶部关闭按钮区域 */}
-              <div className="flex items-center justify-end px-6 h-16">
-                <button
-                  onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center justify-center w-10 h-10 rounded-xl
-                    text-ink-gray dark:text-rice-white-dim
-                    hover:bg-ink-black/5 dark:hover:bg-rice-white/10
-                    transition-all duration-200"
-                  aria-label="关闭菜单"
-                >
-                  <FiX className="w-5 h-5" />
-                </button>
-              </div>
 
-              {/* 导航链接 */}
-              <nav className="flex flex-col gap-2 px-6">
+            {/* 右侧菜单面板 - 精准覆盖头像右侧灰色长条区域 */}
+            <motion.div
+              initial={{ x: "100%", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: "100%", opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="absolute right-0 top-0 bottom-0 z-[210] w-[75%] max-w-sm
+                bg-paper-bg dark:bg-ink-deep
+                border-l border-warm-gray/30 dark:border-rice-white/10
+                shadow-[−20px_0_60px_rgba(25,19,15,0.1)]"
+            >
+              {/* 导航按钮 - 水平居中排列在灰色长条区域内 */}
+              <nav className="flex flex-row items-center justify-center gap-3 px-5 pt-20">
                 {navItems.map((item, index) => (
                   <motion.div
                     key={item.href}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 + index * 0.08 }}
                   >
                     <Link
                       href={item.href}
                       onClick={() => setIsMenuOpen(false)}
-                      className={`block px-4 py-3.5 rounded-xl text-lg font-medium transition-all
+                      className={`inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-medium
+                        transition-all duration-200 active:scale-95
                         ${isActive(item.href)
-                          ? "bg-ink-black/5 dark:bg-rice-white/10 text-ink-black dark:text-rice-white"
-                          : "text-ink-gray dark:text-rice-white-dim hover:bg-ink-black/5 dark:hover:bg-rice-white/5"
+                          ? "bg-ink-black dark:bg-rice-white text-paper-bg dark:text-ink-deep shadow-md"
+                          : "bg-ink-black/5 dark:bg-rice-white/10 text-ink-black dark:text-rice-white hover:bg-ink-black/10 dark:hover:bg-rice-white/15"
                         }`}
                     >
                       {item.label}
@@ -180,7 +175,7 @@ export function Navbar() {
                   </motion.div>
                 ))}
               </nav>
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
