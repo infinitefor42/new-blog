@@ -50,7 +50,6 @@ export function Navbar() {
       >
         <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20 relative">
-            {/* Logo */}
             <Link href="/" className="relative group flex items-center mr-6">
               <span className="font-song text-xl lg:text-2xl font-bold text-ink-black dark:text-rice-white tracking-[0.15em]">
                 INFINITE
@@ -58,7 +57,6 @@ export function Navbar() {
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-ink-black dark:bg-rice-white transition-all duration-300 group-hover:w-full" />
             </Link>
 
-            {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-6 absolute left-1/2 -translate-x-1/2">
               {navItems.map((item) => (
                 <Link
@@ -82,9 +80,7 @@ export function Navbar() {
               ))}
             </div>
 
-            {/* Right Actions */}
             <div className="flex items-center gap-2">
-              {/* Theme Toggle */}
               <button
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
                 className="flex items-center justify-center w-10 h-10 rounded-xl
@@ -104,7 +100,6 @@ export function Navbar() {
                 )}
               </button>
 
-              {/* Mobile Menu Button */
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="md:hidden flex items-center justify-center w-10 h-10 rounded-xl
@@ -120,7 +115,6 @@ export function Navbar() {
                 )}
               </button>
 
-              {/* Mobile Dropdown Card */}
               {isMenuOpen && (
                 <div className="absolute right-4 top-14 z-50 w-28 py-3 px-4
                   bg-[#f3eee5] dark:bg-ink-deep
