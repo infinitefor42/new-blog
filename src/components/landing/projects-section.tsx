@@ -2,7 +2,7 @@
 
 import { motion, useInView, type Variants } from "framer-motion";
 import { useRef } from "react";
-import { FiGithub, FiExternalLink, FiArrowUpRight, FiPlay } from "react-icons/fi";
+import { FiGithub, FiArrowUpRight, FiPlay } from "react-icons/fi";
 import { ViewCounter } from "@/components/common/view-counter";
 
 const appleEasing: [number, number, number, number] = [0.23, 1, 0.32, 1];
@@ -32,8 +32,7 @@ const projects = [
     tags: ["Next.js", "Tailwind CSS", "TypeScript"],
     emoji: "📝",
     links: [
-      { label: "查看代码", icon: "github", href: "https://github.com" },
-      { label: "在线预览", icon: "demo", href: "https://example.com" },
+      { label: "查看代码", icon: "github", href: "https://github.com/infinitefor42/new-blog" },
     ],
   },
   {
@@ -145,7 +144,6 @@ export function ProjectsSection() {
                           onClick={(e) => e.stopPropagation()}
                         >
                           {link.icon === "github" && <FiGithub className="w-4 h-4" />}
-                          {link.icon === "demo" && <FiExternalLink className="w-4 h-4" />}
                           {link.icon === "play" && <FiPlay className="w-4 h-4" />}
                           {link.label}
                         </a>

@@ -139,11 +139,11 @@ export function Navbar() {
               onClick={() => setIsMenuOpen(false)}
             />
             <div className="absolute right-0 top-0 bottom-0 z-10 w-[75%] max-w-sm
-              bg-paper-bg/95 dark:bg-ink-deep/95 backdrop-blur-xl
+              bg-paper-bg dark:bg-ink-deep
               border-l border-warm-gray/20 dark:border-rice-white/10
               shadow-2xl"
             >
-              <div className="flex flex-col h-full pt-20 px-6">
+              <div className="flex flex-col h-full pt-28 px-6 overflow-y-auto">
                 <nav className="flex flex-col gap-2">
                   {navItems.map((item, index) => (
                     <motion.div
