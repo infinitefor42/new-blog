@@ -49,7 +49,7 @@ export function Navbar() {
         }`}
       >
         <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 lg:h-20">
+          <div className="flex items-center justify-between h-16 lg:h-20 relative">
             {/* Logo */}
             <Link href="/" className="relative group flex items-center mr-6">
               <span className="font-song text-xl lg:text-2xl font-bold text-ink-black dark:text-rice-white tracking-[0.15em]">
@@ -59,7 +59,7 @@ export function Navbar() {
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-4 pl-4">
+            <div className="hidden md:flex items-center gap-6 absolute left-1/2 -translate-x-1/2">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
@@ -137,17 +137,17 @@ export function Navbar() {
       <div
         className={`
           absolute right-4 top-16 z-50
-          w-40 rounded-2xl p-4
+          w-40 rounded-2xl
           bg-[#f3eee5] dark:bg-ink-deep
           shadow-xl border border-black/5 dark:border-rice-white/10
           transition-all duration-200 md:hidden
           ${isMenuOpen
-            ? "opacity-100 scale-100 pointer-events-auto"
-            : "opacity-0 scale-95 pointer-events-none hidden"
+            ? "opacity-100 scale-100 pointer-events-auto visible"
+            : "opacity-0 scale-95 pointer-events-none invisible"
           }
         `}
       >
-        <nav className="flex flex-col space-y-4">
+        <nav className="flex flex-col items-start px-5 py-4 space-y-4">
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -155,7 +155,7 @@ export function Navbar() {
               onClick={() => setIsMenuOpen(false)}
               className={`transition-colors py-1 block
                 ${isActive(item.href)
-                  ? "text-ink-black dark:text-rice-white font-semibold border-b-2 border-ink-black dark:border-rice-white w-fit"
+                  ? "text-ink-black dark:text-rice-white font-semibold border-b-2 border-black dark:border-rice-white w-fit pb-0.5"
                   : "text-ink-gray/70 dark:text-rice-white-dim/70 hover:text-ink-black dark:hover:text-rice-white font-medium"
                 }`}
             >
