@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { FiSun, FiMoon, FiMenu, FiX } from "react-icons/fi";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
@@ -125,42 +125,45 @@ export function Navbar() {
       </motion.header>
 
       {/* Mobile Dropdown Menu */}
+      {/* 1. 背景遮罩层：只有展开时才渲染，不影响页面点击 */}
       {isMenuOpen && (
-        <>
-          {/* 透明遮罩 - 点击关闭菜单 */}
-          <div
-            className="fixed inset-0 z-[90] md:hidden"
-            onClick={() => setIsMenuOpen(false)}
-          />
-
-          {/* 悬浮卡片 - 紧贴导航栏右侧按钮下方 */}
-          <div
-            className="fixed z-[100] w-40
-              bg-paper-bg dark:bg-ink-deep
-              border border-warm-gray/20 dark:border-rice-white/10
-              rounded-2xl shadow-lg
-              md:hidden"
-            style={{ right: '16px', top: '64px' }}
-          >
-            <nav className="flex flex-col p-3 space-y-1">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setIsMenuOpen(false)}
-                  className={`px-4 py-2.5 text-[15px] tracking-wide rounded-xl transition-colors duration-200
-                    ${isActive(item.href)
-                      ? "text-ink-black dark:text-rice-white font-medium bg-ink-black/5 dark:bg-rice-white/10"
-                      : "text-ink-gray/70 dark:text-rice-white-dim/70 hover:text-ink-black dark:hover:text-rice-white hover:bg-ink-black/[0.03] dark:hover:bg-rice-white/[0.05]"
-                    }`}
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-          </div>
-        </>
+        <div
+          className="fixed inset-0 bg-black/10 z-40 md:hidden pointer-events-auto"
+          onClick={() => setIsMenuOpen(false)}
+        />
       )}
+
+      {/* 2. 导航卡片：精准定位在右侧按钮正下方 */}
+      <div
+        className={`
+          absolute right-4 top-16 z-50
+          w-40 rounded-2xl p-4
+          bg-[#f3eee5] dark:bg-ink-deep
+          shadow-xl border border-black/5 dark:border-rice-white/10
+          transition-all duration-200 md:hidden
+          ${isMenuOpen
+            ? "opacity-100 scale-100 pointer-events-auto"
+            : "opacity-0 scale-95 pointer-events-none hidden"
+          }
+        `}
+      >
+        <nav className="flex flex-col space-y-4">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setIsMenuOpen(false)}
+              className={`transition-colors py-1 block
+                ${isActive(item.href)
+                  ? "text-ink-black dark:text-rice-white font-semibold border-b-2 border-ink-black dark:border-rice-white w-fit"
+                  : "text-ink-gray/70 dark:text-rice-white-dim/70 hover:text-ink-black dark:hover:text-rice-white font-medium"
+                }`}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+      </div>
     </>
   );
 }
