@@ -127,66 +127,49 @@ export function Navbar() {
       {/* Mobile Drawer Menu */}
       <AnimatePresence>
         {isMenuOpen && (
-          <>
-            {/* 遮罩层 */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              className="fixed inset-0 z-[100] bg-black/20 backdrop-blur-sm md:hidden"
-              onClick={() => setIsMenuOpen(false)}
-            />
-
-            {/* 右侧抽屉 */}
-            <motion.aside
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 28, stiffness: 260 }}
-              className="fixed right-0 top-0 h-screen z-[110] w-44
-                bg-paper-bg dark:bg-ink-deep
-                border-l border-warm-gray/20 dark:border-rice-white/10
-                shadow-[-8px_0_24px_rgba(25,19,15,0.08)]
-                md:hidden"
-            >
-              {/* 顶部留白（避开导航栏） */}
-              <div className="h-16" />
-
-              {/* 导航链接 - 竖排 */}
-              <nav className="flex flex-col items-center pt-4 gap-1">
-                {navItems.map((item, index) => (
-                  <motion.div
-                    key={item.href}
-                    initial={{ opacity: 0, x: 16 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.05 + index * 0.06, duration: 0.25 }}
-                    className="w-full"
+          <motion.aside
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="fixed right-3 top-14 z-[110] w-40
+              bg-paper-bg dark:bg-ink-deep
+              border border-warm-gray/20 dark:border-rice-white/10
+              rounded-xl shadow-lg
+              md:hidden"
+          >
+            {/* 导航链接 - 竖排 */}
+            <nav className="flex flex-col py-2">
+              {navItems.map((item, index) => (
+                <motion.div
+                  key={item.href}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: index * 0.05 }}
+                >
+                  <Link
+                    href={item.href}
+                    onClick={() => setIsMenuOpen(false)}
+                    className={`relative block px-5 py-2.5 text-[15px] tracking-wide transition-colors duration-200
+                      ${isActive(item.href)
+                        ? "text-ink-black dark:text-rice-white font-medium"
+                        : "text-ink-gray/70 dark:text-rice-white-dim/70 hover:text-ink-black dark:hover:text-rice-white"
+                      }`}
                   >
-                    <Link
-                      href={item.href}
-                      onClick={() => setIsMenuOpen(false)}
-                      className={`relative block text-center py-3 text-[15px] tracking-wide transition-colors duration-200
-                        ${isActive(item.href)
-                          ? "text-ink-black dark:text-rice-white font-medium"
-                          : "text-ink-gray/70 dark:text-rice-white-dim/70 hover:text-ink-black dark:hover:text-rice-white"
-                        }`}
-                    >
-                      {item.label}
-                      {/* 激活态下划线 */}
-                      {isActive(item.href) && (
-                        <motion.span
-                          layoutId="drawer-indicator"
-                          className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-4 h-[2px] rounded-full bg-ink-black dark:bg-rice-white"
-                          transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
-                        />
-                      )}
-                    </Link>
-                  </motion.div>
-                ))}
-              </nav>
-            </motion.aside>
-          </>
+                    {item.label}
+                    {/* 激活态下划线 */}
+                    {isActive(item.href) && (
+                      <motion.span
+                        layoutId="drawer-indicator"
+                        className="absolute left-5 bottom-1.5 w-4 h-[2px] rounded-full bg-ink-black dark:bg-rice-white"
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
+                      />
+                    )}
+                  </Link>
+                </motion.div>
+              ))}
+            </nav>
+          </motion.aside>
         )}
       </AnimatePresence>
     </>
