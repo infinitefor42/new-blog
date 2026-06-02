@@ -26,14 +26,18 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navItems = [
-    { label: "首页", href: "/" },
-    { label: "博客", href: "/blog" },
-  ];
-
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
     return pathname.startsWith(href);
+  };
+
+  const handleMobileMenuToggle = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleNavClick = (href: string) => {
+    setIsMenuOpen(false);
+    window.location.href = href;
   };
 
   return (
@@ -58,29 +62,43 @@ export function Navbar() {
             </Link>
 
             <div className="hidden md:flex items-center gap-6 absolute left-1/2 -translate-x-1/2">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`relative px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg
-                    ${isActive(item.href)
-                      ? "text-ink-black dark:text-rice-white"
-                      : "text-ink-gray dark:text-rice-white-dim hover:text-ink-black dark:hover:text-rice-white"
-                    }`}
-                >
-                  {item.label}
-                  {isActive(item.href) && (
-                    <motion.div
-                      layoutId="navbar-indicator"
-                      className="absolute inset-0 bg-ink-black/5 dark:bg-rice-white/10 rounded-lg"
-                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                    />
-                  )}
-                </Link>
-              ))}
+              <Link
+                href="/"
+                className={`relative px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg
+                  ${isActive("/")
+                    ? "text-ink-black dark:text-rice-white"
+                    : "text-ink-gray dark:text-rice-white-dim hover:text-ink-black dark:hover:text-rice-white"
+                  }`}
+              >
+                首页
+                {isActive("/") && (
+                  <motion.div
+                    layoutId="navbar-indicator"
+                    className="absolute inset-0 bg-ink-black/5 dark:bg-rice-white/10 rounded-lg"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+              </Link>
+              <Link
+                href="/blog"
+                className={`relative px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg
+                  ${isActive("/blog")
+                    ? "text-ink-black dark:text-rice-white"
+                    : "text-ink-gray dark:text-rice-white-dim hover:text-ink-black dark:hover:text-rice-white"
+                  }`}
+              >
+                博客
+                {isActive("/blog") && (
+                  <motion.div
+                    layoutId="navbar-indicator"
+                    className="absolute inset-0 bg-ink-black/5 dark:bg-rice-white/10 rounded-lg"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+              </Link>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 relative">
               <button
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
                 className="flex items-center justify-center w-10 h-10 rounded-xl
@@ -101,41 +119,53 @@ export function Navbar() {
               </button>
 
               <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                onClick={handleMobileMenuToggle}
                 className="md:hidden flex items-center justify-center w-10 h-10 rounded-xl
                   text-ink-gray dark:text-rice-white-dim
                   hover:bg-ink-black/5 dark:hover:bg-rice-white/10
                   transition-all duration-200"
                 aria-label={isMenuOpen ? "关闭菜单" : "打开菜单"}
               >
-                {isMenuOpen ? (
-                  <FiX className="w-5 h-5" />
-                ) : (
-                  <FiMenu className="w-5 h-5" />
-                )}
+                {isMenuOpen ? <FiX className="w-5 h-5" /> : <FiMenu className="w-5 h-5" />}
               </button>
 
               {isMenuOpen && (
-                <div className="absolute right-4 top-14 z-50 w-32 py-3 px-4
-                  bg-[#f3eee5] dark:bg-ink-deep
-                  rounded-xl shadow-lg border border-black/5 dark:border-rice-white/10
-                  md:hidden">
-                  <nav className="flex flex-col items-start space-y-3">
-                    {navItems.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        onClick={() => setIsMenuOpen(false)}
-                        className={`text-sm transition-colors block w-fit
-                          ${isActive(item.href)
-                            ? "text-ink-black dark:text-rice-white font-semibold border-b-2 border-black dark:border-rice-white pb-0.5"
-                            : "text-gray-400 dark:text-gray-500 hover:text-ink-black dark:hover:text-rice-white font-medium"
-                          }`}
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
-                  </nav>
+                <div 
+                  className="fixed right-4 top-14 z-[999999] w-32 py-3 px-4
+                    bg-[#f3eee5] dark:bg-ink-deep
+                    rounded-xl shadow-lg border border-black/5 dark:border-rice-white/10
+                    pointer-events-auto touch-manipulation
+                    md:hidden"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Link
+                    href="/"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsMenuOpen(false);
+                    }}
+                    className={`block w-full text-left text-sm py-2 px-1 ${
+                      isActive("/")
+                        ? "text-ink-black dark:text-rice-white font-semibold border-b-2 border-black dark:border-rice-white"
+                        : "text-gray-400 dark:text-gray-500 hover:text-ink-black dark:hover:text-rice-white"
+                    }`}
+                  >
+                    首页
+                  </Link>
+                  <Link
+                    href="/blog"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsMenuOpen(false);
+                    }}
+                    className={`block w-full text-left text-sm py-2 px-1 mt-2 ${
+                      isActive("/blog")
+                        ? "text-ink-black dark:text-rice-white font-semibold border-b-2 border-black dark:border-rice-white"
+                        : "text-gray-400 dark:text-gray-500 hover:text-ink-black dark:hover:text-rice-white"
+                    }`}
+                  >
+                    博客
+                  </Link>
                 </div>
               )}
             </div>

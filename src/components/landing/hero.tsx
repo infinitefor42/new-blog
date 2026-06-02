@@ -57,9 +57,9 @@ export function Hero() {
         >
           {/* 头像区域 */}
           <motion.div variants={avatarVariants} className="flex justify-center mb-12">
-            <div className="relative group">
-              <div className="absolute -inset-2 bg-gradient-to-br from-warm-gray/30 to-warm-gray/10 dark:from-warm-gray/20 dark:to-warm-gray/5 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="relative w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 rounded-full overflow-hidden bg-white/30 dark:bg-white/10 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-xl">
+            <div className="relative group pointer-events-none">
+              <div className="absolute -inset-2 bg-gradient-to-br from-warm-gray/30 to-warm-gray/10 dark:from-warm-gray/20 dark:to-warm-gray/5 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              <div className="relative w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 rounded-full overflow-hidden bg-white/30 dark:bg-white/10 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-xl pointer-events-auto">
                 <Image
                   src="/avatar.png"
                   alt="个人头像"
@@ -70,7 +70,7 @@ export function Hero() {
                 />
                 <div className="absolute inset-0 bg-ink-black/0 group-hover:bg-ink-black/5 dark:group-hover:bg-rice-white/5 transition-all duration-300 rounded-full" />
               </div>
-              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-4 border-paper-bg dark:border-ink-deep shadow-lg" />
+              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-4 border-paper-bg dark:border-ink-deep shadow-lg pointer-events-auto" />
             </div>
           </motion.div>
 
