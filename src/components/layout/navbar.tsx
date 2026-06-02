@@ -147,7 +147,7 @@ export function Navbar() {
           }
         `}
       >
-        <nav className="flex flex-col items-start px-5 py-4 space-y-4">
+        <nav className="flex flex-col items-start px-4 py-3 space-y-3">
           {navItems.map((item) => (
             <Link
               key={item.href}

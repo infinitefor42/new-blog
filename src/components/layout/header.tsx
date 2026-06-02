@@ -22,7 +22,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 glass-card-subtle !rounded-none border-x-0 border-t-0">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 relative">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="font-song text-lg font-bold text-ink-black dark:text-rice-white tracking-[0.15em] hover:opacity-80 transition-opacity">
             INFINITE
@@ -56,24 +56,44 @@ export function Header() {
           </div>
         </div>
 
+        {/* Mobile Dropdown Menu */}
         {isMenuOpen && (
-          <nav className="md:hidden py-4 border-t border-foreground/10">
+          <div
+            className="fixed inset-0 bg-black/10 z-40 md:hidden pointer-events-auto"
+            onClick={() => setIsMenuOpen(false)}
+          />
+        )}
+
+        <div
+          className={`
+            absolute right-4 top-16 z-50
+            w-40 rounded-2xl
+            bg-[#f3eee5] dark:bg-ink-deep
+            shadow-xl border border-black/5 dark:border-rice-white/10
+            transition-all duration-200 md:hidden
+            ${isMenuOpen
+              ? "opacity-100 scale-100 pointer-events-auto visible"
+              : "opacity-0 scale-95 pointer-events-none invisible"
+            }
+          `}
+        >
+          <nav className="flex flex-col items-start px-4 py-3 space-y-3">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`block px-4 py-3 rounded-xl text-sm transition-all
-                  ${isActive(item.href)
-                    ? "bg-foreground/10 text-foreground font-medium"
-                    : "text-foreground/70 hover:text-foreground hover:bg-foreground/5"
-                  }`}
                 onClick={() => setIsMenuOpen(false)}
+                className={`transition-colors py-1 block
+                  ${isActive(item.href)
+                    ? "text-ink-black dark:text-rice-white font-semibold border-b-2 border-black dark:border-rice-white w-fit pb-0.5"
+                    : "text-ink-gray/70 dark:text-rice-white-dim/70 hover:text-ink-black dark:hover:text-rice-white font-medium"
+                  }`}
               >
                 {item.label}
               </Link>
             ))}
           </nav>
-        )}
+        </div>
       </div>
     </header>
   );
