@@ -56,7 +56,7 @@ export function Header() {
 
             {/* Mobile Dropdown Card */}
             {isMenuOpen && (
-              <div className="absolute right-0 top-14 z-50 w-28 py-3 px-4
+              <div className="absolute right-0 top-14 z-50 w-32 py-3 px-4
                 bg-[#f3eee5] dark:bg-ink-deep
                 rounded-xl shadow-lg border border-black/5 dark:border-rice-white/10
                 md:hidden">
@@ -69,7 +69,7 @@ export function Header() {
                       className={`text-sm transition-colors block w-fit
                         ${isActive(item.href)
                           ? "text-ink-black dark:text-rice-white font-semibold border-b-2 border-black dark:border-rice-white pb-0.5"
-                          : "text-ink-gray/70 dark:text-rice-white-dim/70 hover:text-ink-black dark:hover:text-rice-white font-medium"
+                          : "text-gray-400 dark:text-gray-500 hover:text-ink-black dark:hover:text-rice-white font-medium"
                         }`}
                     >
                       {item.label}
