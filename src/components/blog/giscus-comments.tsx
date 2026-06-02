@@ -39,10 +39,10 @@ export function GiscusComments() {
     if (!containerRef.current || scriptLoaded.current) return;
 
     // 在 useEffect 内读取环境变量，确保在浏览器端执行
-    const repo = process.env.NEXT_PUBLIC_GISCUS_REPO;
-    const repoId = process.env.NEXT_PUBLIC_GISCUS_REPO_ID;
-    const category = process.env.NEXT_PUBLIC_GISCUS_CATEGORY;
-    const categoryId = process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID;
+    const repo = process.env.NEXT_PUBLIC_GISCUS_REPO || "";
+    const repoId = process.env.NEXT_PUBLIC_GISCUS_REPO_ID || "";
+    const category = process.env.NEXT_PUBLIC_GISCUS_CATEGORY || "";
+    const categoryId = process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID || "";
     const mapping = process.env.NEXT_PUBLIC_GISCUS_MAPPING || "pathname";
 
     // 配置校验
