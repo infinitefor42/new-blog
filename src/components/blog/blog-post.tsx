@@ -10,6 +10,7 @@ import rehypeKatex from "rehype-katex";
 import type { Components } from "react-markdown";
 import type { PostMeta } from "@/lib/posts";
 import { GiscusComments } from "./giscus-comments";
+import { useEffect } from "react";
 
 interface BlogPostProps {
   post: PostMeta;
@@ -73,6 +74,20 @@ const markdownComponents: Components = {
 };
 
 export function BlogPost({ post }: BlogPostProps) {
+  // 动态加载 KaTeX CSS（仅博客文章页需要）
+  useEffect(() => {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css";
+    link.integrity = "sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+";
+    link.crossOrigin = "anonymous";
+    document.head.appendChild(link);
+
+    return () => {
+      document.head.removeChild(link);
+    };
+  }, []);
+
   return (
     <article className="max-w-3xl mx-auto">
       <motion.div
