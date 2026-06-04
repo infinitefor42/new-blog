@@ -132,42 +132,41 @@ export function Navbar() {
               >
                 {isMenuOpen ? <FiX className="w-5 h-5" /> : <FiMenu className="w-5 h-5" />}
               </button>
-
-              {isMenuOpen && (
-                <div
-                  className="absolute right-0 top-14 z-[999999] w-24 py-3 px-4
-                    bg-[#f3eee5] dark:bg-ink-deep
-                    rounded-xl shadow-lg border border-black/5 dark:border-rice-white/10
-                    pointer-events-auto touch-manipulation
-                    md:hidden"
-                >
-                  <Link
-                    href="/"
-                    className={`block w-full text-left text-sm py-2 px-1 cursor-pointer no-underline
-                      ${isActive("/")
-                        ? "text-ink-black dark:text-rice-white font-semibold border-b-2 border-black dark:border-rice-white"
-                        : "text-gray-400 dark:text-gray-500 hover:text-ink-black dark:hover:text-rice-white"
-                      }`}
-                    onClick={(e) => handleNavClick(e, "/")}
-                  >
-                    首页
-                  </Link>
-                  <Link
-                    href="/blog"
-                    className={`block w-full text-left text-sm py-2 px-1 mt-2 cursor-pointer no-underline
-                      ${isActive("/blog")
-                        ? "text-ink-black dark:text-rice-white font-semibold border-b-2 border-black dark:border-rice-white"
-                        : "text-gray-400 dark:text-gray-500 hover:text-ink-black dark:hover:text-rice-white"
-                      }`}
-                    onClick={(e) => handleNavClick(e, "/blog")}
-                  >
-                    博客
-                  </Link>
-                </div>
-              )}
             </div>
           </div>
         </nav>
+        {isMenuOpen && (
+          <div
+            className="absolute right-4 top-16 z-[999999] w-28 py-3 px-4
+              bg-[#f3eee5] dark:bg-ink-deep
+              rounded-xl shadow-lg border border-black/5 dark:border-rice-white/10
+              pointer-events-auto touch-manipulation
+              md:hidden"
+          >
+            <Link
+              href="/"
+              className={`block w-full text-left text-sm py-2 px-1 cursor-pointer no-underline
+                ${isActive("/")
+                  ? "text-ink-black dark:text-rice-white font-semibold border-b-2 border-black dark:border-rice-white"
+                  : "text-gray-400 dark:text-gray-500 hover:text-ink-black dark:hover:text-rice-white"
+                }`}
+              onClick={(e) => handleNavClick(e, "/")}
+            >
+              首页
+            </Link>
+            <Link
+              href="/blog"
+              className={`block w-full text-left text-sm py-2 px-1 mt-2 cursor-pointer no-underline
+                ${isActive("/blog")
+                  ? "text-ink-black dark:text-rice-white font-semibold border-b-2 border-black dark:border-rice-white"
+                  : "text-gray-400 dark:text-gray-500 hover:text-ink-black dark:hover:text-rice-white"
+                }`}
+              onClick={(e) => handleNavClick(e, "/blog")}
+            >
+              博客
+            </Link>
+          </div>
+        )}
       </motion.header>
     </>
   );

@@ -124,7 +124,22 @@ export function getPostBySlug(slug: string): PostMeta | null {
 export function getAllCategories(): string[] {
   const posts = getAllPosts();
   const cats = new Set(posts.flatMap((p) => p.categories));
-  return Array.from(cats);
+  
+  // 预设的核心分类顺序
+  const orderedList = ["算法", "数学", "项目", "笔记"];
+  
+  // 将所有实际存在的分类合并，并确保 "笔记" 即使还没有文章也一直存在于列表中
+  const allCats = new Set([...orderedList, ...Array.from(cats)]);
+  
+  // 过滤并按 preset 顺序排序，其余多余分类排在最后
+  return Array.from(allCats).sort((a, b) => {
+    const indexA = orderedList.indexOf(a);
+    const indexB = orderedList.indexOf(b);
+    if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+    if (indexA !== -1) return -1;
+    if (indexB !== -1) return 1;
+    return a.localeCompare(b);
+  });
 }
 
 /** 获取所有不重复的标签 */
