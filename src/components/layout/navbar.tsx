@@ -38,8 +38,10 @@ export function Navbar() {
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
-    setIsMenuOpen(false);
     router.push(href);
+    setTimeout(() => {
+      setIsMenuOpen(false);
+    }, 50);
   };
 
   return (
@@ -48,7 +50,7 @@ export function Navbar() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-[9999] transition-all duration-300 ${
           scrolled
             ? "bg-paper-bg/80 dark:bg-ink-deep/80 backdrop-blur-xl shadow-lg shadow-black/5 dark:shadow-black/20"
             : "bg-transparent"
@@ -133,7 +135,7 @@ export function Navbar() {
 
               {isMenuOpen && (
                 <div
-                  className="absolute right-4 top-14 z-[999999] w-32 py-3 px-4
+                  className="absolute right-0 top-14 z-[999999] w-24 py-3 px-4
                     bg-[#f3eee5] dark:bg-ink-deep
                     rounded-xl shadow-lg border border-black/5 dark:border-rice-white/10
                     pointer-events-auto touch-manipulation

@@ -23,12 +23,14 @@ export function Header() {
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
-    setIsMenuOpen(false);
     router.push(href);
+    setTimeout(() => {
+      setIsMenuOpen(false);
+    }, 50);
   };
 
   return (
-    <header className="sticky top-0 z-50 glass-card-subtle !rounded-none border-x-0 border-t-0">
+    <header className="sticky top-0 z-[9999] glass-card-subtle !rounded-none border-x-0 border-t-0">
       <div className="container mx-auto px-4 relative">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="font-song text-lg font-bold text-ink-black dark:text-rice-white tracking-[0.15em] hover:opacity-80 transition-opacity">
@@ -61,7 +63,7 @@ export function Header() {
             {/* Mobile Dropdown Card */}
             {isMenuOpen && (
               <div
-                className="absolute right-0 top-14 z-[999999] w-32 py-3 px-4
+                className="absolute right-0 top-14 z-[999999] w-24 py-3 px-4
                   bg-[#f3eee5] dark:bg-ink-deep
                   rounded-xl shadow-lg border border-black/5 dark:border-rice-white/10
                   pointer-events-auto touch-manipulation
