@@ -38,6 +38,21 @@ const markdownComponents: Components = {
       </code>
     );
   },
+  img({ src, alt, ...props }) {
+    return (
+      <figure>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={src}
+          alt={alt || ""}
+          loading="lazy"
+          decoding="async"
+          {...props}
+        />
+        {alt && <figcaption>{alt}</figcaption>}
+      </figure>
+    );
+  },
   a: ({ href, children, ...props }) => {
     const url = href || "";
     if (isExternal(url)) {

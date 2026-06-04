@@ -309,10 +309,43 @@ body > * {
 }
 
 .prose img {
+  max-width: 100%;
+  height: auto;
   border-radius: 16px;
   margin-top: 2em;
   margin-bottom: 2em;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.prose img:hover {
+  transform: scale(1.01);
+}
+
+.dark .prose img {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* 图片容器（figure + figcaption） */
+.prose figure {
+  margin: 2em 0;
+  text-align: center;
+}
+
+.prose figure img {
+  margin-top: 0;
+  margin-bottom: 0.5em;
+}
+
+.prose figcaption {
+  font-size: 0.875em;
+  color: var(--color-ink-gray);
+  font-style: italic;
+}
+
+.dark .prose figcaption {
+  color: var(--color-rice-white-dim);
 }
 
 .prose blockquote {
