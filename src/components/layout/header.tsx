@@ -66,7 +66,7 @@ export function Header() {
               >
                 <nav className="flex flex-col items-start space-y-3">
                   {navItems.map((item) => (
-                    <a
+                    <Link
                       key={item.href}
                       href={item.href}
                       className={`block w-full text-left text-sm py-2 px-1 cursor-pointer no-underline ${
@@ -77,7 +77,7 @@ export function Header() {
                       onClick={() => setIsMenuOpen(false)}
                     >
                       {item.label}
-                    </a>
+                    </Link>
                   ))}
                 </nav>
               </div>

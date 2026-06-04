@@ -137,7 +137,7 @@ export function Navbar() {
                     pointer-events-auto touch-manipulation
                     md:hidden"
                 >
-                  <a
+                  <Link
                     href="/"
                     className={`block w-full text-left text-sm py-2 px-1 cursor-pointer no-underline
                       ${isActive("/")
@@ -147,8 +147,8 @@ export function Navbar() {
                     onClick={() => setIsMenuOpen(false)}
                   >
                     首页
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     href="/blog"
                     className={`block w-full text-left text-sm py-2 px-1 mt-2 cursor-pointer no-underline
                       ${isActive("/blog")
@@ -158,7 +158,7 @@ export function Navbar() {
                     onClick={() => setIsMenuOpen(false)}
                   >
                     博客
-                  </a>
+                  </Link>
                 </div>
               )}
             </div>
