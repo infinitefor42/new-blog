@@ -21,6 +21,12 @@ export function Header() {
     return pathname.startsWith(href);
   };
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    setIsMenuOpen(false);
+    router.push(href);
+  };
+
   return (
     <header className="sticky top-0 z-50 glass-card-subtle !rounded-none border-x-0 border-t-0">
       <div className="container mx-auto px-4 relative">
@@ -28,7 +34,6 @@ export function Header() {
           <Link href="/" className="font-song text-lg font-bold text-ink-black dark:text-rice-white tracking-[0.15em] hover:opacity-80 transition-opacity">
             INFINITE
           </Link>
-
           <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item) => (
               <Link
@@ -44,7 +49,6 @@ export function Header() {
               </Link>
             ))}
           </nav>
-
           <div className="flex items-center gap-1 relative">
             <ThemeToggle mode="icon" />
             <button
@@ -54,11 +58,10 @@ export function Header() {
             >
               {isMenuOpen ? <FiX className="w-5 h-5" /> : <FiMenu className="w-5 h-5" />}
             </button>
-
             {/* Mobile Dropdown Card */}
             {isMenuOpen && (
               <div
-                className="fixed right-0 top-14 z-[999999] w-32 py-3 px-4
+                className="absolute right-0 top-14 z-[999999] w-32 py-3 px-4
                   bg-[#f3eee5] dark:bg-ink-deep
                   rounded-xl shadow-lg border border-black/5 dark:border-rice-white/10
                   pointer-events-auto touch-manipulation
@@ -74,7 +77,7 @@ export function Header() {
                           ? "text-ink-black dark:text-rice-white font-semibold border-b-2 border-black dark:border-rice-white"
                           : "text-gray-400 dark:text-gray-500 hover:text-ink-black dark:hover:text-rice-white"
                       }`}
-                      onClick={() => setIsMenuOpen(false)}
+                      onClick={(e) => handleNavClick(e, item.href)}
                     >
                       {item.label}
                     </Link>

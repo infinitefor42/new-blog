@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { FiSun, FiMoon, FiMenu, FiX } from "react-icons/fi";
 import { useTheme } from "next-themes";
@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 
 export function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -35,9 +36,10 @@ export function Navbar() {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const handleNavClick = (href: string) => {
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
     setIsMenuOpen(false);
-    window.location.href = href;
+    router.push(href);
   };
 
   return (
@@ -131,7 +133,7 @@ export function Navbar() {
 
               {isMenuOpen && (
                 <div
-                  className="fixed right-4 top-14 z-[999999] w-32 py-3 px-4
+                  className="absolute right-4 top-14 z-[999999] w-32 py-3 px-4
                     bg-[#f3eee5] dark:bg-ink-deep
                     rounded-xl shadow-lg border border-black/5 dark:border-rice-white/10
                     pointer-events-auto touch-manipulation
@@ -144,7 +146,7 @@ export function Navbar() {
                         ? "text-ink-black dark:text-rice-white font-semibold border-b-2 border-black dark:border-rice-white"
                         : "text-gray-400 dark:text-gray-500 hover:text-ink-black dark:hover:text-rice-white"
                       }`}
-                    onClick={() => setIsMenuOpen(false)}
+                    onClick={(e) => handleNavClick(e, "/")}
                   >
                     首页
                   </Link>
@@ -155,7 +157,7 @@ export function Navbar() {
                         ? "text-ink-black dark:text-rice-white font-semibold border-b-2 border-black dark:border-rice-white"
                         : "text-gray-400 dark:text-gray-500 hover:text-ink-black dark:hover:text-rice-white"
                       }`}
-                    onClick={() => setIsMenuOpen(false)}
+                    onClick={(e) => handleNavClick(e, "/blog")}
                   >
                     博客
                   </Link>
