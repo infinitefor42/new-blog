@@ -2,17 +2,22 @@
 
 import { useState, useEffect } from "react";
 
+// Umami 网站 ID
+const UMAMI_WEBSITE_ID = "f16a4545-9c81-4a50-913a-0624bb1df01f";
+
+// Cloudflare Worker 代理地址（客户端只需传 id，Token 存在 Worker 中）
+// 正确格式：https://umami-proxy.你的用户名.workers.dev
+const WORKER_URL = "https://umami-proxy.548620473.workers.dev";
+
 /**
- * 全站访问统计（基于不蒜子真实统计，附带 LocalStorage 本地兜底）
+ * 全站访问统计（基于 Umami Cloud，附带 LocalStorage 本地兜底）
  */
 export function useSiteStats() {
   const [stats, setStats] = useState({ visitors: 0, views: 0 });
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const callbackName = `BusuanziCallback_${Math.floor(Math.random() * 1000000)}`;
-    let script: HTMLScriptElement | null = null;
-    let timer: NodeJS.Timeout | null = null;
+    let unmounted = false;
 
     // 本地 LocalStorage 兜底逻辑
     const fallback = () => {
@@ -31,53 +36,37 @@ export function useSiteStats() {
       localStorage.setItem(pvKey, String(newPV));
       if (!hasVisited) localStorage.setItem(visitedKey, "1");
 
-      setStats({ visitors: newUV, views: newPV });
-      setMounted(true);
-    };
-
-    const cleanup = () => {
-      if (script && document.body.contains(script)) {
-        document.body.removeChild(script);
-      }
-      delete (window as any)[callbackName];
-    };
-
-    // JSONP 回调函数
-    (window as any)[callbackName] = (data: any) => {
-      if (timer) clearTimeout(timer);
-      if (data) {
-        setStats({
-          visitors: data.site_uv || 1,
-          views: data.site_pv || 1,
-        });
+      if (!unmounted) {
+        setStats({ visitors: newUV, views: newPV });
         setMounted(true);
-      } else {
+      }
+    };
+
+    const fetchStats = async () => {
+      try {
+        const res = await fetch(`${WORKER_URL}?id=${UMAMI_WEBSITE_ID}`);
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        const data = await res.json();
+
+        if (!unmounted && data) {
+          setStats({
+            visitors: data.visitors?.value ?? 1,
+            views: data.pageviews?.value ?? 1,
+          });
+          setMounted(true);
+        }
+      } catch {
+        // API 失败时降级到本地计数
         fallback();
       }
-      cleanup();
     };
 
-    // 发起不蒜子 JSONP 请求
-    script = document.createElement("script");
-    script.src = `https://busuanzi.ibruce.info/busuanzi?jsonpCallback=${callbackName}`;
-    script.async = true;
-    script.onerror = () => {
-      if (timer) clearTimeout(timer);
-      fallback();
-      cleanup();
-    };
-
-    document.body.appendChild(script);
-
-    // 设置 3 秒超时，如果接口超时或被广告拦截则启动本地兜底
-    timer = setTimeout(() => {
-      fallback();
-      cleanup();
-    }, 3000);
+    fetchStats();
 
     return () => {
-      if (timer) clearTimeout(timer);
-      cleanup();
+      unmounted = true;
     };
   }, []);
 
