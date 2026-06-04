@@ -97,7 +97,7 @@ console.log(message);
 
 *语法示例：*
 ```markdown
-遇到 PHP[^1] 程序员就嫁了吧。
+遇到 链接[^1]就点击一下。
 [^1]: 世界上最好的语言。
 ```
 
@@ -127,6 +127,27 @@ Markdown 支持直接内嵌受限的 HTML 标签，用来实现一些原生 Mark
   ```
 * **B站视频嵌入**：支持通过 iframe 嵌入外部视频播放器。
 
+### 9. 引用块
+引用块用于标注引用内容或做醒目提示，使用 `>` 加上空格开头。
+
+*语法示例：*
+```markdown
+> 这是一段引用文本。
+> 可以多行书写。
+
+> 嵌套引用需要多层 `>`：
+> > 这是第二层引用。
+> > > 这是第三层。
+```
+
+引用块中也可以混用其他 Markdown 语法，例如列表、加粗、代码等：
+
+```markdown
+> **注意**：引用块内支持 *各种* Markdown 语法。
+> - 列表项 A
+> - 列表项 B
+```
+
 ---
 
 ## 二、 LaTeX 数学公式语法
@@ -142,7 +163,7 @@ Markdown 支持直接内嵌受限的 HTML 标签，用来实现一些原生 Mark
 
 | 代码 | 符号示例 | 描述 |
 | :--- | :---: | :--- |
-| `\not=` | $\not=$ | 不等于 |
+| `\neq` | $\neq$ | 不等于（`\not=` 亦可） |
 | `\approx` | $\approx$ | 约等于 |
 | `\times` | $\times$ | 乘号 |
 | `\div` | $\div$ | 除号 |
@@ -176,7 +197,7 @@ Markdown 支持直接内嵌受限的 HTML 标签，用来实现一些原生 Mark
 | `\infty` | $\infty$ | 无穷大 |
 | `\int` / `\iint` / `\iiint` | $\int$ / $\iint$ / $\iiint$ | 一重 / 双重 / 三重积分 |
 | `\oint` | $\oint$ | 环路积分 |
-| `x\prime` | $x\prime$ | 导数撇号 |
+| `x^{\prime}` | $x^{\prime}$ | 导数撇号 |
 | `\lim` | $\lim$ | 极限符号 |
 | `\log` / `\ln` / `\lg` | $\log$ / $\ln$ / $\lg$ | 对数 / 自然对数 / 常用对数 |
 
@@ -211,3 +232,99 @@ Markdown 支持直接内嵌受限的 HTML 标签，用来实现一些原生 Mark
 * **省略号**：
   * 水平居中省略号：`\cdots`（如 $a, \cdots, z$）
   * 靠底部的省略号：`\ldots`（如 $1, 2, \ldots, n$）
+
+### 8. 矩阵与行列式
+
+矩阵需要在 `$$` 独立公式块中使用环境语法。常用的矩阵环境有：
+
+| 环境名 | 含义 | 边界符号 |
+| :--- | :--- | :--- |
+| `matrix` | 无边界 | 无 |
+| `pmatrix` | 圆括号 | $(\ )$ |
+| `bmatrix` | 方括号 | $[\ ]$ |
+| `vmatrix` | 单竖线（行列式） | $\lvert\ \rvert$ |
+| `Vmatrix` | 双竖线 | $\lVert\ \rVert$ |
+
+*语法示例：*
+
+**普通矩阵：**
+```latex
+$$
+\begin{bmatrix}
+  1 & 2 & 3 \\
+  4 & 5 & 6 \\
+  7 & 8 & 9
+\end{bmatrix}
+$$
+```
+$$
+\begin{bmatrix}
+  1 & 2 & 3 \\
+  4 & 5 & 6 \\
+  7 & 8 & 9
+\end{bmatrix}
+$$
+
+**行列式：**
+```latex
+$$
+\begin{vmatrix}
+  a & b \\
+  c & d
+\end{vmatrix} = ad - bc
+$$
+```
+$$
+\begin{vmatrix}
+  a & b \\
+  c & d
+\end{vmatrix} = ad - bc
+$$
+
+> `&` 用于分隔同一行的元素，`\\` 用于换行。
+
+### 9. 大括号与分段函数
+
+* **分段函数**：使用 `cases` 环境，各行用 `\\` 分隔，条件用 `&` 分隔。
+  ```latex
+  $$
+  f(x) = \begin{cases}
+    x^2,       & x \geq 0 \\
+    -x,        & x < 0
+  \end{cases}
+  $$
+  ```
+  $$
+  f(x) = \begin{cases}
+    x^2,       & x \geq 0 \\
+    -x,        & x < 0
+  \end{cases}
+  $$
+
+* **大括号包裹多行公式**：使用 `\left\{` 和 `\right.` 配合 `array` 或 `aligned` 环境。
+  ```latex
+  $$
+  \left\{
+    \begin{aligned}
+      a + b &= 5 \\
+      a - b &= 1
+    \end{aligned}
+  \right.
+  $$
+  ```
+  $$
+  \left\{
+    \begin{aligned}
+      a + b &= 5 \\
+      a - b &= 1
+    \end{aligned}
+  \right.
+  $$
+
+* **上/下花括号标注**：使用 `\overbrace` 和 `\underbrace`。
+  ```latex
+  $\overbrace{a + b + c}^{\text{求和}}$
+  $\underbrace{x_1 + x_2 + \cdots + x_n}_{n \text{ 项}}$
+  ```
+  $\overbrace{a + b + c}^{\text{求和}}$
+  $\underbrace{x_1 + x_2 + \cdots + x_n}_{n \text{ 项}}$
