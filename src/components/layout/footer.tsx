@@ -5,13 +5,6 @@ import { useRef } from "react";
 import { FiHeart } from "react-icons/fi";
 import { useSiteStats } from "@/hooks/use-site-stats";
 
-/** 骨架屏闪烁块 */
-function StatSkeleton() {
-  return (
-    <span className="inline-block h-3.5 w-14 rounded bg-ink-gray/10 dark:bg-rice-white-dim/10 animate-pulse align-middle" />
-  );
-}
-
 export function Footer() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
@@ -47,9 +40,7 @@ export function Footer() {
                   {views.toLocaleString()}
                 </>
               ) : (
-                <>
-                  👤 访客 <StatSkeleton /> · 👁️ 浏览 <StatSkeleton />
-                </>
+                <>👤 访客 … · 👁️ 浏览 …</>
               )}
             </motion.p>
             <p className="text-xs text-ink-gray/30 dark:text-rice-white-dim/30">

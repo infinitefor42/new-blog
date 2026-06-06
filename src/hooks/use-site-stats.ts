@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 
-const UMAMI_WEBSITE_ID = "f16a4545-9c81-4a50-913a-0624bb1df01f";
-const WORKER_URL = "https://delicate-shadow-9b6c.548620473.workers.dev";
+// Umami 公开 Share 接口（免 Token）
+const STATS_URL = "https://analytics.caobowen.top/api/share/78AUTMArOEY71nPf/stats";
 
 // sessionStorage 缓存（5 分钟）
 const CACHE_KEY = "umami_stats_cache";
@@ -56,7 +56,7 @@ export function useSiteStats() {
 
     const fetchStats = async () => {
       try {
-        const res = await fetch(`${WORKER_URL}?id=${UMAMI_WEBSITE_ID}`);
+        const res = await fetch(STATS_URL);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
         const data = await res.json();
