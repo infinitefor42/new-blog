@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "@/components/providers";
 import { ThemeScript } from "@/components/theme-script";
@@ -64,15 +65,16 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <script
-          defer
-          src="https://umami.caobowen.top/script.js"
-          data-website-id="f16a4545-9c81-4a50-913a-0624bb1df01f"
-        ></script>
       </head>
       <body className="min-h-full flex flex-col">
         <Providers>{children}</Providers>
         <ServiceWorkerRegister />
+        <Script
+          defer
+          src="https://analytics.caobowen.top/script.js"
+          data-website-id="f16a4545-9c81-4a50-913a-0624bb1df01f"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
