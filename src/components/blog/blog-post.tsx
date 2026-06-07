@@ -86,6 +86,13 @@ const markdownComponents: Components = {
       </a>
     );
   },
+  table({ children, ...props }) {
+    return (
+      <div className="table-wrapper">
+        <table {...props}>{children}</table>
+      </div>
+    );
+  },
 };
 
 export function BlogPost({ post }: BlogPostProps) {

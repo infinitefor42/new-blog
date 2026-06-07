@@ -68,14 +68,14 @@ Markdown 支持对文字进行各种样式的微调，包括加粗、斜体、�
 * **代码块**：使用三个反引号 \`\`\` 并在开头指定语言名称以启用对应的语法高亮。
 
 *语法示例：*
-```markdown
+````markdown
 执行 `npm run dev` 启动开发服务器。
 
 ```javascript
 const message = "Hello, Markdown!";
 console.log(message);
 ```
-```
+````
 
 ### 5. 链接与图片
 * **超链接**：格式为 `[链接文本](URL地址)`。也支持变量定义法（参考链接）。
@@ -286,40 +286,44 @@ $$
 ### 9. 大括号与分段函数
 
 * **分段函数**：使用 `cases` 环境，各行用 `\\` 分隔，条件用 `&` 分隔。
-  ```latex
-  $$
-  f(x) = \begin{cases}
-    x^2,       & x \geq 0 \\
-    -x,        & x < 0
-  \end{cases}
-  $$
-  ```
-  $$
-  f(x) = \begin{cases}
-    x^2,       & x \geq 0 \\
-    -x,        & x < 0
-  \end{cases}
-  $$
+
+```latex
+$$
+f(x) = \begin{cases}
+  x^2,       & x \geq 0 \\
+  -x,        & x < 0
+\end{cases}
+$$
+```
+
+$$
+f(x) = \begin{cases}
+  x^2,       & x \geq 0 \\
+  -x,        & x < 0
+\end{cases}
+$$
 
 * **大括号包裹多行公式**：使用 `\left\{` 和 `\right.` 配合 `array` 或 `aligned` 环境。
-  ```latex
-  $$
-  \left\{
-    \begin{aligned}
-      a + b &= 5 \\
-      a - b &= 1
-    \end{aligned}
-  \right.
-  $$
-  ```
-  $$
-  \left\{
-    \begin{aligned}
-      a + b &= 5 \\
-      a - b &= 1
-    \end{aligned}
-  \right.
-  $$
+
+```latex
+$$
+\left\{
+  \begin{aligned}
+    a + b &= 5 \\
+    a - b &= 1
+  \end{aligned}
+\right.
+$$
+```
+
+$$
+\left\{
+  \begin{aligned}
+    a + b &= 5 \\
+    a - b &= 1
+  \end{aligned}
+\right.
+$$
 
 * **上/下花括号标注**：使用 `\overbrace` 和 `\underbrace`。
   ```latex

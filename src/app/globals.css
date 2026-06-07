@@ -285,6 +285,81 @@ body > * {
   overflow-wrap: normal;
 }
 
+/* ========================================
+   表格样式
+   ======================================== */
+.prose .table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 2em;
+  border-radius: 12px;
+  border: 1px solid rgba(25, 19, 15, 0.08);
+}
+
+.dark .prose .table-wrapper {
+  border-color: rgba(245, 240, 232, 0.08);
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+  white-space: nowrap;
+}
+
+.prose th {
+  background: rgba(25, 19, 15, 0.04);
+  font-weight: 600;
+  text-align: left;
+  padding: 0.75em 1em;
+  border-bottom: 2px solid var(--color-warm-gray-light);
+  color: var(--foreground);
+}
+
+.dark .prose th {
+  background: rgba(245, 240, 232, 0.04);
+  border-bottom-color: var(--color-warm-gray-dark);
+}
+
+.prose td {
+  padding: 0.6em 1em;
+  border-bottom: 1px solid rgba(25, 19, 15, 0.06);
+  color: var(--color-ink-gray);
+}
+
+.dark .prose td {
+  border-bottom-color: rgba(245, 240, 232, 0.06);
+  color: var(--color-rice-white-dim);
+}
+
+.prose tr:last-child td {
+  border-bottom: none;
+}
+
+.prose tr:hover td {
+  background: rgba(25, 19, 15, 0.02);
+}
+
+.dark .prose tr:hover td {
+  background: rgba(245, 240, 232, 0.02);
+}
+
+/* ========================================
+   行内数学公式溢出处理
+   ======================================== */
+.prose .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 0.5em 0;
+}
+
+.prose p .katex,
+.prose li .katex,
+.prose td .katex {
+  word-break: break-word;
+}
+
 @media (max-width: 640px) {
   .prose pre {
     padding: 1em 0.75em;
@@ -297,14 +372,17 @@ body > * {
     font-size: 0.75em;
   }
 
-  .prose .katex-display {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 0.5em;
-  }
-
   .prose .katex {
     font-size: 0.9em;
+  }
+
+  .prose table {
+    font-size: 0.8em;
+  }
+
+  .prose th,
+  .prose td {
+    padding: 0.5em 0.6em;
   }
 }
 
