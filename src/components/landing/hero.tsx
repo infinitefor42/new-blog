@@ -5,25 +5,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { FiArrowDown, FiArrowRight, FiMail } from "react-icons/fi";
 import { FaGithub } from "react-icons/fa";
+import { appleEasing, createContainerVariants, createCardVariants } from "@/lib/animations";
 
-const appleEasing: [number, number, number, number] = [0.23, 1, 0.32, 1];
-
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.12, delayChildren: 0.3 },
-  },
-};
-
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.8, ease: appleEasing },
-  },
-};
+const containerVariants = createContainerVariants(0.12, 0.3);
+const itemVariants = createCardVariants(0.8, 40);
 
 const avatarVariants: Variants = {
   hidden: { opacity: 0, scale: 0.8 },
@@ -34,12 +19,12 @@ const avatarVariants: Variants = {
   },
 };
 
-export function Hero() {
-  const socialLinks = [
-    { icon: FaGithub, href: "https://github.com/infinitefor42", label: "GitHub" },
-    { icon: FiMail, href: "mailto:pcodeinfinite@qq.com", label: "Email" },
-  ];
+const socialLinks = [
+  { icon: FaGithub, href: "https://github.com/infinitefor42", label: "GitHub" },
+  { icon: FiMail, href: "mailto:pcodeinfinite@qq.com", label: "Email" },
+];
 
+export function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* 背景装饰 */}

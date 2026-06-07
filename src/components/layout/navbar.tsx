@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { FiSun, FiMoon, FiMenu, FiX } from "react-icons/fi";
 import { useTheme } from "next-themes";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -33,15 +33,13 @@ export function Navbar() {
   };
 
   const handleMobileMenuToggle = () => {
-    setIsMenuOpen(!isMenuOpen);
+    setIsMenuOpen((prev) => !prev);
   };
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
+    setIsMenuOpen(false);
     router.push(href);
-    setTimeout(() => {
-      setIsMenuOpen(false);
-    }, 50);
   };
 
   return (
@@ -50,7 +48,7 @@ export function Navbar() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className={`fixed top-0 left-0 right-0 z-[9999] transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
             ? "bg-paper-bg/80 dark:bg-ink-deep/80 backdrop-blur-xl shadow-lg shadow-black/5 dark:shadow-black/20"
             : "bg-transparent"
@@ -112,11 +110,19 @@ export function Navbar() {
                 aria-label="切换主题"
               >
                 {mounted ? (
-                  resolvedTheme === "dark" ? (
-                    <FiSun className="w-5 h-5" />
-                  ) : (
-                    <FiMoon className="w-5 h-5" />
-                  )
+                  <motion.span
+                    key={resolvedTheme}
+                    initial={{ rotate: -90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
+                    className="flex items-center justify-center"
+                  >
+                    {resolvedTheme === "dark" ? (
+                      <FiSun className="w-5 h-5" />
+                    ) : (
+                      <FiMoon className="w-5 h-5" />
+                    )}
+                  </motion.span>
                 ) : (
                   <div className="w-5 h-5" />
                 )}
@@ -137,8 +143,8 @@ export function Navbar() {
         </nav>
         {isMenuOpen && (
           <div
-            className="absolute right-4 top-16 z-[999999] w-28 py-3 px-4
-              bg-[#f3eee5] dark:bg-ink-deep
+            className="absolute right-4 top-16 z-[60] w-28 py-3 px-4
+              bg-paper-bg dark:bg-ink-deep
               rounded-xl shadow-lg border border-black/5 dark:border-rice-white/10
               pointer-events-auto touch-manipulation
               md:hidden"

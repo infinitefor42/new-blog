@@ -1,5 +1,6 @@
 // Service Worker - INFINITE
-const CACHE_NAME = "infinite-blog-v1";
+// 更新部署后请手动递增版本号以清除旧缓存
+const CACHE_NAME = "infinite-blog-v2";
 
 // 需要预缓存的资源
 const PRECACHE_ASSETS = [

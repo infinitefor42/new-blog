@@ -1,28 +1,13 @@
 "use client";
 
-import { motion, useInView, type Variants } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { FiGithub, FiArrowUpRight, FiPlay } from "react-icons/fi";
 import { ViewCounter } from "@/components/common/view-counter";
+import { appleEasing, createContainerVariants, createCardVariants } from "@/lib/animations";
 
-const appleEasing: [number, number, number, number] = [0.23, 1, 0.32, 1];
-
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.12, delayChildren: 0.2 },
-  },
-};
-
-const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.7, ease: appleEasing },
-  },
-};
+const containerVariants = createContainerVariants(0.12);
+const cardVariants = createCardVariants(0.7, 40);
 
 const projects = [
   {

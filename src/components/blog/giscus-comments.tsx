@@ -45,14 +45,6 @@ export function GiscusComments() {
     const categoryId = process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID || "DIC_kwDOStseQs4C-Ru4";
     const mapping = process.env.NEXT_PUBLIC_GISCUS_MAPPING || "pathname";
 
-    console.log("[Giscus] 运行时配置加载:", {
-      repo,
-      repoId,
-      category,
-      categoryId,
-      mapping,
-    });
-
     // 配置校验
     if (!repo || !repoId || !categoryId) {
       console.warn("[Giscus] 配置不完整，请检查 .env.local:", {
@@ -90,7 +82,7 @@ export function GiscusComments() {
     containerRef.current.innerHTML = "";
     containerRef.current.appendChild(script);
     scriptLoaded.current = true;
-  }, [resolvedTheme]);
+  }, []);
 
   return (
     <section className="mt-16 mb-8">

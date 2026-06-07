@@ -4,7 +4,8 @@ import matter from "gray-matter";
 
 const postsDirectory = path.join(process.cwd(), "src", "posts");
 
-export interface PostMeta {
+/** 文章预览元数据（不含正文，用于列表/卡片展示） */
+export interface PostPreview {
   slug: string;
   title: string;
   date: string;
@@ -12,6 +13,10 @@ export interface PostMeta {
   categories: string[];
   excerpt: string;
   readingTime: number;
+}
+
+/** 完整文章元数据（含正文，用于文章详情页） */
+export interface PostMeta extends PostPreview {
   content: string;
 }
 
@@ -27,6 +32,7 @@ function generateExcerpt(content: string): string {
   const clean = content
     .replace(/^#{1,6}\s+.*/gm, "")
     .replace(/```[\s\S]*?```/g, "")
+    .replace(/\$\$[\s\S]*?\$\$/g, "")
     .replace(/\$.*?\$/g, "")
     .replace(/[*`_\[\]()!>-]/g, "")
     .replace(/\s+/g, " ")
@@ -34,8 +40,8 @@ function generateExcerpt(content: string): string {
   return clean.length > 120 ? clean.slice(0, 120) + "..." : clean;
 }
 
-/** 获取所有文章的元数据（按日期降序） */
-export function getAllPosts(): PostMeta[] {
+/** 获取所有文章的预览元数据（按日期降序，不含正文） */
+export function getAllPosts(): PostPreview[] {
   if (!fs.existsSync(postsDirectory)) return [];
 
   const fileNames = fs
@@ -69,7 +75,6 @@ export function getAllPosts(): PostMeta[] {
       categories,
       excerpt: generateExcerpt(content),
       readingTime: estimateReadingTime(content),
-      content,
     };
   });
 

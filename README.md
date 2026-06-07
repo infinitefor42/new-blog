@@ -80,11 +80,9 @@ my-new-blog/
 │   │   │
 │   │   ├── layout/                 # 全局布局组件
 │   │   │   ├── navbar.tsx          # 顶部导航栏（滚动感知 + 移动端抽屉）
-│   │   │   ├── header.tsx          # 子页面吸顶导航
-│   │   │   └── footer.tsx          # 页脚（版权 + 全站访客统计）
+│   │   │   └── footer.tsx          # 页脚
 │   │   │
 │   │   ├── common/                 # 通用组件
-│   │   │   ├── theme-toggle.tsx    # 主题切换按钮
 │   │   │   ├── view-counter.tsx    # 浏览量计数器
 │   │   │   └── service-worker-register.tsx
 │   │   │
@@ -92,11 +90,11 @@ my-new-blog/
 │   │   └── theme-script.tsx        # 防闪烁暗色模式初始化脚本
 │   │
 │   ├── hooks/                      # 自定义 Hooks
-│   │   ├── use-site-stats.ts       # 全站 UV / PV 统计（localStorage）
 │   │   └── use-view-count.ts       # 单页浏览量计数
 │   │
 │   ├── lib/                        # 工具库
-│   │   └── posts.ts                # Markdown 文章加载与元数据解析
+│   │   ├── posts.ts                # Markdown 文章加载与元数据解析
+│   │   └── animations.ts           # 共享动画常量与变体工厂
 │   │
 │   └── posts/                      # 博客文章（Markdown 源文件）
 │       
@@ -137,11 +135,9 @@ my-new-blog/
 - 明暗主题丝滑联动：切换主题时通过 `postMessage` 实时切换 Giscus iframe 样式
 - 全站文章详情页自动覆盖，无需手动嵌入
 
-### 📊 全站数据统计
+### 📊 项目浏览量
 
-- **访客数（UV）** / **浏览量（PV）**：基于 localStorage 的轻量级模拟统计
-- **项目卡片浏览量**：每个项目独立计数，展示在卡片右下角
-- 页脚实时展示 `👤 访客 · 👁️ 浏览` 数据看板
+- **项目卡片浏览量**：基于 localStorage 的轻量级计数，展示在卡片右下角
 ---
 <div align="center">
 

@@ -99,7 +99,9 @@ export function BlogPost({ post }: BlogPostProps) {
     document.head.appendChild(link);
 
     return () => {
-      document.head.removeChild(link);
+      if (link.parentNode) {
+        document.head.removeChild(link);
+      }
     };
   }, []);
 

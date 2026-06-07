@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { PostMeta } from "@/lib/posts";
+import type { PostPreview } from "@/lib/posts";
 
 // 懒加载非首屏组件
 const SkillsSection = dynamic(() => import("@/components/landing/skills-section").then(mod => ({ default: mod.SkillsSection })), {
@@ -20,7 +20,7 @@ const BlogPreview = dynamic(() => import("@/components/landing/blog-preview").th
 });
 
 interface LazySectionsProps {
-  posts: PostMeta[];
+  posts: PostPreview[];
 }
 
 export function LazySections({ posts }: LazySectionsProps) {

@@ -4,10 +4,10 @@ import { useState, useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { FilterPanel } from "./filter-panel";
 import { BlogCard } from "./blog-card";
-import type { PostMeta } from "@/lib/posts";
+import type { PostPreview } from "@/lib/posts";
 
 interface BlogListClientProps {
-  posts: PostMeta[];
+  posts: PostPreview[];
   categories: string[];
   tags: string[];
 }

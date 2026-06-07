@@ -3,14 +3,13 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { FiCalendar, FiClock, FiTag, FiArrowRight } from "react-icons/fi";
-import type { PostMeta } from "@/lib/posts";
+import type { PostPreview } from "@/lib/posts";
+import { appleEasing } from "@/lib/animations";
 
 interface BlogCardProps {
-  post: PostMeta;
+  post: PostPreview;
   index: number;
 }
-
-const appleEasing: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
 export function BlogCard({ post, index }: BlogCardProps) {
   return (
