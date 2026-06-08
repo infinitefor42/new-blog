@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "@/components/providers";
 import { ThemeScript } from "@/components/theme-script";
@@ -69,12 +68,11 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <Providers>{children}</Providers>
         <ServiceWorkerRegister />
-        <Script
-          defer
+        <script
+          async
           src="https://analytics.caobowen.top/script.js"
           data-website-id="f16a4545-9c81-4a50-913a-0624bb1df01f"
-          strategy="afterInteractive"
-        />
+        ></script>
       </body>
     </html>
   );
