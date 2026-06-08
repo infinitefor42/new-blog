@@ -146,9 +146,9 @@ export function Navbar() {
       {/* 移动端下拉菜单 — 放在 header 外部，避免被 backdrop-blur 创建的堆叠上下文困住 */}
       {isMenuOpen && (
         <>
-          {/* 透明遮罩：点击关闭菜单 */}
+          {/* 透明遮罩：点击关闭菜单（z-index 低于 header，不挡导航栏按钮） */}
           <div
-            className="fixed inset-0 z-[55] md:hidden"
+            className="fixed inset-0 z-[45] md:hidden"
             onClick={() => setIsMenuOpen(false)}
           />
           <div
