@@ -141,12 +141,20 @@ export function Navbar() {
             </div>
           </div>
         </nav>
-        {isMenuOpen && (
+      </motion.header>
+
+      {/* 移动端下拉菜单 — 放在 header 外部，避免被 backdrop-blur 创建的堆叠上下文困住 */}
+      {isMenuOpen && (
+        <>
+          {/* 透明遮罩：点击关闭菜单 */}
           <div
-            className="absolute right-4 top-16 z-[60] w-28 py-3 px-4
+            className="fixed inset-0 z-[55] md:hidden"
+            onClick={() => setIsMenuOpen(false)}
+          />
+          <div
+            className="fixed right-4 top-16 z-[60] w-28 py-3 px-4
               bg-paper-bg dark:bg-ink-deep
               rounded-xl shadow-lg border border-black/5 dark:border-rice-white/10
-              pointer-events-auto touch-manipulation
               md:hidden"
           >
             <Link
@@ -172,8 +180,8 @@ export function Navbar() {
               博客
             </Link>
           </div>
-        )}
-      </motion.header>
+        </>
+      )}
     </>
   );
 }
