@@ -12,6 +12,7 @@ export function Navbar() {
   const router = useRouter();
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDrawerExpanded, setIsDrawerExpanded] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -34,11 +35,13 @@ export function Navbar() {
 
   const handleMobileMenuToggle = () => {
     setIsMenuOpen((prev) => !prev);
+    setIsDrawerExpanded(false);
   };
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setIsMenuOpen(false);
+    setIsDrawerExpanded(false);
     router.push(href);
   };
 
@@ -162,55 +165,68 @@ export function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed right-0 top-16 z-[60] w-72 max-w-[85vw]
-                bg-paper-bg dark:bg-ink-deep
+              className={`fixed right-0 top-16 z-[60]
+                bg-paper-bg/95 dark:bg-ink-deep/95
                 shadow-2xl border-l border-t border-black/5 dark:border-rice-white/10
-                md:hidden overflow-y-auto rounded-b-xl"
+                md:hidden rounded-b-xl transition-all duration-300
+                ${isDrawerExpanded ? "w-40" : "w-16"}`}
             >
-              {/* 抽屉头部 */}
-              <div className="flex items-center justify-between p-4 border-b border-black/5 dark:border-rice-white/10">
-                <span className="font-song text-lg font-bold text-ink-black dark:text-rice-white tracking-wider">
-                  INFINITE
-                </span>
+              {/* 关闭按钮 */}
+              <div className="flex justify-end p-2">
                 <button
                   onClick={() => setIsMenuOpen(false)}
-                  className="w-10 h-10 flex items-center justify-center rounded-xl
+                  className="w-8 h-8 flex items-center justify-center rounded-lg
                     text-ink-gray dark:text-rice-white-dim
                     hover:bg-ink-black/5 dark:hover:bg-rice-white/10
                     transition-all duration-200"
                 >
-                  <FiX className="w-5 h-5" />
+                  <FiX className="w-4 h-4" />
                 </button>
               </div>
 
-              {/* 导航链接 */}
-              <nav className="p-4 space-y-2">
-                <Link
-                  href="/"
-                  className={`block w-full text-left py-3 px-4 rounded-xl text-sm font-medium
-                    transition-all duration-200 no-underline
-                    ${isActive("/")
-                      ? "text-ink-black dark:text-rice-white bg-ink-black/5 dark:bg-rice-white/10"
-                      : "text-ink-gray dark:text-rice-white-dim hover:bg-ink-black/5 dark:hover:bg-rice-white/10"
-                    }`}
-                  onClick={(e) => handleNavClick(e, "/")}
+              {/* 展开/折叠按钮 + 导航链接 */}
+              <nav className="p-2 space-y-1">
+                {/* 点击展开/折叠 */}
+                <button
+                  onClick={() => setIsDrawerExpanded(!isDrawerExpanded)}
+                  className="flex items-center justify-center w-full py-3 rounded-xl
+                    text-ink-gray dark:text-rice-white-dim
+                    hover:bg-ink-black/5 dark:hover:bg-rice-white/10
+                    transition-all duration-200 text-lg"
                 >
-                  首页
-                </Link>
-                <Link
-                  href="/blog"
-                  className={`block w-full text-left py-3 px-4 rounded-xl text-sm font-medium
-                    transition-all duration-200 no-underline
-                    ${isActive("/blog")
-                      ? "text-ink-black dark:text-rice-white bg-ink-black/5 dark:bg-rice-white/10"
-                      : "text-ink-gray dark:text-rice-white-dim hover:bg-ink-black/5 dark:hover:bg-rice-white/10"
-                    }`}
-                  onClick={(e) => handleNavClick(e, "/blog")}
-                >
-                  博客
-                </Link>
-              </nav>
+                  {isDrawerExpanded ? "收起" : "☰"}
+                </button>
 
+                {/* 展开后显示的导航链接 */}
+                {isDrawerExpanded && (
+                  <>
+                    <Link
+                      href="/"
+                      className={`flex items-center justify-center w-full py-3 rounded-xl text-sm font-medium
+                        transition-all duration-200 no-underline
+                        ${isActive("/")
+                          ? "text-ink-black dark:text-rice-white bg-ink-black/5 dark:bg-rice-white/10"
+                          : "text-ink-gray dark:text-rice-white-dim hover:bg-ink-black/5 dark:hover:bg-rice-white/10"
+                        }`}
+                      onClick={(e) => handleNavClick(e, "/")}
+                    >
+                      首页
+                    </Link>
+                    <Link
+                      href="/blog"
+                      className={`flex items-center justify-center w-full py-3 rounded-xl text-sm font-medium
+                        transition-all duration-200 no-underline
+                        ${isActive("/blog")
+                          ? "text-ink-black dark:text-rice-white bg-ink-black/5 dark:bg-rice-white/10"
+                          : "text-ink-gray dark:text-rice-white-dim hover:bg-ink-black/5 dark:hover:bg-rice-white/10"
+                        }`}
+                      onClick={(e) => handleNavClick(e, "/blog")}
+                    >
+                      博客
+                    </Link>
+                  </>
+                )}
+              </nav>
             </motion.div>
           </>
         )}
