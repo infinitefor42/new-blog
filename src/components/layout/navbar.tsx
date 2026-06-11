@@ -35,7 +35,7 @@ export function Navbar() {
 
   const handleMobileMenuToggle = () => {
     setIsMenuOpen((prev) => !prev);
-    setIsDrawerExpanded(false);
+    setIsDrawerExpanded(true);
   };
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
