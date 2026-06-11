@@ -162,10 +162,10 @@ export function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed right-0 top-0 bottom-0 z-[60] w-72 max-w-[85vw]
+              className="fixed right-0 top-16 z-[60] w-72 max-w-[85vw]
                 bg-paper-bg dark:bg-ink-deep
-                shadow-2xl border-l border-black/5 dark:border-rice-white/10
-                md:hidden overflow-y-auto"
+                shadow-2xl border-l border-t border-black/5 dark:border-rice-white/10
+                md:hidden overflow-y-auto rounded-b-xl"
             >
               {/* 抽屉头部 */}
               <div className="flex items-center justify-between p-4 border-b border-black/5 dark:border-rice-white/10">
@@ -211,28 +211,6 @@ export function Navbar() {
                 </Link>
               </nav>
 
-              {/* 底部主题切换 */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-black/5 dark:border-rice-white/10">
-                <button
-                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl
-                    text-ink-gray dark:text-rice-white-dim
-                    hover:bg-ink-black/5 dark:hover:bg-rice-white/10
-                    transition-all duration-200 text-sm"
-                >
-                  {resolvedTheme === "dark" ? (
-                    <>
-                      <FiSun className="w-4 h-4" />
-                      <span>切换亮色模式</span>
-                    </>
-                  ) : (
-                    <>
-                      <FiMoon className="w-4 h-4" />
-                      <span>切换暗色模式</span>
-                    </>
-                  )}
-                </button>
-              </div>
             </motion.div>
           </>
         )}
