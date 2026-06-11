@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { FiSun, FiMoon, FiMenu, FiX } from "react-icons/fi";
 import { useTheme } from "next-themes";
 import { useState, useEffect, useCallback } from "react";
@@ -143,45 +143,100 @@ export function Navbar() {
         </nav>
       </motion.header>
 
-      {/* 移动端下拉菜单 — 放在 header 外部，避免被 backdrop-blur 创建的堆叠上下文困住 */}
-      {isMenuOpen && (
-        <>
-          {/* 透明遮罩：点击关闭菜单（z-index 低于 header，不挡导航栏按钮） */}
-          <div
-            className="fixed inset-0 z-[45] md:hidden"
-            onClick={() => setIsMenuOpen(false)}
-          />
-          <div
-            className="fixed right-4 top-16 z-[60] w-28 py-3 px-4
-              bg-paper-bg dark:bg-ink-deep
-              rounded-xl shadow-lg border border-black/5 dark:border-rice-white/10
-              md:hidden"
-          >
-            <Link
-              href="/"
-              className={`block w-full text-left text-sm py-2 px-1 cursor-pointer no-underline
-                ${isActive("/")
-                  ? "text-ink-black dark:text-rice-white font-semibold border-b-2 border-black dark:border-rice-white"
-                  : "text-gray-400 dark:text-gray-500 hover:text-ink-black dark:hover:text-rice-white"
-                }`}
-              onClick={(e) => handleNavClick(e, "/")}
+      {/* 移动端抽屉菜单 — 放在 header 外部，避免被 backdrop-blur 创建的堆叠上下文困住 */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <>
+            {/* 半透明遮罩：点击关闭抽屉 */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-[45] bg-black/30 dark:bg-black/50 md:hidden"
+              onClick={() => setIsMenuOpen(false)}
+            />
+            {/* 右侧抽屉面板 */}
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed right-0 top-0 bottom-0 z-[60] w-72 max-w-[85vw]
+                bg-paper-bg dark:bg-ink-deep
+                shadow-2xl border-l border-black/5 dark:border-rice-white/10
+                md:hidden overflow-y-auto"
             >
-              首页
-            </Link>
-            <Link
-              href="/blog"
-              className={`block w-full text-left text-sm py-2 px-1 mt-2 cursor-pointer no-underline
-                ${isActive("/blog")
-                  ? "text-ink-black dark:text-rice-white font-semibold border-b-2 border-black dark:border-rice-white"
-                  : "text-gray-400 dark:text-gray-500 hover:text-ink-black dark:hover:text-rice-white"
-                }`}
-              onClick={(e) => handleNavClick(e, "/blog")}
-            >
-              博客
-            </Link>
-          </div>
-        </>
-      )}
+              {/* 抽屉头部 */}
+              <div className="flex items-center justify-between p-4 border-b border-black/5 dark:border-rice-white/10">
+                <span className="font-song text-lg font-bold text-ink-black dark:text-rice-white tracking-wider">
+                  INFINITE
+                </span>
+                <button
+                  onClick={() => setIsMenuOpen(false)}
+                  className="w-10 h-10 flex items-center justify-center rounded-xl
+                    text-ink-gray dark:text-rice-white-dim
+                    hover:bg-ink-black/5 dark:hover:bg-rice-white/10
+                    transition-all duration-200"
+                >
+                  <FiX className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* 导航链接 */}
+              <nav className="p-4 space-y-2">
+                <Link
+                  href="/"
+                  className={`block w-full text-left py-3 px-4 rounded-xl text-sm font-medium
+                    transition-all duration-200 no-underline
+                    ${isActive("/")
+                      ? "text-ink-black dark:text-rice-white bg-ink-black/5 dark:bg-rice-white/10"
+                      : "text-ink-gray dark:text-rice-white-dim hover:bg-ink-black/5 dark:hover:bg-rice-white/10"
+                    }`}
+                  onClick={(e) => handleNavClick(e, "/")}
+                >
+                  首页
+                </Link>
+                <Link
+                  href="/blog"
+                  className={`block w-full text-left py-3 px-4 rounded-xl text-sm font-medium
+                    transition-all duration-200 no-underline
+                    ${isActive("/blog")
+                      ? "text-ink-black dark:text-rice-white bg-ink-black/5 dark:bg-rice-white/10"
+                      : "text-ink-gray dark:text-rice-white-dim hover:bg-ink-black/5 dark:hover:bg-rice-white/10"
+                    }`}
+                  onClick={(e) => handleNavClick(e, "/blog")}
+                >
+                  博客
+                </Link>
+              </nav>
+
+              {/* 底部主题切换 */}
+              <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-black/5 dark:border-rice-white/10">
+                <button
+                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl
+                    text-ink-gray dark:text-rice-white-dim
+                    hover:bg-ink-black/5 dark:hover:bg-rice-white/10
+                    transition-all duration-200 text-sm"
+                >
+                  {resolvedTheme === "dark" ? (
+                    <>
+                      <FiSun className="w-4 h-4" />
+                      <span>切换亮色模式</span>
+                    </>
+                  ) : (
+                    <>
+                      <FiMoon className="w-4 h-4" />
+                      <span>切换暗色模式</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
 }
