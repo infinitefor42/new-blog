@@ -12,7 +12,6 @@ export function Navbar() {
   const router = useRouter();
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDrawerExpanded, setIsDrawerExpanded] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -35,13 +34,11 @@ export function Navbar() {
 
   const handleMobileMenuToggle = () => {
     setIsMenuOpen((prev) => !prev);
-    setIsDrawerExpanded(true);
   };
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setIsMenuOpen(false);
-    setIsDrawerExpanded(false);
     router.push(href);
   };
 
@@ -159,17 +156,12 @@ export function Navbar() {
               className="fixed inset-0 z-[45] bg-black/30 dark:bg-black/50 md:hidden"
               onClick={() => setIsMenuOpen(false)}
             />
-            {/* 右侧抽屉面板 */}
-            <motion.div
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className={`fixed right-0 top-16 z-[60]
-                bg-paper-bg/95 dark:bg-ink-deep/95
-                shadow-2xl border-l border-t border-black/5 dark:border-rice-white/10
-                md:hidden rounded-b-xl transition-all duration-300
-                ${isDrawerExpanded ? "w-40" : "w-16"}`}
+            {/* 右侧抽屉面板 - 固定在汉堡菜单按钮正下方 */}
+            <div
+              style={{ position: "fixed", right: "8px", top: "56px", zIndex: 60 }}
+              className="bg-paper-bg/95 dark:bg-ink-deep/95
+                shadow-2xl border border-black/5 dark:border-rice-white/10
+                md:hidden rounded-xl w-28"
             >
               {/* 关闭按钮 */}
               <div className="flex justify-end p-2">
@@ -184,50 +176,34 @@ export function Navbar() {
                 </button>
               </div>
 
-              {/* 展开/折叠按钮 + 导航链接 */}
+              {/* 导航链接 */}
               <nav className="p-2 space-y-1">
-                {/* 点击展开/折叠 */}
-                <button
-                  onClick={() => setIsDrawerExpanded(!isDrawerExpanded)}
-                  className="flex items-center justify-center w-full py-3 rounded-xl
-                    text-ink-gray dark:text-rice-white-dim
-                    hover:bg-ink-black/5 dark:hover:bg-rice-white/10
-                    transition-all duration-200 text-lg"
+                <Link
+                  href="/"
+                  className={`flex items-center justify-center w-full py-3 rounded-xl text-sm font-medium
+                    transition-all duration-200 no-underline
+                    ${isActive("/")
+                      ? "text-ink-black dark:text-rice-white bg-ink-black/5 dark:bg-rice-white/10"
+                      : "text-ink-gray dark:text-rice-white-dim hover:bg-ink-black/5 dark:hover:bg-rice-white/10"
+                    }`}
+                  onClick={(e) => handleNavClick(e, "/")}
                 >
-                  {isDrawerExpanded ? "收起" : "☰"}
-                </button>
-
-                {/* 展开后显示的导航链接 */}
-                {isDrawerExpanded && (
-                  <>
-                    <Link
-                      href="/"
-                      className={`flex items-center justify-center w-full py-3 rounded-xl text-sm font-medium
-                        transition-all duration-200 no-underline
-                        ${isActive("/")
-                          ? "text-ink-black dark:text-rice-white bg-ink-black/5 dark:bg-rice-white/10"
-                          : "text-ink-gray dark:text-rice-white-dim hover:bg-ink-black/5 dark:hover:bg-rice-white/10"
-                        }`}
-                      onClick={(e) => handleNavClick(e, "/")}
-                    >
-                      首页
-                    </Link>
-                    <Link
-                      href="/blog"
-                      className={`flex items-center justify-center w-full py-3 rounded-xl text-sm font-medium
-                        transition-all duration-200 no-underline
-                        ${isActive("/blog")
-                          ? "text-ink-black dark:text-rice-white bg-ink-black/5 dark:bg-rice-white/10"
-                          : "text-ink-gray dark:text-rice-white-dim hover:bg-ink-black/5 dark:hover:bg-rice-white/10"
-                        }`}
-                      onClick={(e) => handleNavClick(e, "/blog")}
-                    >
-                      博客
-                    </Link>
-                  </>
-                )}
+                  首页
+                </Link>
+                <Link
+                  href="/blog"
+                  className={`flex items-center justify-center w-full py-3 rounded-xl text-sm font-medium
+                    transition-all duration-200 no-underline
+                    ${isActive("/blog")
+                      ? "text-ink-black dark:text-rice-white bg-ink-black/5 dark:bg-rice-white/10"
+                      : "text-ink-gray dark:text-rice-white-dim hover:bg-ink-black/5 dark:hover:bg-rice-white/10"
+                    }`}
+                  onClick={(e) => handleNavClick(e, "/blog")}
+                >
+                  博客
+                </Link>
               </nav>
-            </motion.div>
+            </div>
           </>
         )}
       </AnimatePresence>

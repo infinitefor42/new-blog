@@ -65,12 +65,12 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        {/* 引入 Umami 统计脚本 */}
-        <Script
+        {/* 引入 Umami 统计脚本 - 暂时注释掉，服务器返回 500 错误 */}
+        {/* <Script
           async
           src="https://umami-tawny-omega.vercel.app/script.js"
           data-website-id="f16a4545-9c81-4a50-913a-0624bb1df01f"
-        />
+        /> */}
       </head>
       <body className="min-h-full flex flex-col">
         <Providers>{children}</Providers>
