@@ -46,7 +46,7 @@ my-new-blog/
 │       └── deploy.yml              # GitHub Pages 自动部署工作流
 │
 ├── public/                         # 静态公共资源
-│   ├── avatar.png                  # 个人头像
+│   ├── images/website-logo.png     # 个人头像/网站Logo
 │   ├── CNAME                       # 自定义域名绑定
 │   ├── manifest.json               # PWA 应用清单
 │   ├── sw.js                       # Service Worker（离线缓存）

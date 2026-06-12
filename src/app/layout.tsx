@@ -25,8 +25,8 @@ export const metadata: Metadata = {
   },
   description: "一个极简风格的个人博客",
   icons: {
-    icon: "/icon.png",
-    apple: "/apple-touch-icon.png",
+    icon: "/images/website-logo.png",
+    apple: "/images/website-logo.png",
   },
   manifest: "/manifest.json",
   appleWebApp: {
@@ -62,7 +62,7 @@ export default function RootLayout({
     >
       <head>
         <ThemeScript />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" href="/images/website-logo.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         {/* 引入 Umami 统计脚本 - 暂时注释掉，服务器返回 500 错误 */}
