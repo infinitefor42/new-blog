@@ -1,7 +1,7 @@
 ---
 title: "记忆树 — 3D 照片记忆墙"
 date: "2026-06-12"
-tags: ["Three.js", "React", "3D", "WebGL"]
+tags: []
 categories: ["项目"]
 excerpt: "基于 Three.js 的交互式 3D 照片展示组件，将照片以圣诞树形态螺旋排列，配合粒子特效和音乐可视化营造沉浸式回忆体验。"
 ---
