@@ -6,6 +6,10 @@ categories: ["项目"]
 excerpt: "基于 Three.js 的交互式 3D 照片展示组件，将照片以圣诞树形态螺旋排列，配合粒子特效和音乐可视化营造沉浸式回忆体验。"
 ---
 
+## 快速体验
+
+[🌳 打开记忆树](/memory-tree)
+
 ## 项目简介
 
 记忆树是一个基于 Three.js 的 3D 照片展示组件，灵感来源于圣诞树上悬挂的装饰球——把照片以螺旋形态排列在三维空间中，配合粒子背景和自动旋转，营造沉浸式的回忆浏览体验。
@@ -25,7 +29,7 @@ excerpt: "基于 Three.js 的交互式 3D 照片展示组件，将照片以圣�
 ```
 src/
 ├── app/memory-tree/page.tsx      # 页面入口，动态加载 3D 组件
-├── components/blog/MemoryTree.tsx # 核心 3D 场景组件（1138 行）
+├── components/blog/MemoryTree.tsx # 核心 3D 场景组件
 └── config/photos.ts              # 照片数据配置
 ```
 
@@ -139,6 +143,3 @@ export const PHOTO_DATA: Photo[] = [
 - **ESC 键**：关闭预览弹窗
 - **自动旋转**：松手后缓慢回正
 
-## 快速体验
-
-[🌳 打开记忆树](/memory-tree)

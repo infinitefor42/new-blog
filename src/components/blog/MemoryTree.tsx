@@ -668,25 +668,31 @@ export default function MemoryTree({
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  const startTimeRef = useRef(0);
+  const [ready, setReady] = useState(false);
+
   useEffect(() => {
-    const timer = setTimeout(() => setStartProgress(true), 500);
+    const timer = setTimeout(() => {
+      startTimeRef.current = performance.now();
+      setStartProgress(true);
+    }, 200);
     return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
-    if (!startProgress || r3fProgress >= 100) return;
+    if (!startProgress) return;
     const interval = setInterval(() => {
-      setSimulatedProgress((prev) => {
-        if (prev >= 100) return 100;
-        const remaining = 100 - prev;
-        const increment = Math.max(remaining * 0.15, Math.random() * 8 + 2);
-        return Math.min(prev + increment, 100);
-      });
-    }, 200);
+      const elapsed = (performance.now() - startTimeRef.current) / 1000;
+      const t = Math.min(elapsed / 3.2, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const simulated = Math.min(eased * 100, 99.5);
+      setSimulatedProgress(simulated);
+      if (t >= 1) clearInterval(interval);
+    }, 50);
     return () => clearInterval(interval);
-  }, [startProgress, r3fProgress]);
+  }, [startProgress]);
 
-  const progress = r3fProgress >= 100 ? 100 : simulatedProgress;
+  const progress = r3fProgress >= 100 || ready ? 100 : simulatedProgress;
 
   const handleSelect = useCallback(
     (photo: Photo) => {
@@ -697,11 +703,10 @@ export default function MemoryTree({
   );
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (progress < 100) setForceLoad(true);
-    }, 4500);
+    if (!startProgress) return;
+    const timer = setTimeout(() => setReady(true), 3500);
     return () => clearTimeout(timer);
-  }, [progress]);
+  }, [startProgress]);
 
   useEffect(() => {
     const style = document.createElement("style");
@@ -747,8 +752,8 @@ export default function MemoryTree({
         {!isLoaded && (
           <motion.div
             key="loader"
-            exit={{ opacity: 0, scale: 1.1 }}
-            transition={{ duration: 0.8, ease: "easeInOut" }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
             style={{
               position: "absolute",
               inset: 0,
@@ -804,7 +809,7 @@ export default function MemoryTree({
                     backgroundPosition: ["0% 0%", "100% 0%"],
                   }}
                   transition={{
-                    width: { duration: 0.4, ease: "easeOut" },
+                    width: { duration: 0.3, ease: "easeOut" },
                     backgroundPosition: { duration: 2, repeat: Infinity, ease: "linear" },
                   }}
                 />
