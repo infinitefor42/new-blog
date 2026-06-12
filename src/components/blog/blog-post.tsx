@@ -55,6 +55,25 @@ const markdownComponents: Components = {
   },
   a: ({ href, children, ...props }) => {
     const url = href || "";
+
+    if (url === "/memory-tree") {
+      return (
+        <div className="flex justify-center my-6">
+          <Link
+            href={url}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full
+              bg-ink-black/5 dark:bg-rice-white/10
+              border border-warm-gray dark:border-warm-gray-dark
+              text-ink-black dark:text-rice-white font-medium text-sm
+              hover:bg-ink-black/10 dark:hover:bg-rice-white/15
+              hover:shadow-lg transition-all duration-300 no-underline"
+          >
+            {children}
+          </Link>
+        </div>
+      );
+    }
+
     if (isExternal(url)) {
       return (
         <a
@@ -71,7 +90,7 @@ const markdownComponents: Components = {
         </a>
       );
     }
-    // 内部链接（如 /games/Snake_Game/index.html）
+
     return (
       <a
         href={url}
