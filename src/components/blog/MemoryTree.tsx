@@ -26,7 +26,13 @@ import {
   SkipForward,
   Music,
 } from "lucide-react";
-import { PHOTO_DATA, type Photo } from "@/config/photos";
+import { PHOTO_DATA, ALBUM_DATA, type Photo, type Album } from "@/config/photos";
+
+const MUSIC_LIST = [
+  { title: "这世界那么多人", src: "/audio/莫文蔚 - 这世界那么多人.mp3" },
+  { title: "小半", src: "/audio/陈粒 - 小半.mp3" },
+  { title: "世界赠予我的", src: "/audio/王菲 - 世界赠予我的.mp3" },
+];
 
 const COLORS = {
   STAR_WHITE: new THREE.Color("#ffffff"),
@@ -572,10 +578,10 @@ const MediaNode = ({
       onPointerOut={() => setHovered(false)}
       onClick={() => onSelect(photo)}
     >
-      <planeGeometry args={[3.4, 3.4]} />
+      <planeGeometry args={[3.6, 5.4]} />
       <meshBasicMaterial map={texture} transparent opacity={1} fog={false} />
       <mesh position={[0, 0, -0.01]}>
-        <planeGeometry args={[3.6, 3.6]} />
+        <planeGeometry args={[3.8, 5.6]} />
         <meshBasicMaterial
           color={hovered ? COLORS.HOT_PINK : "#ffffff"}
           transparent
@@ -653,10 +659,14 @@ export default function MemoryTree({
   onPhotoClick?: (photo: Photo) => void;
 }) {
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
+  const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const { progress: r3fProgress } = useProgress();
   const [simulatedProgress, setSimulatedProgress] = useState(0);
   const [forceLoad, setForceLoad] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTrack, setCurrentTrack] = useState(0);
+  const audioRef = useRef<HTMLAudioElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [startProgress, setStartProgress] = useState(false);
@@ -667,6 +677,33 @@ export default function MemoryTree({
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
+
+  useEffect(() => {
+    if (!audioRef.current) return;
+    audioRef.current.src = MUSIC_LIST[currentTrack].src;
+    if (isPlaying) {
+      audioRef.current.play().catch(() => {});
+    }
+  }, [currentTrack]);
+
+  useEffect(() => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.play().catch(() => {});
+    } else {
+      audioRef.current.pause();
+    }
+  }, [isPlaying, currentTrack]);
+
+  const handleNext = () => {
+    setCurrentTrack((prev) => (prev + 1) % MUSIC_LIST.length);
+    setIsPlaying(true);
+  };
+
+  const handlePrev = () => {
+    setCurrentTrack((prev) => (prev - 1 + MUSIC_LIST.length) % MUSIC_LIST.length);
+    setIsPlaying(true);
+  };
 
   const startTimeRef = useRef(0);
   const [ready, setReady] = useState(false);
@@ -697,6 +734,13 @@ export default function MemoryTree({
   const handleSelect = useCallback(
     (photo: Photo) => {
       setSelectedPhoto(photo);
+      if (photo.album) {
+        const album = ALBUM_DATA.find((a) => a.id === photo.album);
+        setSelectedAlbum(album || null);
+        setCurrentPhotoIndex(0);
+      } else {
+        setSelectedAlbum(null);
+      }
       onPhotoClick?.(photo);
     },
     [onPhotoClick]
@@ -710,8 +754,13 @@ export default function MemoryTree({
 
   useEffect(() => {
     const style = document.createElement("style");
-    style.innerHTML =
-      "body, #root { background: black !important; overflow: hidden; margin: 0; } canvas { background: black !important; }";
+    style.innerHTML = `
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      body, #root { background: black !important; overflow: hidden; margin: 0; } canvas { background: black !important; }
+    `;
     document.head.appendChild(style);
     return () => {
       document.head.removeChild(style);
@@ -727,7 +776,11 @@ export default function MemoryTree({
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSelectedPhoto(null);
+      if (e.key === "Escape") {
+        setSelectedPhoto(null);
+        setSelectedAlbum(null);
+        setCurrentPhotoIndex(0);
+      }
     },
     []
   );
@@ -882,6 +935,33 @@ export default function MemoryTree({
           }}
         >
           <button
+            onClick={handlePrev}
+            style={{
+              background: "rgba(255, 255, 255, 0.05)",
+              border: "1px solid rgba(255, 255, 255, 0.15)",
+              cursor: "pointer",
+              padding: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "28px",
+              height: "28px",
+              borderRadius: "50%",
+              color: "white",
+              transition: "all 0.3s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "rgba(255, 255, 255, 0.12)";
+              e.currentTarget.style.borderColor = "rgba(0, 255, 255, 0.4)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "rgba(255, 255, 255, 0.05)";
+              e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
+            }}
+          >
+            <SkipForward size={11} style={{ transform: "rotate(180deg)" }} />
+          </button>
+          <button
             onClick={() => setIsPlaying(!isPlaying)}
             style={{
               background: "none",
@@ -890,9 +970,100 @@ export default function MemoryTree({
               padding: 0,
               display: "flex",
               alignItems: "center",
+              justifyContent: "center",
+              width: "44px",
+              height: "44px",
+              position: "relative",
             }}
           >
-            <MusicVisualizer isPlaying={isPlaying} />
+            <div
+              style={{
+                width: "44px",
+                height: "44px",
+                borderRadius: "50%",
+                background: "linear-gradient(135deg, #1a1a1a, #2d2d2d)",
+                border: "2px solid rgba(255, 255, 255, 0.2)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                position: "relative",
+                animation: isPlaying ? "spin 3s linear infinite" : "none",
+                boxShadow: isPlaying
+                  ? "0 0 20px rgba(255, 20, 147, 0.4), inset 0 0 15px rgba(0, 0, 0, 0.5)"
+                  : "0 0 10px rgba(0, 0, 0, 0.3), inset 0 0 15px rgba(0, 0, 0, 0.5)",
+                transition: "box-shadow 0.3s ease",
+              }}
+            >
+              <div
+                style={{
+                  width: "30px",
+                  height: "30px",
+                  borderRadius: "50%",
+                  background: "radial-gradient(circle at center, #333 0%, #1a1a1a 40%, #000 100%)",
+                  position: "relative",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <div
+                  style={{
+                    width: "10px",
+                    height: "10px",
+                    borderRadius: "50%",
+                    background: "linear-gradient(135deg, #ff1493, #00ffff)",
+                    boxShadow: "0 0 8px rgba(255, 20, 147, 0.6)",
+                  }}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: "50%",
+                    background: "repeating-radial-gradient(circle at center, transparent 0px, transparent 3px, rgba(255,255,255,0.03) 3px, rgba(255,255,255,0.03) 4px)",
+                  }}
+                />
+              </div>
+            </div>
+            <div
+              style={{
+                position: "absolute",
+                color: "white",
+                opacity: isPlaying ? 0 : 0.9,
+                transition: "opacity 0.3s ease",
+                pointerEvents: "none",
+              }}
+            >
+              <Play size={14} style={{ marginLeft: "2px" }} />
+            </div>
+          </button>
+          <button
+            onClick={handleNext}
+            style={{
+              background: "rgba(255, 255, 255, 0.05)",
+              border: "1px solid rgba(255, 255, 255, 0.15)",
+              cursor: "pointer",
+              padding: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "28px",
+              height: "28px",
+              borderRadius: "50%",
+              color: "white",
+              transition: "all 0.3s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "rgba(255, 255, 255, 0.12)";
+              e.currentTarget.style.borderColor = "rgba(0, 255, 255, 0.4)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "rgba(255, 255, 255, 0.05)";
+              e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
+            }}
+          >
+            <SkipForward size={11} />
           </button>
           <div
             style={{
@@ -909,14 +1080,16 @@ export default function MemoryTree({
                 whiteSpace: "nowrap",
               }}
             >
-              记忆星海
+              {MUSIC_LIST[currentTrack].title}
             </span>
             <span style={{ fontSize: "9px", fontWeight: 500, opacity: 0.5 }}>
-              Ambient
+              {currentTrack + 1} / {MUSIC_LIST.length}
             </span>
           </div>
         </div>
       </div>
+
+      <audio ref={audioRef} src={MUSIC_LIST[currentTrack].src} loop />
 
       <Canvas
         dpr={isMobile ? [1, 1.2] : [1, 1.5]}
@@ -972,7 +1145,11 @@ export default function MemoryTree({
               justifyContent: "center",
               padding: "2rem",
             }}
-            onClick={() => setSelectedPhoto(null)}
+            onClick={() => {
+              setSelectedPhoto(null);
+              setSelectedAlbum(null);
+              setCurrentPhotoIndex(0);
+            }}
           >
             <motion.div
               initial={{ opacity: 0, y: 30, scale: 0.95 }}
@@ -989,14 +1166,18 @@ export default function MemoryTree({
                 maxWidth: "1150px",
                 width: "100%",
                 display: "flex",
-                flexDirection: "row",
-                height: "80vh",
+                flexDirection: isMobile ? "column" : "row",
+                height: isMobile ? "90vh" : "80vh",
                 boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.8)",
               }}
               onClick={(e) => e.stopPropagation()}
             >
               <button
-                onClick={() => setSelectedPhoto(null)}
+            onClick={() => {
+              setSelectedPhoto(null);
+              setSelectedAlbum(null);
+              setCurrentPhotoIndex(0);
+            }}
                 style={{
                   position: "absolute",
                   top: "2rem",
@@ -1020,16 +1201,67 @@ export default function MemoryTree({
 
               <div
                 style={{
-                  flex: 1.6,
+                  flex: isMobile ? "none" : 1.6,
+                  height: isMobile ? "45%" : "auto",
                   background: "#000",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   position: "relative",
                   overflow: "hidden",
+                  minHeight: isMobile ? "200px" : "auto",
                 }}
               >
-                {selectedPhoto.type === "video" ? (
+                {selectedAlbum && selectedAlbum.photos.length > 1 && (
+                  <button
+                    onClick={() => setCurrentPhotoIndex((prev) => (prev - 1 + selectedAlbum.photos.length) % selectedAlbum.photos.length)}
+                    style={{
+                      position: "absolute",
+                      left: "1rem",
+                      zIndex: 10,
+                      background: "rgba(255, 255, 255, 0.1)",
+                      border: "1px solid rgba(255, 255, 255, 0.2)",
+                      color: "white",
+                      width: "40px",
+                      height: "40px",
+                      borderRadius: "50%",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      backdropFilter: "blur(10px)",
+                    }}
+                  >
+                    <SkipForward size={16} style={{ transform: "rotate(180deg)" }} />
+                  </button>
+                )}
+                {selectedAlbum ? (
+                  selectedAlbum.photos[currentPhotoIndex].type === "video" ? (
+                    <video
+                      ref={videoRef}
+                      src={selectedAlbum.photos[currentPhotoIndex].url}
+                      autoPlay
+                      loop
+                      controls
+                      style={{ maxHeight: "100%", maxWidth: "100%" }}
+                    />
+                  ) : (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={selectedAlbum.photos[currentPhotoIndex].url}
+                      alt={selectedPhoto.title}
+                      style={{
+                        maxHeight: "100%",
+                        maxWidth: "100%",
+                        objectFit: "contain",
+                        transform: selectedAlbum.photos[currentPhotoIndex].rotate
+                          ? `rotate(${selectedAlbum.photos[currentPhotoIndex].rotate}deg)`
+                          : "none",
+                        transition: "transform 0.4s ease",
+                      }}
+                    />
+                  )
+                ) : selectedPhoto.type === "video" ? (
                   <video
                     ref={videoRef}
                     src={selectedPhoto.url}
@@ -1054,17 +1286,41 @@ export default function MemoryTree({
                     }}
                   />
                 )}
+                {selectedAlbum && selectedAlbum.photos.length > 1 && (
+                  <button
+                    onClick={() => setCurrentPhotoIndex((prev) => (prev + 1) % selectedAlbum.photos.length)}
+                    style={{
+                      position: "absolute",
+                      right: "1rem",
+                      zIndex: 10,
+                      background: "rgba(255, 255, 255, 0.1)",
+                      border: "1px solid rgba(255, 255, 255, 0.2)",
+                      color: "white",
+                      width: "40px",
+                      height: "40px",
+                      borderRadius: "50%",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      backdropFilter: "blur(10px)",
+                    }}
+                  >
+                    <SkipForward size={16} />
+                  </button>
+                )}
               </div>
 
               <div
                 style={{
                   flex: 1,
-                  padding: "4rem 3rem",
+                  padding: isMobile ? "1.5rem" : "4rem 3rem",
                   color: "white",
                   display: "flex",
                   flexDirection: "column",
-                  height: "100%",
+                  height: isMobile ? "55%" : "100%",
                   position: "relative",
+                  overflowY: "auto",
                 }}
               >
                 <div
@@ -1101,38 +1357,131 @@ export default function MemoryTree({
                 >
                   {selectedPhoto.title}
                 </h2>
-                {selectedPhoto.location &&
-                  selectedPhoto.location !== selectedPhoto.title && (
+                {selectedAlbum?.description && (
+                  <div
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: 400,
+                      lineHeight: 1.8,
+                      opacity: 0.7,
+                      marginBottom: "1.5rem",
+                      flexShrink: 0,
+                      borderLeft: "2px solid rgba(255, 20, 147, 0.3)",
+                      paddingLeft: "1rem",
+                    }}
+                  >
+                    {selectedAlbum.description}
+                  </div>
+                )}
+                {selectedAlbum && selectedAlbum.photos[currentPhotoIndex]?.caption && (
+                  <div
+                    style={{
+                      color: "#00ffff",
+                      fontSize: "16px",
+                      fontWeight: 600,
+                      marginBottom: "1.5rem",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {selectedAlbum.photos[currentPhotoIndex].caption}
+                  </div>
+                )}
+                {selectedAlbum && selectedAlbum.photos.length > 1 && (
+                  <div style={{ marginTop: "auto", flexShrink: 0 }}>
                     <div
                       style={{
-                        alignSelf: "flex-start",
-                        flexShrink: 0,
-                        marginBottom: "2rem",
+                        fontSize: "10px",
+                        opacity: 0.4,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.1em",
+                        marginBottom: "12px",
                       }}
                     >
-                      <div
-                        style={{
-                          fontSize: "10px",
-                          opacity: 0.4,
-                          textTransform: "uppercase",
-                          letterSpacing: "0.1em",
-                          marginBottom: "6px",
-                        }}
-                      >
-                        拍摄地点 / 备注
-                      </div>
-                      <span
-                        style={{
-                          color: "white",
-                          fontSize: "15px",
-                          fontWeight: 500,
-                          whiteSpace: "pre-line",
-                        }}
-                      >
-                        {selectedPhoto.location}
-                      </span>
+                      相册照片 ({currentPhotoIndex + 1}/{selectedAlbum.photos.length})
                     </div>
-                  )}
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "12px",
+                        overflowX: "auto",
+                        paddingBottom: "8px",
+                      }}
+                    >
+                      {selectedAlbum.photos.map((photo, index) => (
+                        <div
+                          key={index}
+                          onClick={() => setCurrentPhotoIndex(index)}
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            gap: "6px",
+                            cursor: "pointer",
+                            flexShrink: 0,
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: "64px",
+                              height: "64px",
+                              borderRadius: "10px",
+                              overflow: "hidden",
+                              border: index === currentPhotoIndex
+                                ? "2px solid #ff1493"
+                                : "2px solid rgba(255, 255, 255, 0.1)",
+                              transition: "all 0.3s ease",
+                              boxShadow: index === currentPhotoIndex
+                                ? "0 0 12px rgba(255, 20, 147, 0.4)"
+                                : "none",
+                            }}
+                          >
+                            {photo.type === "video" ? (
+                              <div
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  background: "rgba(255, 255, 255, 0.1)",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Play size={16} />
+                              </div>
+                            ) : (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={photo.url}
+                                alt={`Photo ${index + 1}`}
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "cover",
+                                }}
+                              />
+                            )}
+                          </div>
+                          {photo.caption && (
+                            <span
+                              style={{
+                                fontSize: "9px",
+                                color: index === currentPhotoIndex ? "#ff1493" : "rgba(255, 255, 255, 0.5)",
+                                textAlign: "center",
+                                maxWidth: "70px",
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                transition: "color 0.3s ease",
+                              }}
+                            >
+                              {photo.caption.split(" — ")[1] || photo.caption}
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </motion.div>
           </motion.div>
