@@ -537,18 +537,9 @@ const MediaNode = ({
 }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
-
-  const texture =
-    photo.type === "video"
-      ? // eslint-disable-next-line react-hooks/rules-of-hooks
-        useVideoTexture(photo.url, {
-          muted: true,
-          loop: true,
-          start: true,
-          crossOrigin: "Anonymous",
-        })
-      : // eslint-disable-next-line react-hooks/rules-of-hooks
-        useTexture(photo.url);
+  const [shouldLoad, setShouldLoad] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const distanceRef = useRef(100);
 
   useFrame((state) => {
     if (meshRef.current) {
@@ -568,6 +559,15 @@ const MediaNode = ({
         new THREE.Vector3(targetScale, targetScale, targetScale),
         0.1
       );
+
+      const dx = state.camera.position.x - position[0];
+      const dy = state.camera.position.y - position[1];
+      const dz = state.camera.position.z - position[2];
+      distanceRef.current = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+      const visible = distanceRef.current < 120;
+      if (visible !== isVisible) setIsVisible(visible);
+      if (distanceRef.current < 80 && !shouldLoad) setShouldLoad(true);
     }
   });
 
@@ -579,7 +579,16 @@ const MediaNode = ({
       onClick={() => onSelect(photo)}
     >
       <planeGeometry args={[3.6, 5.4]} />
-      <meshBasicMaterial map={texture} transparent opacity={1} fog={false} />
+      {shouldLoad && isVisible ? (
+        <LazyMaterial photo={photo} />
+      ) : (
+        <meshBasicMaterial
+          color={hovered ? "#ff1493" : "#222233"}
+          transparent
+          opacity={hovered ? 0.8 : 0.5}
+          fog={false}
+        />
+      )}
       <mesh position={[0, 0, -0.01]}>
         <planeGeometry args={[3.8, 5.6]} />
         <meshBasicMaterial
@@ -591,6 +600,20 @@ const MediaNode = ({
       </mesh>
     </mesh>
   );
+};
+
+const LazyMaterial = ({ photo }: { photo: Photo }) => {
+  const texture =
+    photo.type === "video"
+      ? useVideoTexture(photo.url, {
+          muted: true,
+          loop: true,
+          start: true,
+          crossOrigin: "Anonymous",
+        })
+      : useTexture(photo.url);
+
+  return <meshBasicMaterial map={texture} transparent opacity={1} fog={false} />;
 };
 
 // ======================== MusicVisualizer ========================
