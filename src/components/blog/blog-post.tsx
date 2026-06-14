@@ -58,7 +58,7 @@ const markdownComponents: Components = {
 
     if (url === "/memory-tree") {
       return (
-        <div className="flex justify-center my-6">
+        <span className="flex justify-center my-6">
           <Link
             href={url}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full
@@ -70,7 +70,7 @@ const markdownComponents: Components = {
           >
             {children}
           </Link>
-        </div>
+        </span>
       );
     }
 

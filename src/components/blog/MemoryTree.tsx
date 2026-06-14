@@ -743,7 +743,7 @@ export default function MemoryTree({
     if (!startProgress) return;
     const interval = setInterval(() => {
       const elapsed = (performance.now() - startTimeRef.current) / 1000;
-      const t = Math.min(elapsed / 3.2, 1);
+      const t = Math.min(elapsed / 2.0, 1);
       const eased = 1 - Math.pow(1 - t, 3);
       const simulated = Math.min(eased * 100, 99.5);
       setSimulatedProgress(simulated);
@@ -771,7 +771,7 @@ export default function MemoryTree({
 
   useEffect(() => {
     if (!startProgress) return;
-    const timer = setTimeout(() => setReady(true), 3500);
+    const timer = setTimeout(() => setReady(true), 2500);
     return () => clearTimeout(timer);
   }, [startProgress]);
 
@@ -829,7 +829,7 @@ export default function MemoryTree({
           <motion.div
             key="loader"
             exit={{ opacity: 0 }}
-            transition={{ duration: 1.2, ease: "easeOut" }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
             style={{
               position: "absolute",
               inset: 0,
