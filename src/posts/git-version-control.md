@@ -64,7 +64,7 @@ Git 把代码管理分成三个区域，理解它们的关系是掌握 Git 的�
 工作区 ──git add──▶ 暂存区 ──git commit──▶ 本地仓库
 ```
 
-![Git 三区流转工作示意图](/images/git-workflow-diagram.png)
+![Git 三区流转工作示意图](/images/article-images/git-workflow-diagram.png)
 
 1. 在工作区修改文件
 2. 用 `git add` 把修改放进暂存区

@@ -29,8 +29,8 @@ import {
 import { PHOTO_DATA, ALBUM_DATA, type Photo, type Album } from "@/config/photos";
 
 const MUSIC_LIST = [
-  { title: "这世界那么多人", src: "/audio/莫文蔚 - 这世界那么多人.mp3" },
   { title: "小半", src: "/audio/陈粒 - 小半.mp3" },
+  { title: "这世界那么多人", src: "/audio/莫文蔚 - 这世界那么多人.mp3" },
   { title: "世界赠予我的", src: "/audio/王菲 - 世界赠予我的.mp3" },
 ];
 
