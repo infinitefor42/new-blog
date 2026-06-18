@@ -31,9 +31,10 @@ INFINITE 是一个以 **宣纸暖米色 `#f3eee5`** 为底色、融合 **宋体�
 | **样式** | Tailwind CSS 4 | 原子化 CSS + 自定义主题变量 |
 | **组件库** | HeroUI | 玻璃拟态风格的 React 组件 |
 | **动画** | Framer Motion | Apple 风格缓动曲线的页面转场 |
+| **3D** | Three.js + React Three Fiber | 3D 粒子系统与场景渲染 |
+| **图标** | Lucide React | 矢量图标库 |
 | **评论** | GitHub Giscus | 基于 GitHub Discussions，明暗主题丝滑联动 |
-| **Markdown** | react-markdown + remark-gfm + remark-math + rehype-katex | 数学公式 + 代码高亮 + 表格支持 |
-| **主题** | next-themes | 亮色 / 暗色 / 二态切换|
+| **主题** | next-themes | 亮色 / 暗色 / 互相切换/|
 
 ---
 
@@ -64,11 +65,14 @@ my-new-blog/
 │   │       ├── archive/page.tsx    # 文章归档页
 │   │       └── [slug]/page.tsx     # 文章详情页（SSG 静态生成）
 │   │
+│   │   └── memory-tree/
+│   │       └── page.tsx            # 记忆树页面入口
+│   │
 │   ├── components/
 │   │   ├── landing/                # 首页板块组件
 │   │   │   ├── hero.tsx            # 头像、座右铭、社交链接胶囊
 │   │   │   ├── skills-section.tsx  # 核心技能卡片网格
-│   │   │   ├── projects-section.tsx# 项目作品展示（含浏览量统计）
+│   │   │   ├── projects-section.tsx# 项目作品展示
 │   │   │   └── blog-preview.tsx    # 最新文章预览
 │   │   │
 │   │   ├── blog/                   # 博客功能组件
@@ -76,25 +80,25 @@ my-new-blog/
 │   │   │   ├── blog-card.tsx       # 文章卡片
 │   │   │   ├── blog-list-client.tsx# 博客列表客户端组件
 │   │   │   ├── filter-panel.tsx    # 标签 / 分类筛选面板
-│   │   │   └── giscus-comments.tsx # Giscus 评论组件（明暗主题联动）
+│   │   │   ├── giscus-comments.tsx # Giscus 评论组件（明暗主题联动）
+│   │   │   └── MemoryTree.tsx      # 记忆树 3D 场景组件
 │   │   │
 │   │   ├── layout/                 # 全局布局组件
 │   │   │   ├── navbar.tsx          # 顶部导航栏（滚动感知 + 移动端抽屉）
 │   │   │   └── footer.tsx          # 页脚
 │   │   │
 │   │   ├── common/                 # 通用组件
-│   │   │   ├── view-counter.tsx    # 浏览量计数器
 │   │   │   └── service-worker-register.tsx
 │   │   │
 │   │   ├── providers.tsx           # 全局 Provider（HeroUI + next-themes）
 │   │   └── theme-script.tsx        # 防闪烁暗色模式初始化脚本
 │   │
-│   ├── hooks/                      # 自定义 Hooks
-│   │   └── use-view-count.ts       # 单页浏览量计数
-│   │
 │   ├── lib/                        # 工具库
 │   │   ├── posts.ts                # Markdown 文章加载与元数据解析
 │   │   └── animations.ts           # 共享动画常量与变体工厂
+│   │
+│   ├── config/                     # 配置文件
+│   │   └── photos.ts               # 记忆树相册数据配置
 │   │
 │   └── posts/                      # 博客文章（Markdown 源文件）
 │       
@@ -129,15 +133,26 @@ my-new-blog/
 - 经典贪吃蛇（Snake Game）：支持 PC 键盘 + 移动端触控适配
 - 访问路径：`/games/Snake_Game/index.html`
 
+### 🌳 记忆树 — 3D 沉浸式记忆空间
+
+- 基于 Three.js 的 3D 粒子系统，174,000 个粒子构建梦幻星海
+- 内置音乐播放器，支持多首歌曲切换，唱片机样式控制按钮
+- 相册系统：支持多张照片组成相册，点击查看详情，懒加载优化性能（目前无照片）
+- 响应式设计：桌面端与移动端自适应，性能动态调整
+- 访问路径：`/memory-tree`
+
 ### 💬 GitHub Giscus 评论系统
 
 - 基于 GitHub Discussions 的评论，零后端、零成本
 - 明暗主题丝滑联动：切换主题时通过 `postMessage` 实时切换 Giscus iframe 样式
 - 全站文章详情页自动覆盖，无需手动嵌入
 
-### 📊 项目浏览量
+### 📱 响应式设计
 
-- **项目卡片浏览量**：基于 localStorage 的轻量级计数，展示在卡片右下角
+- 桌面端与移动端自适应布局
+- 移动端导航抽屉、触控手势支持
+- 性能优化：懒加载、粒子数量动态调整
+
 ---
 <div align="center">
 
