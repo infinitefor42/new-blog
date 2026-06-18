@@ -1,9 +1,9 @@
 ---
-title: "记忆树 — 3D 照片记忆墙"
+title: "记忆树 — 3D 沉浸式记忆空间"
 date: "2026-06-12"
 tags: []
 categories: ["项目"]
-excerpt: "基于 Three.js 的交互式 3D 照片展示组件，将照片以圣诞树形态螺旋排列，配合粒子特效和音乐可视化营造沉浸式回忆体验。"
+excerpt: "基于 Three.js 的交互式 3D 记忆空间，融合粒子特效、音乐播放和相册系统，营造沉浸式回忆体验。"
 ---
 
 ## 快速体验
@@ -12,7 +12,7 @@ excerpt: "基于 Three.js 的交互式 3D 照片展示组件，将照片以圣�
 
 ## 项目简介
 
-记忆树是一个基于 Three.js 的 3D 照片展示组件，灵感来源于圣诞树上悬挂的装饰球——把照片以螺旋形态排列在三维空间中，配合粒子背景和自动旋转，营造沉浸式的回忆浏览体验。
+记忆树是一个基于 Three.js 的 3D 沉浸式记忆空间，通过 174,000 个粒子构建梦幻星海，配合音乐播放和相册系统，打造专属的回忆空间。
 
 ## 技术栈
 
@@ -30,7 +30,7 @@ excerpt: "基于 Three.js 的交互式 3D 照片展示组件，将照片以圣�
 src/
 ├── app/memory-tree/page.tsx      # 页面入口，动态加载 3D 组件
 ├── components/blog/MemoryTree.tsx # 核心 3D 场景组件
-└── config/photos.ts              # 照片数据配置
+└── config/photos.ts              # 相册数据配置
 ```
 
 ## 核心组件解析
@@ -50,49 +50,36 @@ src/
 
 **总计约 174,000 个粒子**，全部使用 `AdditiveBlending` 实现发光效果。
 
-### 2. 照片节点（MediaNode）
+### 2. 音乐播放系统
 
-照片以 billboard 方式始终面向相机：
+内置音乐播放器，支持多首歌曲切换：
 
-```typescript
-// 照片定位算法：斐波那契球面分布
-const getNebulaPos = (i: number, total: number): [number, number, number] => {
-  const phi = Math.acos(0.85 - (1.7 * i) / total);
-  const theta = Math.sqrt(total * Math.PI) * phi;
-  const radius = 55 + Math.random() * 25;
-  // ...
-};
-```
+- **播放控制**：播放/暂停、上一首/下一首
+- **唱片机样式**：旋转黑胶唱片效果，播放时发光
+- **歌曲列表**：默认包含 3 首歌曲，可自定义
+- **键盘控制**：空格键暂停/播放
 
-特性：
-- 使用 `useTexture` / `useVideoTexture` 加载媒体
-- 悬停时粉色发光边框 + 放大 1.2 倍
-- 点击弹出大图预览（支持视频自动播放）
-- 每个节点有独立的浮动相位，形成波浪效果
+### 3. 相册系统
 
-### 3. 加载动画
+支持多张照片组成的相册，点击可查看详情：
+
+- **懒加载**：基于距离的纹理加载，优化性能
+- **相册弹窗**：左侧照片轮播，右侧文字描述
+- **缩略图导航**：底部显示相册照片列表
+- **键盘导航**：左右箭头切换照片，ESC 关闭
+
+### 4. 加载动画
 
 采用模拟进度条 + 真实加载进度混合策略：
 
 ```typescript
-// 模拟进度：快速到达 90%，等待真实加载完成
-const increment = Math.max(remaining * 0.15, Math.random() * 8 + 2);
+// 模拟进度：2 秒内完成
+const t = Math.min(elapsed / 2.0, 1);
+const eased = 1 - Math.pow(1 - t, 3);
 
-// 超时保护：4.5 秒后强制显示
-useEffect(() => {
-  const timer = setTimeout(() => {
-    if (progress < 100) setForceLoad(true);
-  }, 4500);
-}, [progress]);
+// 超时保护：2.5 秒后强制显示
+const timer = setTimeout(() => setReady(true), 2500);
 ```
-
-### 4. 音乐可视化
-
-顶部工具栏包含音乐控制按钮，使用 Framer Motion 实现音符跳动动画：
-
-- 三个音符图标以不同延迟循环缩放
-- 颜色在青色、粉色、紫色之间渐变
-- 播放/暂停状态切换时有平滑过渡
 
 ## 响应式设计
 
@@ -109,20 +96,19 @@ useEffect(() => {
 
 ## 数据配置
 
-照片数据在 `src/config/photos.ts` 中定义：
+相册数据在 `src/config/photos.ts` 中定义：
 
 ```typescript
-export interface Photo {
-  id: number | string;
-  url: string;           // 图片/视频路径
-  type: "image" | "video";
-  title: string;         // 标题
-  location: string;      // 拍摄地点/备注
-  rotate?: number;       // 可选：图片旋转角度
+export interface Album {
+  id: string;
+  title: string;
+  cover: string;
+  description?: string;
+  photos: { url: string; type?: "image" | "video"; rotate?: number; caption?: string }[];
 }
 
-export const PHOTO_DATA: Photo[] = [
-  // 添加你的照片数据...
+export const ALBUM_DATA: Album[] = [
+  // 添加你的相册数据...
 ];
 ```
 
@@ -132,14 +118,15 @@ export const PHOTO_DATA: Photo[] = [
 
 1. **动态加载**：使用 `next/dynamic` + `ssr: false` 避免服务端渲染
 2. **粒子复用**：所有粒子使用 `useMemo` 缓存，避免重复计算
-3. **移动端降级**：关闭抗锯齿、降低 DPR、减少旋转速度
-4. **超时保护**：4.5 秒后强制显示，避免白屏
+3. **懒加载**：照片基于距离加载，减少初始内存占用
+4. **移动端降级**：关闭抗锯齿、降低 DPR、减少旋转速度
+5. **超时保护**：2.5 秒后强制显示，避免白屏
 
 ## 交互说明
 
 - **拖拽旋转**：鼠标左键拖动视角（移动端支持触控）
 - **滚轮缩放**：调整与树的距离
-- **点击照片**：弹出大图预览（支持视频自动播放）
+- **点击照片**：弹出相册详情（支持照片轮播）
+- **音乐控制**：点击唱片机按钮播放/暂停，左右箭头切歌
 - **ESC 键**：关闭预览弹窗
 - **自动旋转**：松手后缓慢回正
-

@@ -9,8 +9,8 @@ const cardVariants = createCardVariants();
 
 const skillCards = [
   { emoji: "💻", title: "核心修炼", desc: "C 语言 / 数据结构与算法" },
-  { emoji: "🛠️", title: "工具链", desc: "Git 版本控制 / Claude Code" },
-  { emoji: "📝", title: "技能解锁", desc: "Markdown 语法与结构化笔记" },
+  { emoji: "🛠️", title: "工具链", desc: "Git 版本控制 / MiMo Code" },
+  { emoji: "📝", title: "技能解锁", desc: "Linux操作系统" },
   { emoji: "🧠", title: "兴趣点", desc: "数学 / 计算机专业探索" },
 ];
 

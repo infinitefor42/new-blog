@@ -225,7 +225,7 @@ Markdown 支持直接内嵌受限的 HTML 标签，用来实现一些原生 Mark
   * 积分示例：`$\int_1^2 x \, dx$` 渲染为 $\int_1^2 x \, dx$
   * 求和示例：`$\sum_1^n$` 渲染为 $\sum_1^n$
 * **极限趋近范围**：
-  * 示例：`$\lim_{n\rightarrow+\infty}\frac{1}{n+1}$` 渲染为 $\lim_{n\rightarrow+\infty}\frac{1}{n+1}$
+  * 示例：`$\lim_{n\rightarrow+\infty}\frac{1}{n+1}$` 渲染为 $\lim\limits_{n\rightarrow+\infty}\frac{1}{n+1}$
 
 ### 7. 向量与省略号
 * **向量**：使用 `\vec{字母}`，例如 `$\vec{a}$` 渲染为 $\vec{a}$。

@@ -40,7 +40,10 @@ export function BlogListClient({ posts, categories, tags }: BlogListClientProps)
         selectedCategory={selectedCategory}
         selectedTag={selectedTag}
         searchQuery={searchQuery}
-        onCategoryChange={setSelectedCategory}
+        onCategoryChange={(category) => {
+          setSelectedCategory(category);
+          setSelectedTag("");
+        }}
         onTagChange={setSelectedTag}
         onSearchChange={setSearchQuery}
       />

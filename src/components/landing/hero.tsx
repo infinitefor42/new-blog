@@ -85,7 +85,7 @@ export function Hero() {
               variants={itemVariants}
               className="text-base sm:text-lg text-ink-gray/70 dark:text-rice-white-dim/70 max-w-2xl mx-auto mb-8 leading-relaxed"
             >
-              数据科学与大数据技术——从录取通知书上的抽象概念，到如今我正试图拆解的逻辑。这里沉淀课程笔记、数学推导、算法复盘，也记录数据、代码与成长的碎碎念。不求一步到位，只求日日精进。愿以热爱为引，期待与你同行。
+              这里沉淀知识笔记、数学推导、算法分析，也记录数据、代码与成长的细碎感悟。不求一步到位，只求日日精进。愿以热爱为引，期待与你同行。
             </motion.p>
 
             <motion.blockquote

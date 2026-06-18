@@ -21,7 +21,7 @@ mathjax: true
 ### 第 1 题
 
 令 $t = -x$（$t \to +\infty$），原式变为：
-$$\lim_{t \to +\infty} \left( \sqrt{at^2 + bt - 1} - 4t \right) = 1$$
+$$\lim\limits_{t \to +\infty} \left( \sqrt{at^2 + bt - 1} - 4t \right) = 1$$
 
 分子有理化：
 $$\frac{(a-16)t^2 + bt - 1}{\sqrt{at^2 + bt - 1} + 4t}$$
@@ -29,7 +29,7 @@ $$\frac{(a-16)t^2 + bt - 1}{\sqrt{at^2 + bt - 1} + 4t}$$
 为使极限存在且为有限值，分子中 $t^2$ 的系数必须为零，故 $a = 16$。
 
 代入 $a = 16$ 后：
-$$\lim_{t \to +\infty} \frac{bt - 1}{\sqrt{16t^2 + bt - 1} + 4t} = \frac{b}{8} = 1$$
+$$\lim\limits_{t \to +\infty} \frac{bt - 1}{\sqrt{16t^2 + bt - 1} + 4t} = \frac{b}{8} = 1$$
 
 因此 $b = 8$。
 
@@ -40,7 +40,7 @@ $$\boxed{a = 16, \quad b = 8}$$
 函数的间断点为分母为零处：$x = -1,\ 0,\ 1$。
 
 - **$x = -1$**：$\ln|1+x| \to -\infty$，分母趋于非零有限值，故为无穷间断点（第二类）。
-- **$x = 0$**：$\ln|1+x| \sim x$，$e^x - 1 \sim x$，极限 $\lim_{x \to 0} \frac{x}{x \cdot (-1)} = -1$ 存在，故为可去间断点（第一类）。
+- **$x = 0$**：$\ln|1+x| \sim x$，$e^x - 1 \sim x$，极限 $\lim\limits_{x \to 0} \frac{x}{x \cdot (-1)} = -1$ 存在，故为可去间断点（第一类）。
 - **$x = 1$**：分母趋于 $0$，分子趋于 $\ln 2 \neq 0$，故为无穷间断点（第二类）。
 
 $$\boxed{1}$$

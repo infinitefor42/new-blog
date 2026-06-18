@@ -3,7 +3,6 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { FiGithub, FiArrowUpRight, FiPlay } from "react-icons/fi";
-import { ViewCounter } from "@/components/common/view-counter";
 import { appleEasing, createContainerVariants, createCardVariants } from "@/lib/animations";
 
 const containerVariants = createContainerVariants(0.12);
@@ -134,7 +133,6 @@ export function ProjectsSection() {
                         </a>
                       ))}
                     </div>
-                    <ViewCounter projectId={project.nameEn.toLowerCase().replace(/\s+/g, "-")} />
                   </div>
                 </div>
               </motion.article>
