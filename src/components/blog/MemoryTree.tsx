@@ -13,7 +13,6 @@ import {
   OrbitControls,
   useTexture,
   useVideoTexture,
-  useProgress,
 } from "@react-three/drei";
 import * as THREE from "three";
 import { motion, AnimatePresence } from "framer-motion";
@@ -675,6 +674,18 @@ function MusicVisualizer({ isPlaying }: { isPlaying: boolean }) {
   );
 }
 
+// ======================== FrameTrigger ========================
+const FrameTrigger = ({ onFirstFrame }: { onFirstFrame: () => void }) => {
+  const triggered = useRef(false);
+  useFrame(() => {
+    if (!triggered.current) {
+      triggered.current = true;
+      setTimeout(onFirstFrame, 0);
+    }
+  });
+  return null;
+};
+
 // ======================== Main Component ========================
 export default function MemoryTree({
   onPhotoClick,
@@ -684,15 +695,27 @@ export default function MemoryTree({
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
   const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
-  const { progress: r3fProgress } = useProgress();
-  const [simulatedProgress, setSimulatedProgress] = useState(0);
+  const [canvasReady, setCanvasReady] = useState(false);
+  const [progress, setProgress] = useState<number>(() => {
+    if (typeof window !== "undefined" && (window as any).__memoryTreeProgress) {
+      return (window as any).__memoryTreeProgress;
+    }
+    return 0;
+  });
   const [forceLoad, setForceLoad] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isMobile, setIsMobile] = useState(false);
-  const [startProgress, setStartProgress] = useState(false);
+
+  // 超时保护：10秒后强制显示
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setForceLoad(true);
+    }, 10000);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -728,31 +751,53 @@ export default function MemoryTree({
     setIsPlaying(true);
   };
 
-  const startTimeRef = useRef(0);
-  const [ready, setReady] = useState(false);
-
+  // Simulated progress
+  const startTimeRef = useRef(performance.now());
+  
   useEffect(() => {
-    const timer = setTimeout(() => {
-      startTimeRef.current = performance.now();
-      setStartProgress(true);
-    }, 200);
-    return () => clearTimeout(timer);
-  }, []);
+    const startTime = startTimeRef.current;
+    const minLoadTime = 3500; // 最小加载时间 3.5 秒
 
+    if (canvasReady) {
+      // Canvas is ready, smoothly animate to 100%
+      const interval = setInterval(() => {
+        const elapsed = performance.now() - startTime;
+        const minProgress = Math.min((elapsed / minLoadTime) * 100, 100);
+        
+        setProgress((prev) => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            return 100;
+          }
+          // 确保进度不会倒退，且平滑过渡到 100%
+          const target = Math.max(minProgress, prev + 0.5);
+          const next = prev + (target - prev) * 0.1;
+          return next >= 100 ? 100 : Math.max(prev, next);
+        });
+      }, 30);
+      return () => clearInterval(interval);
+    } else {
+      // Simulate progress up to 85%
+      const interval = setInterval(() => {
+        const elapsed = (performance.now() - startTime) / 1000;
+        const t = Math.min(elapsed / 3.0, 1);
+        const eased = t < 0.3
+          ? 2 * t * t  // 开始慢
+          : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        const simulated = eased * 85;
+        setProgress((prev) => (prev < 85 ? Math.max(prev, simulated) : prev));
+      }, 50);
+      return () => clearInterval(interval);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [canvasReady]);
+
+  // Clean up global variable once loaded
   useEffect(() => {
-    if (!startProgress) return;
-    const interval = setInterval(() => {
-      const elapsed = (performance.now() - startTimeRef.current) / 1000;
-      const t = Math.min(elapsed / 2.0, 1);
-      const eased = 1 - Math.pow(1 - t, 3);
-      const simulated = Math.min(eased * 100, 99.5);
-      setSimulatedProgress(simulated);
-      if (t >= 1) clearInterval(interval);
-    }, 50);
-    return () => clearInterval(interval);
-  }, [startProgress]);
-
-  const progress = r3fProgress >= 100 || ready ? 100 : simulatedProgress;
+    if (progress >= 100 && typeof window !== "undefined") {
+      delete (window as any).__memoryTreeProgress;
+    }
+  }, [progress]);
 
   const handleSelect = useCallback(
     (photo: Photo) => {
@@ -770,12 +815,6 @@ export default function MemoryTree({
   );
 
   useEffect(() => {
-    if (!startProgress) return;
-    const timer = setTimeout(() => setReady(true), 2500);
-    return () => clearTimeout(timer);
-  }, [startProgress]);
-
-  useEffect(() => {
     const style = document.createElement("style");
     style.innerHTML = `
       @keyframes spin {
@@ -791,6 +830,13 @@ export default function MemoryTree({
   }, []);
 
   const isLoaded = progress >= 100 || forceLoad;
+
+  // 加载完成后自动播放音乐
+  useEffect(() => {
+    if (isLoaded) {
+      setIsPlaying(true);
+    }
+  }, [isLoaded]);
 
   const photoPositions = useMemo(
     () => PHOTO_DATA.map((_, i) => getNebulaPos(i, PHOTO_DATA.length)),
@@ -892,13 +938,15 @@ export default function MemoryTree({
               </div>
               <motion.span
                 initial={{ opacity: 0 }}
-                animate={{ opacity: 0.4 }}
-                transition={{ delay: 1 }}
+                animate={{ opacity: 0.6 }}
+                transition={{ duration: 0.5 }}
                 style={{
                   color: "#ffffff",
-                  fontSize: "11px",
+                  fontSize: "12px",
                   fontFamily: "monospace",
                   letterSpacing: "0.2em",
+                  minWidth: "40px",
+                  textAlign: "center",
                 }}
               >
                 {Math.round(progress)}%
@@ -1120,6 +1168,7 @@ export default function MemoryTree({
         gl={{ alpha: false, antialias: !isMobile, logarithmicDepthBuffer: true }}
       >
         <color attach="background" args={["#000000"]} />
+        <FrameTrigger onFirstFrame={() => setCanvasReady(true)} />
         <Suspense fallback={null}>
           <fog attach="fog" args={["#000000", 30, 150]} />
           <group position={[0, -12, 0]}>
