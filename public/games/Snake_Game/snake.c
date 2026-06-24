@@ -28,7 +28,7 @@ typedef struct {
 } GameState;
 
 static GameState game;
-static char json_buffer[4096];
+static char json_buffer[16384];
 
 // 方向偏移: up, right, down, left
 const int dx[] = {0, 1, 0, -1};
@@ -51,6 +51,26 @@ Point random_food_position() {
         }
         attempts++;
     } while (!valid && attempts < 1000);
+
+    // 随机尝试失败后，遍历整个棋盘找一个空位
+    if (!valid) {
+        for (int y = 0; y < GRID_SIZE; y++) {
+            for (int x = 0; x < GRID_SIZE; x++) {
+                valid = 1;
+                for (int i = 0; i < game.snake_length; i++) {
+                    if (game.snake[i].x == x && game.snake[i].y == y) {
+                        valid = 0;
+                        break;
+                    }
+                }
+                if (valid) {
+                    pos.x = x;
+                    pos.y = y;
+                    return pos;
+                }
+            }
+        }
+    }
     return pos;
 }
 
@@ -135,14 +155,14 @@ void game_loop() {
         // 根据食物类型增加分数
         switch (game.food_type) {
             case FOOD_BONUS:
-                game.score += 3;
+                game.score += 30;
                 break;
             case FOOD_SPEED:
-                game.score += 1;
+                game.score += 10;
                 game.speed_boost = 20; // 加速20步
                 break;
             default:
-                game.score += 1;
+                game.score += 10;
                 break;
         }
         

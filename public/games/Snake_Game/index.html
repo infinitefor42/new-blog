@@ -74,6 +74,7 @@
             display: none;
             width: 85%;
             box-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
+            z-index: 15;
         }
 
         #game-over .stats {
@@ -460,6 +461,63 @@
             color: #4CAF50;
         }
 
+        #game-rules {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        #game-rules h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: 16px;
+        }
+
+        #game-rules ul {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+        }
+
+        #game-rules li {
+            margin: 6px 0;
+            font-size: 13px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        #game-rules li:before {
+            content: "• ";
+            color: #4CAF50;
+        }
+
+        #game-rules .rules-tip {
+            margin: 10px 0 0 0;
+            font-size: 12px;
+            color: #888;
+            text-align: center;
+        }
+
+        #comments {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        #comments h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: 16px;
+        }
+
         @media (max-width: 768px) {
             #keyboard-info {
                 display: none;
@@ -599,7 +657,48 @@
         </p>
     </div>
 
+    <div id="game-rules">
+        <h3>规则解读</h3>
+        <ul>
+            <li><strong>食物分值</strong>：普通食物（红色）+10分，金色加分食物 +30分，闪电加速食物 +10分并加速 20 步</li>
+            <li><strong>游戏结束</strong>：撞墙或撞到自己身体即结束（无尽/穿墙模式可穿过墙壁）</li>
+            <li><strong>穿墙模式</strong>：蛇从一侧穿出，从对侧穿入</li>
+            <li><strong>无尽模式</strong>：自动开启穿墙，永不撞墙，可无限游玩</li>
+            <li><strong>限时挑战</strong>：60 秒倒计时，时间到即结束，比拼限时内得分</li>
+            <li><strong>难度递增</strong>：随分数提高，蛇的移动速度逐渐加快</li>
+            <li><strong>倍速</strong>：可调整整体游戏速度（0.5x ~ 3x）</li>
+        </ul>
+        <p class="rules-tip">💡 成就系统和排行榜数据保存在浏览器本地</p>
+    </div>
+
+    <!-- 评论区 -->
+    <div id="comments">
+        <h3>发表评论</h3>
+        <div class="giscus-wrapper"></div>
+    </div>
+
     <script src="snake.js"></script>
+    <script>
+        setTimeout(() => {
+            const giscusScript = document.createElement('script');
+            giscusScript.src = 'https://giscus.app/client.js';
+            giscusScript.setAttribute('data-repo', 'infinitefor42/new-blog');
+            giscusScript.setAttribute('data-repo-id', 'R_kgDOStseQg');
+            giscusScript.setAttribute('data-category', 'General');
+            giscusScript.setAttribute('data-category-id', 'DIC_kwDOStseQs4C-Ru4');
+            giscusScript.setAttribute('data-mapping', 'pathname');
+            giscusScript.setAttribute('data-strict', '0');
+            giscusScript.setAttribute('data-reactions-enabled', '1');
+            giscusScript.setAttribute('data-emit-metadata', '0');
+            giscusScript.setAttribute('data-input-position', 'top');
+            giscusScript.setAttribute('data-theme', 'noborder_light');
+            giscusScript.setAttribute('data-lang', 'zh-CN');
+            giscusScript.setAttribute('data-loading', 'lazy');
+            giscusScript.crossOrigin = 'anonymous';
+            giscusScript.async = true;
+            document.querySelector('#comments .giscus-wrapper').appendChild(giscusScript);
+        }, 2000);
+    </script>
     <script>
         // ==================== 音效系统 ====================
         const Sounds = {
@@ -1039,7 +1138,7 @@
                 ctx.font = `bold ${cellSize * 0.5}px Arial`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText('+3', centerX, centerY);
+                ctx.fillText('+30', centerX, centerY);
             } else if (foodType === 'speed' && !foodData.emoji) {
                 ctx.fillStyle = '#00BFFF';
                 ctx.font = `${cellSize * 0.5}px Arial`;
@@ -1368,25 +1467,25 @@
                 check: (stats) => stats.maxScore >= 1
             },
             {
-                id: 'score_10',
+                id: 'score_100',
                 name: '小有成就',
-                desc: '单局得分达到 10 分',
+                desc: '单局得分达到 100 分',
                 icon: '⭐',
-                check: (stats) => stats.maxScore >= 10
+                check: (stats) => stats.maxScore >= 100
             },
             {
-                id: 'score_30',
+                id: 'score_300',
                 name: '贪吃蛇高手',
-                desc: '单局得分达到 30 分',
+                desc: '单局得分达到 300 分',
                 icon: '🏅',
-                check: (stats) => stats.maxScore >= 30
+                check: (stats) => stats.maxScore >= 300
             },
             {
-                id: 'score_50',
+                id: 'score_500',
                 name: '贪吃蛇大师',
-                desc: '单局得分达到 50 分',
+                desc: '单局得分达到 500 分',
                 icon: '👑',
-                check: (stats) => stats.maxScore >= 50
+                check: (stats) => stats.maxScore >= 500
             },
             {
                 id: 'games_10',
@@ -1403,18 +1502,18 @@
                 check: (stats) => stats.games >= 50
             },
             {
-                id: 'total_score_100',
-                name: '百分选手',
-                desc: '累计得分达到 100 分',
+                id: 'max_score_3000',
+                name: '万分选手',
+                desc: '单局得分达到 3000 分',
                 icon: '💯',
-                check: (stats) => stats.totalScore >= 100
+                check: (stats) => stats.maxScore >= 3000
             },
             {
-                id: 'total_score_500',
+                id: 'games_500',
                 name: '传奇玩家',
-                desc: '累计得分达到 500 分',
+                desc: '累计游玩 500 局',
                 icon: '🏆',
-                check: (stats) => stats.totalScore >= 500
+                check: (stats) => stats.games >= 500
             }
         ];
 
@@ -1495,7 +1594,7 @@
             const shown = localStorage.getItem('snakeHintShown');
             if (!shown) {
                 setTimeout(() => {
-                    alert('欢迎来到贪吃蛇！\n\n操作说明：\n• 滑动或点击方向键控制蛇的移动\n• 吃到红色食物得1分\n• 吃到金色食物(+3分)或闪电食物有惊喜\n• 开启"穿墙模式"可以穿过墙壁\n• 开启"难度递增"会随分数提高速度');
+                    alert('欢迎来到贪吃蛇！\n\n操作说明：\n• 滑动或点击方向键控制蛇的移动\n• 吃到红色食物得10分\n• 吃到金色食物(+30分)或闪电食物有惊喜\n• 开启"穿墙模式"可以穿过墙壁\n• 开启"难度递增"会随分数提高速度');
                     localStorage.setItem('snakeHintShown', 'true');
                 }, 500);
             }
@@ -1531,7 +1630,7 @@
 
                 // 难度递增
                 if (difficultyUp) {
-                    gameSpeed = baseSpeed + Math.floor(gameState.score / 5) * 0.2;
+                    gameSpeed = Math.min(8, baseSpeed + Math.floor(gameState.score / 50) * 0.2);
                 }
             }
 
@@ -1770,7 +1869,7 @@
 
         function changeSpeed() {
             baseSpeed = parseFloat(speedSelect.value);
-            gameSpeed = difficultyUp ? baseSpeed + Math.floor(gameState.score / 5) * 0.2 : baseSpeed;
+            gameSpeed = difficultyUp ? Math.min(8, baseSpeed + Math.floor(gameState.score / 50) * 0.2) : baseSpeed;
         }
 
         // ==================== 输入处理 ====================
@@ -1806,7 +1905,13 @@
             initCanvas();
             
             // 加载 WASM 模块
-            Module = await SnakeModule();
+            try {
+                Module = await SnakeModule();
+            } catch (e) {
+                console.error('WASM 加载失败:', e);
+                document.body.innerHTML = '<div style="text-align:center;padding:40px;font-size:16px;color:#c00;">❌ 游戏引擎加载失败，请刷新页面重试</div>';
+                return;
+            }
             
             // 触摸滑动
             let touchStartX = 0, touchStartY = 0;
