@@ -41,3 +41,27 @@ dev-err.log
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# AI agents & Editor local state
+/.claude/
+/.mimocode/
+
+# Logs
+*.log
+
+# Editors and IDEs
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Operating System files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
