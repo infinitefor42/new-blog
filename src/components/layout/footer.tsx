@@ -20,7 +20,7 @@ export function Footer() {
         >
           <div className="text-center text-sm text-ink-gray/60 dark:text-rice-white-dim/60">
             <p className="mb-2">
-              © 2026{" "}
+              © {new Date().getFullYear()}{" "}
               <FiHeart className="w-3.5 h-3.5 text-red-500 inline-block align-middle mx-0.5 animate-pulse" />{" "}
               Bowen Cao
             </p>

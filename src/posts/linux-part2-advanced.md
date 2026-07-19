@@ -140,7 +140,7 @@ unzip test.zip -d /target         # 解压到指定目录
 unzip -l test.zip                 # 查看内容（不解压）
 ```
 
-### 练一练
+### 练一练 1
 
 1. 用 `find` 查找 `/etc` 目录下所有名称以 `.conf` 结尾的文件
 2. 将 `/tmp` 下所有 `.log` 文件通过一条命令查找并删除
@@ -282,7 +282,7 @@ timedatectl list-timezones           # 所有时区
 timedatectl set-timezone Asia/Shanghai  # 设置时区
 ```
 
-### 练一练
+### 练一练 2
 
 1. 用 `ps -ef` 找到当前终端对应的 shell 进程（提示：找 `bash` 关键词）
 2. 启动一个 `sleep 120` 命令放到后台，然后用 `kill` 终止它
@@ -499,7 +499,7 @@ crontab -r     # 删除所有
 0 0 1,15 * * /path/to/script.sh
 ```
 
-### 练一练
+### 练一练 3
 
 1. 用 Vim 新建一个文件 `hello.txt`，输入三行文字，保存退出，然后用 `cat` 验证
 2. 用 `ping -c 3` 测试能否连通 `baidu.com`

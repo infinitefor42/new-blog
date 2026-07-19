@@ -17,7 +17,6 @@ function ThemeWatcher() {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
     const handleChange = (e: MediaQueryListEvent) => {
-      // 只在用户选择 "system" 时响应系统变化
       const theme = localStorage.getItem("theme");
       if (theme === "system" || !theme) {
         document.documentElement.style.colorScheme = e.matches

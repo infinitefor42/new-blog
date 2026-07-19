@@ -10,10 +10,26 @@ import rehypeKatex from "rehype-katex";
 import type { Components } from "react-markdown";
 import type { PostMeta } from "@/lib/posts";
 import { GiscusComments } from "./giscus-comments";
+import { ReadingProgress } from "./reading-progress";
+import { TableOfContents } from "./table-of-contents";
 import { useEffect } from "react";
+import { siteConfig } from "@/config/site";
+import { slugify } from "@/lib/slugify";
 
 interface BlogPostProps {
   post: PostMeta;
+}
+
+/** 从 React 子元素中提取纯文本（用于生成标题 ID） */
+function extractText(children: React.ReactNode): string {
+  if (typeof children === "string") return children;
+  if (typeof children === "number") return String(children);
+  if (Array.isArray(children)) return children.map(extractText).join("");
+  if (children && typeof children === "object" && "props" in children) {
+    const el = children as { props: { children?: React.ReactNode } };
+    return extractText(el.props.children);
+  }
+  return "";
 }
 
 /** 判断是否为外部链接 */
@@ -112,6 +128,14 @@ const markdownComponents: Components = {
       </div>
     );
   },
+  h2({ children, ...props }) {
+    const text = extractText(children);
+    return <h2 id={slugify(text)} {...props}>{children}</h2>;
+  },
+  h3({ children, ...props }) {
+    const text = extractText(children);
+    return <h3 id={slugify(text)} {...props}>{children}</h3>;
+  },
 };
 
 export function BlogPost({ post }: BlogPostProps) {
@@ -119,8 +143,8 @@ export function BlogPost({ post }: BlogPostProps) {
   useEffect(() => {
     const link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css";
-    link.integrity = "sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+";
+    link.href = `https://cdn.jsdelivr.net/npm/katex@${siteConfig.katex.version}/dist/katex.min.css`;
+    link.integrity = siteConfig.katex.integrity;
     link.crossOrigin = "anonymous";
     document.head.appendChild(link);
 
@@ -133,6 +157,8 @@ export function BlogPost({ post }: BlogPostProps) {
 
   return (
     <article className="max-w-3xl mx-auto">
+      <ReadingProgress />
+      <TableOfContents markdown={post.content} />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

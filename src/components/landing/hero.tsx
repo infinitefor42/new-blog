@@ -6,6 +6,7 @@ import Image from "next/image";
 import { FiArrowDown, FiArrowRight, FiMail } from "react-icons/fi";
 import { FaGithub } from "react-icons/fa";
 import { appleEasing, createContainerVariants, createCardVariants } from "@/lib/animations";
+import { siteConfig } from "@/config/site";
 
 const containerVariants = createContainerVariants(0.12, 0.3);
 const itemVariants = createCardVariants(0.8, 40);
@@ -20,8 +21,8 @@ const avatarVariants: Variants = {
 };
 
 const socialLinks = [
-  { icon: FaGithub, href: "https://github.com/infinitefor42", label: "GitHub" },
-  { icon: FiMail, href: "mailto:pcodeinfinite@qq.com", label: "Email" },
+  { icon: FaGithub, href: siteConfig.social.github, label: "GitHub" },
+  { icon: FiMail, href: siteConfig.social.email, label: "Email" },
 ];
 
 export function Hero() {
@@ -46,7 +47,7 @@ export function Hero() {
               <div className="absolute -inset-2 bg-gradient-to-br from-warm-gray/30 to-warm-gray/10 dark:from-warm-gray/20 dark:to-warm-gray/5 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
               <div className="relative w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 rounded-full overflow-hidden bg-white/30 dark:bg-white/10 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-xl pointer-events-auto">
                 <Image
-                  src="/images/website-logo.png"
+                  src={siteConfig.avatar}
                   alt="个人头像"
                   fill
                   className="object-cover"
@@ -55,7 +56,6 @@ export function Hero() {
                 />
                 <div className="absolute inset-0 bg-ink-black/0 group-hover:bg-ink-black/5 dark:group-hover:bg-rice-white/5 transition-all duration-300 rounded-full" />
               </div>
-              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-4 border-paper-bg dark:border-ink-deep shadow-lg pointer-events-auto" />
             </div>
           </motion.div>
 
@@ -65,19 +65,19 @@ export function Hero() {
               variants={itemVariants}
               className="text-base sm:text-lg text-ink-gray/60 dark:text-rice-white-dim/60 mb-4 font-light tracking-wider uppercase"
             >
-              你好，我是
+              {siteConfig.hero.greeting}
             </motion.p>
 
             <motion.h1
               variants={itemVariants}
               className="font-song text-2xl sm:text-3xl md:text-4xl font-bold text-ink-black dark:text-rice-white mb-8 tracking-wide leading-none"
             >
-              INFINITE
+              {siteConfig.name}
             </motion.h1>
 
             <motion.div variants={itemVariants} className="mb-6">
               <h2 className="text-xl sm:text-2xl text-ink-gray dark:text-rice-white-dim font-light">
-                大一学生 | 数据科学与大数据技术专业
+                {siteConfig.hero.subtitle}
               </h2>
             </motion.div>
 
@@ -85,7 +85,7 @@ export function Hero() {
               variants={itemVariants}
               className="text-base sm:text-lg text-ink-gray/70 dark:text-rice-white-dim/70 max-w-2xl mx-auto mb-8 leading-relaxed"
             >
-              这里沉淀知识笔记、数学推导、算法分析，也记录数据、代码与成长的细碎感悟。不求一步到位，只求日日精进。愿以热爱为引，期待与你同行。
+              {siteConfig.hero.bio}
             </motion.p>
 
             <motion.blockquote
@@ -93,7 +93,7 @@ export function Hero() {
               className="text-sm sm:text-base text-ink-gray/50 dark:text-rice-white-dim/50 max-w-xl mx-auto mb-12
                 italic tracking-wide text-center w-full"
             >
-              &ldquo;We are not behind. We are just not there yet.&rdquo;
+              &ldquo;{siteConfig.hero.quote}&rdquo;
             </motion.blockquote>
 
             {/* CTA 按钮组 */}
@@ -111,7 +111,7 @@ export function Hero() {
                   hover:scale-[1.02] active:scale-[0.98]"
                 style={{ transitionTimingFunction: `cubic-bezier(${appleEasing.join(",")})` }}
               >
-                阅读博客
+                {siteConfig.hero.ctaLabel}
                 <FiArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
             </motion.div>

@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useCallback } from "react";
 import { useTheme } from "next-themes";
+import { siteConfig } from "@/config/site";
 
 function getGiscusTheme(resolvedTheme: string | undefined) {
-  return resolvedTheme === "dark" ? "noborder_dark" : "noborder_light";
+  return resolvedTheme === "dark" ? siteConfig.giscus.themes.dark : siteConfig.giscus.themes.light;
 }
 
 export function GiscusComments() {
@@ -39,11 +40,11 @@ export function GiscusComments() {
     if (!containerRef.current || scriptLoaded.current) return;
 
     // 在 useEffect 内读取环境变量，并提供 .env.local 中的预设静态回退值，确保在任何环境下都能加载
-    const repo = process.env.NEXT_PUBLIC_GISCUS_REPO || "infinitefor42/new-blog";
-    const repoId = process.env.NEXT_PUBLIC_GISCUS_REPO_ID || "R_kgDOStseQg";
-    const category = process.env.NEXT_PUBLIC_GISCUS_CATEGORY || "General";
-    const categoryId = process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID || "DIC_kwDOStseQs4C-Ru4";
-    const mapping = process.env.NEXT_PUBLIC_GISCUS_MAPPING || "pathname";
+    const repo = process.env.NEXT_PUBLIC_GISCUS_REPO || siteConfig.giscus.repo;
+    const repoId = process.env.NEXT_PUBLIC_GISCUS_REPO_ID || siteConfig.giscus.repoId;
+    const category = process.env.NEXT_PUBLIC_GISCUS_CATEGORY || siteConfig.giscus.category;
+    const categoryId = process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID || siteConfig.giscus.categoryId;
+    const mapping = process.env.NEXT_PUBLIC_GISCUS_MAPPING || siteConfig.giscus.mapping;
 
     // 配置校验
     if (!repo || !repoId || !categoryId) {
@@ -74,7 +75,7 @@ export function GiscusComments() {
     script.setAttribute("data-emit-metadata", "0");
     script.setAttribute("data-input-position", "top");
     script.setAttribute("data-theme", theme);
-    script.setAttribute("data-lang", "zh-CN");
+    script.setAttribute("data-lang", siteConfig.giscus.lang);
     script.setAttribute("data-loading", "lazy");
     script.crossOrigin = "anonymous";
     script.async = true;

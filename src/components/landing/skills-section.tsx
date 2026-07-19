@@ -3,16 +3,10 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { appleEasing, createContainerVariants, createCardVariants } from "@/lib/animations";
+import { siteConfig } from "@/config/site";
 
 const containerVariants = createContainerVariants();
 const cardVariants = createCardVariants();
-
-const skillCards = [
-  { emoji: "💻", title: "核心修炼", desc: "C 语言 / 数据结构与算法" },
-  { emoji: "🛠️", title: "工具链", desc: "Git 版本控制 / MiMo Code" },
-  { emoji: "📝", title: "技能解锁", desc: "Linux操作系统" },
-  { emoji: "🧠", title: "兴趣点", desc: "数学 / 计算机专业探索" },
-];
 
 export function SkillsSection() {
   const ref = useRef(null);
@@ -32,13 +26,13 @@ export function SkillsSection() {
               variants={cardVariants}
               className="font-song text-4xl sm:text-5xl lg:text-6xl font-bold text-ink-black dark:text-rice-white mb-3"
             >
-              核心技能
+              {siteConfig.skills.title}
             </motion.h2>
             <motion.p
               variants={cardVariants}
               className="text-lg text-ink-gray/50 dark:text-rice-white-dim/50"
             >
-              我的工程实践
+              {siteConfig.skills.subtitle}
             </motion.p>
             <motion.div
               variants={cardVariants}
@@ -47,7 +41,7 @@ export function SkillsSection() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8">
-            {skillCards.map((card, index) => (
+            {siteConfig.skills.cards.map((card, index) => (
               <motion.div
                 key={index}
                 variants={cardVariants}

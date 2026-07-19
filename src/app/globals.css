@@ -163,6 +163,7 @@ body > * {
   font-weight: 600;
   letter-spacing: 0.02em;
   color: var(--foreground);
+  scroll-margin-top: 6rem;
 }
 
 .prose h1 {
@@ -553,3 +554,92 @@ body > * {
 .giscus-wrapper .giscus {
   margin: 0;
 }
+
+/* ========================================
+   MemoryTree Styles
+   ======================================== */
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Loading screen */
+.mt-loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: radial-gradient(ellipse at center, #0a0a1a 0%, #000000 70%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-family: monospace;
+}
+
+.mt-loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mt-loading-text {
+  color: #ff1493;
+  letter-spacing: 0.4em;
+  font-size: 14px;
+  animation: pulse 2s infinite ease-in-out;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .mt-loading-text {
+    font-size: 12px;
+    letter-spacing: 0.3em;
+  }
+}
+
+.mt-progress-container {
+  width: 240px;
+  height: 2px;
+  background: rgba(255, 20, 147, 0.15);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .mt-progress-container {
+    width: 180px;
+  }
+}
+
+.mt-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff1493, #00ffff, #ff1493);
+  background-size: 200% 200%;
+  border-radius: 1px;
+  animation: shimmer 2s infinite linear;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@keyframes shimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Music control buttons hover */
+.mt-btn-icon:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(0, 255, 255, 0.4) !important;
+}
+
+/* ========================================
+   TOC Animations
+   ======================================== */
+

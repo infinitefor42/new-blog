@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { FiHome, FiArrowLeft } from "react-icons/fi";
+import { siteConfig } from "@/config/site";
 
 export default function NotFound() {
   return (
@@ -11,7 +12,7 @@ export default function NotFound() {
         <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center h-16">
             <Link href="/" className="font-song text-xl font-bold text-ink-black dark:text-rice-white tracking-[0.15em]">
-              INFINITE
+              {siteConfig.name}
             </Link>
           </div>
         </nav>

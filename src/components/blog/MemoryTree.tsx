@@ -1,692 +1,35 @@
 "use client";
 
 import React, {
-  useMemo,
   useRef,
   useState,
   Suspense,
   useEffect,
   useCallback,
+  useMemo,
 } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import {
-  OrbitControls,
-  useTexture,
-  useVideoTexture,
-} from "@react-three/drei";
-import * as THREE from "three";
-import { motion, AnimatePresence } from "framer-motion";
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   X,
   ArrowLeft,
   Sparkles,
   Play,
-  Pause,
   SkipForward,
-  Music,
 } from "lucide-react";
 import { PHOTO_DATA, ALBUM_DATA, type Photo, type Album } from "@/config/photos";
+import { MUSIC_LIST } from "./memory-tree/constants";
+import ParticleWave from "./memory-tree/ParticleWave";
+import StarDust from "./memory-tree/StarDust";
+import EnergyBeam from "./memory-tree/EnergyBeam";
+import RadiantTree from "./memory-tree/RadiantTree";
+import LuminousPedestal from "./memory-tree/LuminousPedestal";
+import KleinBottle from "./memory-tree/KleinBottle";
+import MediaNode, { getNebulaPos } from "./memory-tree/MediaNode";
+import MusicVisualizer from "./memory-tree/MusicVisualizer";
+import FrameTrigger from "./memory-tree/FrameTrigger";
 
-const MUSIC_LIST = [
-  { title: "小半", src: "/audio/陈粒 - 小半.mp3" },
-  { title: "这世界那么多人", src: "/audio/莫文蔚 - 这世界那么多人.mp3" },
-  { title: "世界赠予我的", src: "/audio/王菲 - 世界赠予我的.mp3" },
-];
-
-const COLORS = {
-  STAR_WHITE: new THREE.Color("#ffffff"),
-  HOT_PINK: new THREE.Color("#ff1493"),
-  CYAN: new THREE.Color("#00ffff"),
-  VIOLET: new THREE.Color("#8b00ff"),
-  STAR_DUST: new THREE.Color("#ffffff"),
-};
-
-// ======================== ParticleWave ========================
-const ParticleWave = () => {
-  const count = 35000;
-  const meshRef = useRef<THREE.Points>(null);
-
-  const glowTexture = useMemo(() => {
-    const canvas = document.createElement("canvas");
-    canvas.width = 64;
-    canvas.height = 64;
-    const ctx = canvas.getContext("2d")!;
-    const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 30);
-    grad.addColorStop(0, "rgba(255, 255, 255, 0.9)");
-    grad.addColorStop(0.4, "rgba(255, 255, 255, 0.3)");
-    grad.addColorStop(1, "rgba(255, 255, 255, 0)");
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, 64, 64);
-    return new THREE.CanvasTexture(canvas);
-  }, []);
-
-  const [positions, offsets] = useMemo(() => {
-    const p = new Float32Array(count * 3);
-    const o = new Float32Array(count);
-    for (let i = 0; i < count; i++) {
-      const r = 3.0 + Math.sqrt(Math.random()) * 58;
-      const theta = Math.random() * Math.PI * 2;
-      p[i * 3] = r * Math.cos(theta);
-      p[i * 3 + 1] = -11.5 + (Math.random() - 0.5) * 0.8;
-      p[i * 3 + 2] = r * Math.sin(theta);
-      o[i] = r;
-    }
-    return [p, o];
-  }, []);
-
-  const yOffsets = useMemo(() => {
-    const arr = new Float32Array(count);
-    for (let i = 0; i < count; i++) arr[i] = (Math.random() - 0.5) * 0.8;
-    return arr;
-  }, []);
-
-  useFrame((state) => {
-    if (meshRef.current) {
-      const time = state.clock.elapsedTime;
-      const posAttr = meshRef.current.geometry.attributes
-        .position as THREE.BufferAttribute;
-      for (let i = 0; i < count; i++) {
-        const r = offsets[i];
-        const wave = Math.sin(r * 0.25 - time * 0.6) * 0.85;
-        const wave2 = Math.cos(r * 0.12 + time * 0.4) * 0.3;
-        posAttr.setY(i, -11.5 + yOffsets[i] + wave + wave2);
-      }
-      posAttr.needsUpdate = true;
-      meshRef.current.rotation.y += 0.0003;
-    }
-  });
-
-  return (
-    <points ref={meshRef} renderOrder={5}>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.6}
-        map={glowTexture}
-        transparent
-        opacity={0.8}
-        fog={false}
-        blending={THREE.AdditiveBlending}
-        depthWrite={false}
-        sizeAttenuation={true}
-      />
-    </points>
-  );
-};
-
-// ======================== StarDust ========================
-const PartSet = ({
-  count,
-  texture,
-  speedMult,
-}: {
-  count: number;
-  texture: THREE.Texture;
-  speedMult: number;
-}) => {
-  const meshRef = useRef<THREE.Points>(null);
-  const pos = useMemo(() => {
-    const p = new Float32Array(count * 3);
-    const rand = () => Math.random();
-    for (let i = 0; i < count; i++) {
-      const r = 25 + rand() * 65;
-      const theta = rand() * Math.PI * 2;
-      const phi = Math.acos(rand() * 2 - 1);
-      p[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-      p[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-      p[i * 3 + 2] = r * Math.cos(phi);
-    }
-    return p;
-  }, [count]);
-
-  useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.y += 0.00015 * speedMult;
-      meshRef.current.rotation.x += 0.00008 * speedMult;
-      (
-        meshRef.current.material as THREE.PointsMaterial
-      ).opacity =
-        0.75 + Math.sin(state.clock.elapsedTime * 0.6 * speedMult) * 0.25;
-    }
-  });
-
-  return (
-    <points ref={meshRef}>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[pos, 3]} />
-      </bufferGeometry>
-      <pointsMaterial
-        size={1.05}
-        map={texture}
-        transparent
-        alphaTest={0.05}
-        color={COLORS.STAR_DUST}
-        blending={THREE.AdditiveBlending}
-        depthWrite={false}
-        sizeAttenuation={true}
-      />
-    </points>
-  );
-};
-
-const StarDust = () => {
-  const totalCount = 5000;
-  const countPerType = Math.floor(totalCount / 3);
-
-  const textures = useMemo(() => {
-    const createTex = (drawFn: (ctx: CanvasRenderingContext2D) => void) => {
-      const canvas = document.createElement("canvas");
-      canvas.width = 64;
-      canvas.height = 64;
-      const ctx = canvas.getContext("2d")!;
-      ctx.fillStyle = "white";
-      ctx.shadowBlur = 12;
-      ctx.shadowColor = "white";
-      drawFn(ctx);
-      return new THREE.CanvasTexture(canvas);
-    };
-
-    return {
-      star: createTex((ctx) => {
-        const cx = 32,
-          cy = 32,
-          spikes = 5,
-          outer = 28,
-          inner = 12;
-        let rot = (Math.PI / 2) * 3;
-        const step = Math.PI / spikes;
-        ctx.beginPath();
-        ctx.moveTo(cx, cy - outer);
-        for (let i = 0; i < spikes; i++) {
-          ctx.lineTo(
-            cx + Math.cos(rot) * outer,
-            cy + Math.sin(rot) * outer
-          );
-          rot += step;
-          ctx.lineTo(
-            cx + Math.cos(rot) * inner,
-            cy + Math.sin(rot) * inner
-          );
-          rot += step;
-        }
-        ctx.closePath();
-        ctx.fill();
-      }),
-      snow: createTex((ctx) => {
-        ctx.strokeStyle = "white";
-        ctx.lineWidth = 5;
-        ctx.lineCap = "round";
-        const cx = 32,
-          cy = 32;
-        for (let i = 0; i < 6; i++) {
-          const angle = (i * 60 * Math.PI) / 180;
-          ctx.beginPath();
-          ctx.moveTo(cx, cy);
-          ctx.lineTo(cx + Math.cos(angle) * 28, cy + Math.sin(angle) * 28);
-          const bx = cx + Math.cos(angle) * 18;
-          const by = cy + Math.sin(angle) * 18;
-          ctx.moveTo(bx, by);
-          ctx.lineTo(
-            bx + Math.cos(angle + 0.6) * 10,
-            by + Math.sin(angle + 0.6) * 10
-          );
-          ctx.moveTo(bx, by);
-          ctx.lineTo(
-            bx + Math.cos(angle - 0.6) * 10,
-            by + Math.sin(angle - 0.6) * 10
-          );
-          ctx.stroke();
-        }
-      }),
-      moon: createTex((ctx) => {
-        ctx.beginPath();
-        const start = Math.PI * 0.6;
-        const end = Math.PI * 1.4;
-        ctx.arc(32, 32, 26, start, end, true);
-        ctx.bezierCurveTo(
-          44,
-          19,
-          44,
-          45,
-          32 + Math.cos(start) * 26,
-          32 + Math.sin(start) * 26
-        );
-        ctx.fill();
-      }),
-    };
-  }, []);
-
-  return (
-    <group>
-      <PartSet count={countPerType} texture={textures.star} speedMult={1.0} />
-      <PartSet count={countPerType} texture={textures.snow} speedMult={0.8} />
-      <PartSet count={countPerType} texture={textures.moon} speedMult={0.6} />
-    </group>
-  );
-};
-
-// ======================== EnergyBeam ========================
-const EnergyBeam = () => {
-  const count = 18000;
-  const meshRef = useRef<THREE.Points>(null);
-  const [pos, colors] = useMemo(() => {
-    const p = new Float32Array(count * 3);
-    const c = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-      const h = Math.random() * 32.5 - 11.5;
-      const rBase = Math.pow(Math.random(), 5.0) * 1.5;
-      const angle = Math.random() * Math.PI * 2;
-      p[i * 3] = Math.cos(angle) * rBase;
-      p[i * 3 + 1] = h;
-      p[i * 3 + 2] = Math.sin(angle) * rBase;
-      const bColor = COLORS.STAR_WHITE.clone();
-      if (rBase > 0.6) bColor.lerp(COLORS.HOT_PINK, 0.4);
-      c[i * 3] = bColor.r;
-      c[i * 3 + 1] = bColor.g;
-      c[i * 3 + 2] = bColor.b;
-    }
-    return [p, c];
-  }, []);
-
-  useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.position.y =
-        (state.clock.elapsedTime * 0.15) % 0.12;
-      meshRef.current.rotation.y += 0.008;
-    }
-  });
-
-  return (
-    <points ref={meshRef} renderOrder={11}>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[pos, 3]} />
-        <bufferAttribute attach="attributes-color" args={[colors, 3]} />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.045}
-        vertexColors
-        transparent
-        opacity={0.65}
-        fog={false}
-        blending={THREE.AdditiveBlending}
-        depthWrite={false}
-      />
-    </points>
-  );
-};
-
-// ======================== RadiantTree ========================
-const RadiantTree = () => {
-  const pointsCount = 95000;
-  const { positions, colors, finalCount } = useMemo(() => {
-    const p = new Float32Array(pointsCount * 3);
-    const c = new Float32Array(pointsCount * 3);
-    const numTiers = 6;
-    let ptr = 0;
-    for (let i = 0; i < pointsCount; i++) {
-      const yNorm = Math.random();
-      const tierIndex = Math.floor(yNorm * numTiers);
-      const tierProgress = yNorm * numTiers - tierIndex;
-      const baseRadius = 13.5;
-      const tierExpansion =
-        0.9 + Math.pow(1.0 - tierProgress, 3.5) * 0.45;
-      const maxR = Math.max(
-        0.35 * (1.1 - yNorm),
-        baseRadius * (1.0 - Math.pow(yNorm, 1.2)) * tierExpansion
-      );
-      const r = Math.pow(Math.random(), 1.4) * maxR;
-      if (r > maxR * 0.98) continue;
-      const angle = Math.random() * Math.PI * 2;
-      p[ptr * 3] = Math.cos(angle) * r;
-      p[ptr * 3 + 1] = yNorm * 32.0 - 11.5;
-      p[ptr * 3 + 2] = Math.sin(angle) * r;
-      const bColor = COLORS.STAR_WHITE.clone();
-      const rNorm = r / (maxR + 0.001);
-      if (rNorm > 0.88) {
-        const rand = Math.random();
-        if (rand > 0.6) bColor.lerp(COLORS.CYAN, 0.6);
-        else bColor.lerp(COLORS.HOT_PINK, 0.8);
-      } else {
-        bColor.lerp(
-          COLORS.HOT_PINK,
-          THREE.MathUtils.smoothstep(rNorm, 0.1, 0.8) * 0.8
-        );
-      }
-      bColor.multiplyScalar(1.0 + (1.0 - rNorm) * 1.5);
-      c[ptr * 3] = bColor.r;
-      c[ptr * 3 + 1] = bColor.g;
-      c[ptr * 3 + 2] = bColor.b;
-      ptr++;
-      if (ptr >= pointsCount) break;
-    }
-    return { positions: p, colors: c, finalCount: ptr };
-  }, []);
-
-  const geomRef = useRef<THREE.BufferGeometry>(null);
-  useEffect(() => {
-    if (geomRef.current) geomRef.current.setDrawRange(0, finalCount);
-  }, [finalCount]);
-
-  const ref = useRef<THREE.Points>(null);
-  useFrame((state) => {
-    if (ref.current) {
-      ref.current.rotation.y -= 0.0004;
-      (ref.current.material as THREE.PointsMaterial).opacity =
-        0.85 + Math.sin(state.clock.elapsedTime * 1.8) * 0.08;
-    }
-  });
-
-  return (
-    <points ref={ref} renderOrder={10}>
-      <bufferGeometry ref={geomRef}>
-        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
-        <bufferAttribute attach="attributes-color" args={[colors, 3]} />
-      </bufferGeometry>
-      <pointsMaterial
-        vertexColors
-        size={0.14}
-        transparent
-        opacity={0.9}
-        fog={false}
-        blending={THREE.AdditiveBlending}
-        depthWrite={false}
-        sizeAttenuation={true}
-      />
-    </points>
-  );
-};
-
-// ======================== LuminousPedestal ========================
-const LuminousPedestal = () => {
-  const count = 9000;
-  const meshRef = useRef<THREE.Points>(null);
-  const [pos, colors] = useMemo(() => {
-    const p = new Float32Array(count * 3);
-    const c = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-      const r = 8.5 + Math.random() * 32.0;
-      const theta = Math.random() * Math.PI * 2;
-      p[i * 3] = Math.cos(theta) * r;
-      p[i * 3 + 1] = (Math.random() - 0.5) * 1.2 - 11.5;
-      p[i * 3 + 2] = Math.sin(theta) * r;
-      const bColor = COLORS.HOT_PINK.clone().lerp(
-        COLORS.VIOLET,
-        Math.random() * 0.5
-      );
-      c[i * 3] = bColor.r;
-      c[i * 3 + 1] = bColor.g;
-      c[i * 3 + 2] = bColor.b;
-    }
-    return [p, c];
-  }, []);
-
-  useFrame(() => {
-    if (meshRef.current) meshRef.current.rotation.y += 0.008;
-  });
-
-  return (
-    <points ref={meshRef}>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[pos, 3]} />
-        <bufferAttribute attach="attributes-color" args={[colors, 3]} />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.2}
-        vertexColors
-        transparent
-        opacity={0.35}
-        fog={false}
-        blending={THREE.AdditiveBlending}
-        depthWrite={false}
-      />
-    </points>
-  );
-};
-
-// ======================== KleinBottle ========================
-const KleinBottle = () => {
-  const count = 12000;
-  const meshRef = useRef<THREE.Points>(null);
-  const colorRef = useRef<THREE.BufferAttribute>(null);
-  const pos = useMemo(() => {
-    const p = new Float32Array(count * 3);
-    const c = new Float32Array(count * 3);
-    const a = 3;
-    const scale = 1.2;
-
-    for (let i = 0; i < count; i++) {
-      const u = Math.random() * Math.PI * 2;
-      const v = Math.random() * Math.PI * 2;
-
-      const cosU = Math.cos(u);
-      const sinU = Math.sin(u);
-      const cosHalfU = Math.cos(u / 2);
-      const sinHalfU = Math.sin(u / 2);
-      const sinV = Math.sin(v);
-      const sin2V = Math.sin(2 * v);
-
-      const x = (a + cosHalfU * sinV - sinHalfU * sin2V) * cosU;
-      const y = (a + cosHalfU * sinV - sinHalfU * sin2V) * sinU;
-      const z = sinHalfU * sinV + cosHalfU * sin2V;
-
-      p[i * 3] = x * scale;
-      p[i * 3 + 1] = y * scale + 23;
-      p[i * 3 + 2] = z * scale;
-
-      const t = (u + v) / (Math.PI * 4);
-      const color = new THREE.Color();
-      color.setHSL(0.55 + t * 0.15, 0.8, 0.6 + t * 0.2);
-      c[i * 3] = color.r;
-      c[i * 3 + 1] = color.g;
-      c[i * 3 + 2] = color.b;
-    }
-    return { positions: p, colors: c };
-  }, []);
-
-  useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.y += 0.008;
-      const time = state.clock.elapsedTime;
-      const opacity = 0.8 + Math.sin(time * 1.5) * 0.2;
-      (meshRef.current.material as THREE.PointsMaterial).opacity = opacity;
-    }
-  });
-
-  return (
-    <points ref={meshRef}>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[pos.positions, 3]} />
-        <bufferAttribute ref={colorRef} attach="attributes-color" args={[pos.colors, 3]} />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.16}
-        vertexColors
-        transparent
-        opacity={0.9}
-        fog={false}
-        blending={THREE.AdditiveBlending}
-        depthWrite={false}
-      />
-    </points>
-  );
-};
-
-// ======================== MediaNode ========================
-const getNebulaPos = (i: number, total: number): [number, number, number] => {
-  const phi = Math.acos(0.85 - (1.7 * i) / total);
-  const theta = Math.sqrt(total * Math.PI) * phi;
-  const radius = 55 + Math.random() * 25;
-  const angleOffset =
-    Math.PI * 0.5 - Math.sqrt(total * Math.PI) * Math.acos(0.85);
-  const x = radius * Math.cos(theta + angleOffset) * Math.sin(phi);
-  const y = Math.random() * 40 - 5;
-  const z = radius * Math.sin(theta + angleOffset) * Math.sin(phi);
-  return [x, y, z];
-};
-
-const MediaNode = ({
-  photo,
-  position,
-  onSelect,
-}: {
-  photo: Photo;
-  position: [number, number, number];
-  onSelect: (photo: Photo) => void;
-}) => {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const [hovered, setHovered] = useState(false);
-  const [shouldLoad, setShouldLoad] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-  const distanceRef = useRef(100);
-
-  useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.quaternion.copy(state.camera.quaternion);
-      const t = state.clock.elapsedTime;
-      const phaseOffset =
-        typeof photo.id === "number"
-          ? photo.id
-          : parseInt(String(photo.id).replace(/\D/g, ""), 10) || 0;
-      meshRef.current.position.set(
-        position[0],
-        position[1] + Math.sin(t * 0.4 + phaseOffset) * 0.3,
-        position[2]
-      );
-      const targetScale = hovered ? 1.2 : 1.0;
-      meshRef.current.scale.lerp(
-        new THREE.Vector3(targetScale, targetScale, targetScale),
-        0.1
-      );
-
-      const dx = state.camera.position.x - position[0];
-      const dy = state.camera.position.y - position[1];
-      const dz = state.camera.position.z - position[2];
-      distanceRef.current = Math.sqrt(dx * dx + dy * dy + dz * dz);
-
-      const visible = distanceRef.current < 120;
-      if (visible !== isVisible) setIsVisible(visible);
-      if (distanceRef.current < 80 && !shouldLoad) setShouldLoad(true);
-    }
-  });
-
-  return (
-    <mesh
-      ref={meshRef}
-      onPointerOver={() => setHovered(true)}
-      onPointerOut={() => setHovered(false)}
-      onClick={() => onSelect(photo)}
-    >
-      <planeGeometry args={[3.6, 5.4]} />
-      {shouldLoad && isVisible ? (
-        <LazyMaterial photo={photo} />
-      ) : (
-        <meshBasicMaterial
-          color={hovered ? "#ff1493" : "#222233"}
-          transparent
-          opacity={hovered ? 0.8 : 0.5}
-          fog={false}
-        />
-      )}
-      <mesh position={[0, 0, -0.01]}>
-        <planeGeometry args={[3.8, 5.6]} />
-        <meshBasicMaterial
-          color={hovered ? COLORS.HOT_PINK : "#ffffff"}
-          transparent
-          opacity={hovered ? 0.4 : 0.15}
-          fog={false}
-        />
-      </mesh>
-    </mesh>
-  );
-};
-
-const LazyMaterial = ({ photo }: { photo: Photo }) => {
-  const texture =
-    photo.type === "video"
-      ? useVideoTexture(photo.url, {
-          muted: true,
-          loop: true,
-          start: true,
-          crossOrigin: "Anonymous",
-        })
-      : useTexture(photo.url);
-
-  return <meshBasicMaterial map={texture} transparent opacity={1} fog={false} />;
-};
-
-// ======================== MusicVisualizer ========================
-function MusicVisualizer({ isPlaying }: { isPlaying: boolean }) {
-  const notes = [
-    { id: 1, delay: 0, size: 12 },
-    { id: 2, delay: 0.2, size: 8 },
-    { id: 3, delay: 0.4, size: 10 },
-  ];
-
-  return (
-    <div className="flex items-center gap-[4px] h-3 justify-center pointer-events-none">
-      {notes.map((note) => (
-        <motion.div
-          key={note.id}
-          initial="stopped"
-          animate={isPlaying ? "playing" : "stopped"}
-          variants={{
-            playing: {
-              scale: [0.8, 1.2, 0.8],
-              opacity: [0.6, 1, 0.6],
-              color: ["#00ffff", "#ff1493", "#8b00ff", "#00ffff"],
-              y: [0, -4, 0],
-              transition: {
-                scale: {
-                  repeat: Infinity,
-                  duration: 1.2,
-                  ease: "easeInOut",
-                  delay: note.delay,
-                },
-                opacity: {
-                  repeat: Infinity,
-                  duration: 1.2,
-                  ease: "easeInOut",
-                  delay: note.delay,
-                },
-                y: {
-                  repeat: Infinity,
-                  duration: 1.5,
-                  ease: "easeInOut",
-                  delay: note.delay,
-                },
-                color: { repeat: Infinity, duration: 3, ease: "linear" },
-              },
-            },
-            stopped: {
-              scale: 0.8,
-              opacity: 0.3,
-              y: 0,
-              color: "rgba(255, 255, 255, 0.3)",
-              transition: { duration: 0.5 },
-            },
-          }}
-        >
-          <Music size={note.size} strokeWidth={2.5} />
-        </motion.div>
-      ))}
-    </div>
-  );
-}
-
-// ======================== FrameTrigger ========================
-const FrameTrigger = ({ onFirstFrame }: { onFirstFrame: () => void }) => {
-  const triggered = useRef(false);
-  useFrame(() => {
-    if (!triggered.current) {
-      triggered.current = true;
-      setTimeout(onFirstFrame, 0);
-    }
-  });
-  return null;
-};
-
-// ======================== Main Component ========================
 export default function MemoryTree({
   onPhotoClick,
 }: {
@@ -696,12 +39,7 @@ export default function MemoryTree({
   const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const [canvasReady, setCanvasReady] = useState(false);
-  const [progress, setProgress] = useState<number>(() => {
-    if (typeof window !== "undefined" && (window as any).__memoryTreeProgress) {
-      return (window as any).__memoryTreeProgress;
-    }
-    return 0;
-  });
+  const [progress, setProgress] = useState(0);
   const [forceLoad, setForceLoad] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState(0);
@@ -709,11 +47,9 @@ export default function MemoryTree({
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isMobile, setIsMobile] = useState(false);
 
-  // 超时保护：10秒后强制显示
+  // 10s timeout force-show
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setForceLoad(true);
-    }, 10000);
+    const timer = setTimeout(() => setForceLoad(true), 10000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -727,9 +63,7 @@ export default function MemoryTree({
   useEffect(() => {
     if (!audioRef.current) return;
     audioRef.current.src = MUSIC_LIST[currentTrack].src;
-    if (isPlaying) {
-      audioRef.current.play().catch(() => {});
-    }
+    if (isPlaying) audioRef.current.play().catch(() => {});
   }, [currentTrack]);
 
   useEffect(() => {
@@ -753,23 +87,21 @@ export default function MemoryTree({
 
   // Simulated progress
   const startTimeRef = useRef(performance.now());
-  
+
   useEffect(() => {
     const startTime = startTimeRef.current;
-    const minLoadTime = 3500; // 最小加载时间 3.5 秒
+    const minLoadTime = 3500;
 
     if (canvasReady) {
-      // Canvas is ready, smoothly animate to 100%
       const interval = setInterval(() => {
         const elapsed = performance.now() - startTime;
         const minProgress = Math.min((elapsed / minLoadTime) * 100, 100);
-        
+
         setProgress((prev) => {
           if (prev >= 100) {
             clearInterval(interval);
             return 100;
           }
-          // 确保进度不会倒退，且平滑过渡到 100%
           const target = Math.max(minProgress, prev + 0.5);
           const next = prev + (target - prev) * 0.1;
           return next >= 100 ? 100 : Math.max(prev, next);
@@ -777,65 +109,32 @@ export default function MemoryTree({
       }, 30);
       return () => clearInterval(interval);
     } else {
-      // Simulate progress up to 85%
       const interval = setInterval(() => {
         const elapsed = (performance.now() - startTime) / 1000;
         const t = Math.min(elapsed / 3.0, 1);
         const eased = t < 0.3
-          ? 2 * t * t  // 开始慢
+          ? 2 * t * t
           : 1 - Math.pow(-2 * t + 2, 3) / 2;
         const simulated = eased * 85;
         setProgress((prev) => (prev < 85 ? Math.max(prev, simulated) : prev));
       }, 50);
       return () => clearInterval(interval);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canvasReady]);
-
-  // Clean up global variable once loaded
-  useEffect(() => {
-    if (progress >= 100 && typeof window !== "undefined") {
-      delete (window as any).__memoryTreeProgress;
-    }
-  }, [progress]);
-
-  const handleSelect = useCallback(
-    (photo: Photo) => {
-      setSelectedPhoto(photo);
-      if (photo.album) {
-        const album = ALBUM_DATA.find((a) => a.id === photo.album);
-        setSelectedAlbum(album || null);
-        setCurrentPhotoIndex(0);
-      } else {
-        setSelectedAlbum(null);
-      }
-      onPhotoClick?.(photo);
-    },
-    [onPhotoClick]
-  );
-
-  useEffect(() => {
-    const style = document.createElement("style");
-    style.innerHTML = `
-      @keyframes spin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-      }
-      body, #root { background: black !important; overflow: hidden; margin: 0; } canvas { background: black !important; }
-    `;
-    document.head.appendChild(style);
-    return () => {
-      document.head.removeChild(style);
-    };
-  }, []);
 
   const isLoaded = progress >= 100 || forceLoad;
 
-  // 加载完成后自动播放音乐
+  // Temporarily override page background while MemoryTree is mounted
   useEffect(() => {
-    if (isLoaded) {
-      setIsPlaying(true);
-    }
+    const style = document.createElement("style");
+    style.innerHTML = `body, #root { background: black !important; } canvas { background: black !important; }`;
+    document.head.appendChild(style);
+    return () => { document.head.removeChild(style); };
+  }, []);
+
+  // Auto-play music on load
+  useEffect(() => {
+    if (isLoaded) setIsPlaying(true);
   }, [isLoaded]);
 
   const photoPositions = useMemo(
@@ -858,6 +157,21 @@ export default function MemoryTree({
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
+
+  const handleSelect = useCallback(
+    (photo: Photo) => {
+      setSelectedPhoto(photo);
+      if (photo.album) {
+        const album = ALBUM_DATA.find((a) => a.id === photo.album);
+        setSelectedAlbum(album || null);
+        setCurrentPhotoIndex(0);
+      } else {
+        setSelectedAlbum(null);
+      }
+      onPhotoClick?.(photo);
+    },
+    [onPhotoClick]
+  );
 
   return (
     <div
@@ -956,6 +270,7 @@ export default function MemoryTree({
         )}
       </AnimatePresence>
 
+      {/* Navigation bar */}
       <div
         style={{
           position: "absolute",
@@ -991,6 +306,7 @@ export default function MemoryTree({
           <ArrowLeft size={isMobile ? 12 : 16} strokeWidth={3} /> 返回文章
         </a>
 
+        {/* Music controls */}
         <div
           style={{
             background: "rgba(255, 255, 255, 0.03)",
@@ -1007,6 +323,7 @@ export default function MemoryTree({
         >
           <button
             onClick={handlePrev}
+            className="mt-btn-icon"
             style={{
               background: "rgba(255, 255, 255, 0.05)",
               border: "1px solid rgba(255, 255, 255, 0.15)",
@@ -1021,19 +338,13 @@ export default function MemoryTree({
               color: "white",
               transition: "all 0.3s ease",
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "rgba(255, 255, 255, 0.12)";
-              e.currentTarget.style.borderColor = "rgba(0, 255, 255, 0.4)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "rgba(255, 255, 255, 0.05)";
-              e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
-            }}
           >
             <SkipForward size={11} style={{ transform: "rotate(180deg)" }} />
           </button>
+
           <button
             onClick={() => setIsPlaying(!isPlaying)}
+            className="mt-btn-play"
             style={{
               background: "none",
               border: "none",
@@ -1109,8 +420,10 @@ export default function MemoryTree({
               <Play size={14} style={{ marginLeft: "2px" }} />
             </div>
           </button>
+
           <button
             onClick={handleNext}
+            className="mt-btn-icon"
             style={{
               background: "rgba(255, 255, 255, 0.05)",
               border: "1px solid rgba(255, 255, 255, 0.15)",
@@ -1125,24 +438,11 @@ export default function MemoryTree({
               color: "white",
               transition: "all 0.3s ease",
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "rgba(255, 255, 255, 0.12)";
-              e.currentTarget.style.borderColor = "rgba(0, 255, 255, 0.4)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "rgba(255, 255, 255, 0.05)";
-              e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
-            }}
           >
             <SkipForward size={11} />
           </button>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              minWidth: "100px",
-            }}
-          >
+
+          <div style={{ display: "flex", flexDirection: "column", minWidth: "100px" }}>
             <span
               style={{
                 fontSize: "11px",
@@ -1156,6 +456,7 @@ export default function MemoryTree({
             <span style={{ fontSize: "9px", fontWeight: 500, opacity: 0.5 }}>
               {currentTrack + 1} / {MUSIC_LIST.length}
             </span>
+            <MusicVisualizer isPlaying={isPlaying} />
           </div>
         </div>
       </div>
@@ -1200,6 +501,7 @@ export default function MemoryTree({
         />
       </Canvas>
 
+      {/* Photo viewer modal */}
       <AnimatePresence>
         {selectedPhoto && (
           <motion.div
@@ -1245,11 +547,11 @@ export default function MemoryTree({
               onClick={(e) => e.stopPropagation()}
             >
               <button
-            onClick={() => {
-              setSelectedPhoto(null);
-              setSelectedAlbum(null);
-              setCurrentPhotoIndex(0);
-            }}
+                onClick={() => {
+                  setSelectedPhoto(null);
+                  setSelectedAlbum(null);
+                  setCurrentPhotoIndex(0);
+                }}
                 style={{
                   position: "absolute",
                   top: "2rem",

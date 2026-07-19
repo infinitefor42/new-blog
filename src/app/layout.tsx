@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "@/components/providers";
 import { ThemeScript } from "@/components/theme-script";
 import { ServiceWorkerRegister } from "@/components/common/service-worker-register";
+import { siteConfig } from "@/config/site";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -20,19 +21,19 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "DevLog",
-    template: "%s | DevLog",
+    default: siteConfig.title.default,
+    template: siteConfig.title.template,
   },
-  description: "一个极简风格的个人博客",
+  description: siteConfig.description,
   icons: {
-    icon: "/images/website-logo.png",
-    apple: "/images/website-logo.png",
+    icon: siteConfig.avatar,
+    apple: siteConfig.avatar,
   },
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "DevLog",
+    title: siteConfig.title.default,
   },
   other: {
     "mobile-web-app-capable": "yes",
@@ -56,13 +57,13 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="zh-CN"
+      lang={siteConfig.lang}
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
         <ThemeScript />
-        <link rel="apple-touch-icon" href="/images/website-logo.png" />
+        <link rel="apple-touch-icon" href={siteConfig.avatar} />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         {/* 引入 Umami 统计脚本 - 暂时注释掉，服务器返回 500 错误 */}

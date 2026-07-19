@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiSun, FiMoon, FiMenu, FiX } from "react-icons/fi";
 import { useTheme } from "next-themes";
 import { useState, useEffect, useCallback } from "react";
+import { siteConfig } from "@/config/site";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -58,46 +59,32 @@ export function Navbar() {
           <div className="flex items-center justify-between h-16 lg:h-20 relative">
             <Link href="/" className="relative group flex items-center mr-6">
               <span className="font-song text-xl lg:text-2xl font-bold text-ink-black dark:text-rice-white tracking-[0.15em]">
-                INFINITE
+                {siteConfig.name}
               </span>
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-ink-black dark:bg-rice-white transition-all duration-300 group-hover:w-full" />
             </Link>
 
             <div className="hidden md:flex items-center gap-6 absolute left-1/2 -translate-x-1/2">
-              <Link
-                href="/"
-                className={`relative px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg
-                  ${isActive("/")
-                    ? "text-ink-black dark:text-rice-white"
-                    : "text-ink-gray dark:text-rice-white-dim hover:text-ink-black dark:hover:text-rice-white"
-                  }`}
-              >
-                首页
-                {isActive("/") && (
-                  <motion.div
-                    layoutId="navbar-indicator"
-                    className="absolute inset-0 bg-ink-black/5 dark:bg-rice-white/10 rounded-lg"
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                  />
-                )}
-              </Link>
-              <Link
-                href="/blog"
-                className={`relative px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg
-                  ${isActive("/blog")
-                    ? "text-ink-black dark:text-rice-white"
-                    : "text-ink-gray dark:text-rice-white-dim hover:text-ink-black dark:hover:text-rice-white"
-                  }`}
-              >
-                博客
-                {isActive("/blog") && (
-                  <motion.div
-                    layoutId="navbar-indicator"
-                    className="absolute inset-0 bg-ink-black/5 dark:bg-rice-white/10 rounded-lg"
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                  />
-                )}
-              </Link>
+              {siteConfig.nav.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`relative px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg
+                    ${isActive(item.href)
+                      ? "text-ink-black dark:text-rice-white"
+                      : "text-ink-gray dark:text-rice-white-dim hover:text-ink-black dark:hover:text-rice-white"
+                    }`}
+                >
+                  {item.label}
+                  {isActive(item.href) && (
+                    <motion.div
+                      layoutId="navbar-indicator"
+                      className="absolute inset-0 bg-ink-black/5 dark:bg-rice-white/10 rounded-lg"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                    />
+                  )}
+                </Link>
+              ))}
             </div>
 
             <div className="flex items-center gap-2 relative">
@@ -178,30 +165,21 @@ export function Navbar() {
 
               {/* 导航链接 */}
               <nav className="p-2 space-y-1">
-                <Link
-                  href="/"
-                  className={`flex items-center justify-center w-full py-3 rounded-xl text-sm font-medium
-                    transition-all duration-200 no-underline
-                    ${isActive("/")
-                      ? "text-ink-black dark:text-rice-white bg-ink-black/5 dark:bg-rice-white/10"
-                      : "text-ink-gray dark:text-rice-white-dim hover:bg-ink-black/5 dark:hover:bg-rice-white/10"
-                    }`}
-                  onClick={(e) => handleNavClick(e, "/")}
-                >
-                  首页
-                </Link>
-                <Link
-                  href="/blog"
-                  className={`flex items-center justify-center w-full py-3 rounded-xl text-sm font-medium
-                    transition-all duration-200 no-underline
-                    ${isActive("/blog")
-                      ? "text-ink-black dark:text-rice-white bg-ink-black/5 dark:bg-rice-white/10"
-                      : "text-ink-gray dark:text-rice-white-dim hover:bg-ink-black/5 dark:hover:bg-rice-white/10"
-                    }`}
-                  onClick={(e) => handleNavClick(e, "/blog")}
-                >
-                  博客
-                </Link>
+                {siteConfig.nav.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`flex items-center justify-center w-full py-3 rounded-xl text-sm font-medium
+                      transition-all duration-200 no-underline
+                      ${isActive(item.href)
+                        ? "text-ink-black dark:text-rice-white bg-ink-black/5 dark:bg-rice-white/10"
+                        : "text-ink-gray dark:text-rice-white-dim hover:bg-ink-black/5 dark:hover:bg-rice-white/10"
+                      }`}
+                    onClick={(e) => handleNavClick(e, item.href)}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
               </nav>
             </div>
           </>

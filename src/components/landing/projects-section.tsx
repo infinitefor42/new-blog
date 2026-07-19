@@ -4,32 +4,10 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { FiGithub, FiArrowUpRight, FiPlay } from "react-icons/fi";
 import { appleEasing, createContainerVariants, createCardVariants } from "@/lib/animations";
+import { siteConfig } from "@/config/site";
 
 const containerVariants = createContainerVariants(0.12);
 const cardVariants = createCardVariants(0.7, 40);
-
-const projects = [
-  {
-    name: "INFINITE 博客",
-    nameEn: "INFINITE Blog",
-    description: "一个极简风格的个人博客系统，中式纸质感与苹果玻璃拟态的融合",
-    tags: ["Next.js", "Tailwind CSS", "TypeScript"],
-    emoji: "📝",
-    links: [
-      { label: "查看代码", icon: "github", href: "https://github.com/infinitefor42/new-blog" },
-    ],
-  },
-  {
-    name: "经典贪吃蛇",
-    nameEn: "Classic Snake",
-    description: "基于 HTML5 Canvas 的复古贪吃蛇小游戏，怀旧像素风格",
-    tags: ["HTML5", "JavaScript", "Canvas"],
-    emoji: "🐍",
-    links: [
-      { label: "开始游戏", icon: "play", href: "/games/Snake_Game/index.html" },
-    ],
-  },
-];
 
 export function ProjectsSection() {
   const ref = useRef(null);
@@ -49,13 +27,13 @@ export function ProjectsSection() {
               variants={cardVariants}
               className="font-song text-4xl sm:text-5xl lg:text-6xl font-bold text-ink-black dark:text-rice-white mb-3"
             >
-              项目作品
+              {siteConfig.projects.title}
             </motion.h2>
             <motion.p
               variants={cardVariants}
               className="text-lg text-ink-gray/50 dark:text-rice-white-dim/50"
             >
-              我参与开发的项目
+              {siteConfig.projects.subtitle}
             </motion.p>
             <motion.div
               variants={cardVariants}
@@ -64,7 +42,7 @@ export function ProjectsSection() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-3xl mx-auto">
-            {projects.map((project) => (
+            {siteConfig.projects.cards.map((project) => (
               <motion.article
                 key={project.name}
                 variants={cardVariants}
