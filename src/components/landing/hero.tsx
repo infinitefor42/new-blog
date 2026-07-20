@@ -7,6 +7,8 @@ import { FiArrowDown, FiArrowRight, FiMail } from "react-icons/fi";
 import { FaGithub } from "react-icons/fa";
 import { appleEasing, createContainerVariants, createCardVariants } from "@/lib/animations";
 import { siteConfig } from "@/config/site";
+import { SplitText } from "@/components/common/split-text";
+import { Typewriter } from "@/components/common/typewriter";
 
 const containerVariants = createContainerVariants(0.12, 0.3);
 const itemVariants = createCardVariants(0.8, 40);
@@ -68,16 +70,23 @@ export function Hero() {
               {siteConfig.hero.greeting}
             </motion.p>
 
-            <motion.h1
-              variants={itemVariants}
-              className="font-song text-2xl sm:text-3xl md:text-4xl font-bold text-ink-black dark:text-rice-white mb-8 tracking-wide leading-none"
-            >
-              {siteConfig.name}
-            </motion.h1>
+            <motion.div variants={itemVariants} className="mb-8">
+              <SplitText
+                text={siteConfig.name}
+                as="h1"
+                className="font-song text-2xl sm:text-3xl md:text-4xl font-bold text-ink-black dark:text-rice-white tracking-wide leading-none"
+                delay={0.3}
+                staggerChildren={0.08}
+              />
+            </motion.div>
 
             <motion.div variants={itemVariants} className="mb-6">
               <h2 className="text-xl sm:text-2xl text-ink-gray dark:text-rice-white-dim font-light">
-                {siteConfig.hero.subtitle}
+                <Typewriter
+                  texts={[siteConfig.hero.subtitle]}
+                  typingSpeed={120}
+                  pauseDuration={5000}
+                />
               </h2>
             </motion.div>
 

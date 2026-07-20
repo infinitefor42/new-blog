@@ -35,6 +35,7 @@ export function BlogListClient({ posts, categories, tags }: BlogListClientProps)
   return (
     <>
       <FilterPanel
+        posts={posts}
         categories={categories}
         tags={tags}
         selectedCategory={selectedCategory}

@@ -4,6 +4,7 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { appleEasing, createContainerVariants, createCardVariants } from "@/lib/animations";
 import { siteConfig } from "@/config/site";
+import { BorderGlow } from "@/components/common/border-glow";
 
 const containerVariants = createContainerVariants();
 const cardVariants = createCardVariants();
@@ -46,11 +47,10 @@ export function SkillsSection() {
                 key={index}
                 variants={cardVariants}
                 whileHover={{ y: -8, transition: { duration: 0.4, ease: appleEasing } }}
-                className="glass-card p-6 sm:p-8 group cursor-default"
-                style={{ transition: "box-shadow 0.4s cubic-bezier(0.23, 1, 0.32, 1)" }}
-                onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 20px 40px rgba(25,19,15,0.12)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.boxShadow = ""; }}
               >
+                <BorderGlow
+                  className="glass-card p-6 sm:p-8 group cursor-default rounded-3xl"
+                >
                 <div className="flex items-center gap-4">
                   <span className="text-4xl sm:text-5xl flex-shrink-0 select-none" style={{ lineHeight: 1.2 }}>
                     {card.emoji}
@@ -64,6 +64,7 @@ export function SkillsSection() {
                     </p>
                   </div>
                 </div>
+                </BorderGlow>
               </motion.div>
             ))}
           </div>

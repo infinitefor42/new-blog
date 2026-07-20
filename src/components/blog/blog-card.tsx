@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { FiCalendar, FiClock, FiTag, FiArrowRight } from "react-icons/fi";
 import type { PostPreview } from "@/lib/posts";
 import { appleEasing } from "@/lib/animations";
+import { BorderGlow } from "@/components/common/border-glow";
 
 interface BlogCardProps {
   post: PostPreview;
@@ -27,12 +28,13 @@ export function BlogCard({ post, index }: BlogCardProps) {
       className="group"
     >
       <Link href={`/blog/${post.slug}`}>
-        <div
-          className="glass-card overflow-hidden h-full p-6 sm:p-8 relative"
-          style={{ transitionTimingFunction: `cubic-bezier(${appleEasing.join(",")})` }}
-          onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 20px 40px rgba(25,19,15,0.12)"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.boxShadow = ""; }}
+        <BorderGlow
+          className="glass-card overflow-hidden h-full rounded-3xl"
         >
+          <div
+            className="p-6 sm:p-8 relative h-full"
+            style={{ transitionTimingFunction: `cubic-bezier(${appleEasing.join(",")})` }}
+          >
           {/* 标签 */}
           <div className="flex flex-wrap gap-2 mb-4">
             {post.tags.map((tag) => (
@@ -90,6 +92,7 @@ export function BlogCard({ post, index }: BlogCardProps) {
               transition-colors duration-300 group-hover:translate-x-0.5" />
           </div>
         </div>
+        </BorderGlow>
       </Link>
     </motion.article>
   );

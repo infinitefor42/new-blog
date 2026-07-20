@@ -15,6 +15,7 @@ import { TableOfContents } from "./table-of-contents";
 import { useEffect } from "react";
 import { siteConfig } from "@/config/site";
 import { slugify } from "@/lib/slugify";
+import { CodeBlock } from "@/components/common/code-block";
 
 interface BlogPostProps {
   post: PostMeta;
@@ -48,10 +49,14 @@ const markdownComponents: Components = {
         </code>
       );
     }
+    const match = /language-(\w+)/.exec(className || "");
+    const language = match ? match[1] : "";
+    const codeString = String(children).replace(/\n$/, "");
     return (
-      <code className={className} {...props}>
-        {children}
-      </code>
+      <CodeBlock
+        code={codeString}
+        language={language || "text"}
+      />
     );
   },
   img({ src, alt, ...props }) {

@@ -5,6 +5,7 @@ import { useRef } from "react";
 import { FiGithub, FiArrowUpRight, FiPlay } from "react-icons/fi";
 import { appleEasing, createContainerVariants, createCardVariants } from "@/lib/animations";
 import { siteConfig } from "@/config/site";
+import { BorderGlow } from "@/components/common/border-glow";
 
 const containerVariants = createContainerVariants(0.12);
 const cardVariants = createCardVariants(0.7, 40);
@@ -47,11 +48,10 @@ export function ProjectsSection() {
                 key={project.name}
                 variants={cardVariants}
                 whileHover={{ y: -12, transition: { duration: 0.5, ease: appleEasing } }}
-                className="glass-card overflow-hidden group cursor-pointer"
-                style={{ transition: "box-shadow 0.5s cubic-bezier(0.23, 1, 0.32, 1)" }}
-                onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 25px 50px rgba(25,19,15,0.15)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.boxShadow = ""; }}
               >
+                <BorderGlow
+                  className="glass-card overflow-hidden group cursor-pointer rounded-3xl"
+                >
                 {/* 图片区域 */}
                 <div className="relative h-48 sm:h-56 bg-gradient-to-br from-warm-gray/20 to-warm-gray/10 dark:from-warm-gray/10 dark:to-warm-gray/5 overflow-hidden">
                   <div className="absolute inset-0 flex items-center justify-center">
@@ -113,6 +113,7 @@ export function ProjectsSection() {
                     </div>
                   </div>
                 </div>
+                </BorderGlow>
               </motion.article>
             ))}
           </div>

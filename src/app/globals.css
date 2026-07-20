@@ -9,13 +9,18 @@
 /* Tailwind CSS v4 主题定义 */
 @theme inline {
   /* 颜色系统 */
-  --color-paper-bg: #f3eee5;
-  --color-paper-bg-light: #f8f5ef;
+  --color-paper-bg: #F5EDE0;
+  --color-paper-bg-light: #FBF5EB;
   --color-ink-black: #19130f;
   --color-ink-gray: #4a4540;
   --color-warm-gray: #d8ccbc;
   --color-warm-gray-light: #e8e0d4;
   --color-warm-gray-dark: #b8a898;
+
+  /* 强调色（赤陶） */
+  --color-accent: #C47C6A;
+  --color-accent-light: #D4967E;
+  --color-accent-dark: #A85D3B;
 
   /* 暗黑模式颜色 */
   --color-ink-deep: #121212;
@@ -44,8 +49,11 @@
    CSS 自定义属性（用于动态主题切换）
    ======================================== */
 :root {
-  --background: #f3eee5;
+  --background: #F5EDE0;
   --foreground: #19130f;
+  --accent: #C47C6A;
+  --accent-light: #D4967E;
+  --accent-dark: #A85D3B;
   --card-bg: rgba(255, 255, 255, 0.4);
   --card-border: rgba(255, 255, 255, 0.2);
   --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
@@ -55,6 +63,9 @@
 .dark {
   --background: #121212;
   --foreground: #f5f0e8;
+  --accent: #D4967E;
+  --accent-light: #E0AB96;
+  --accent-dark: #C47C6A;
   --card-bg: rgba(30, 30, 30, 0.6);
   --card-border: rgba(255, 255, 255, 0.1);
   --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -642,4 +653,113 @@ body > * {
 /* ========================================
    TOC Animations
    ======================================== */
+
+/* ========================================
+   MemoryTree Orbit Loader
+   ======================================== */
+
+.mt-orbit {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 2rem;
+}
+
+.mt-orbit-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid transparent;
+}
+
+.mt-orbit-ring-1 {
+  border-top-color: rgba(255, 20, 147, 0.6);
+  border-bottom-color: rgba(255, 20, 147, 0.6);
+  animation: mt-spin 2s linear infinite;
+}
+
+.mt-orbit-ring-2 {
+  inset: 12px;
+  border-left-color: rgba(0, 255, 255, 0.5);
+  border-right-color: rgba(0, 255, 255, 0.5);
+  animation: mt-spin 2.5s linear infinite reverse;
+}
+
+.mt-orbit-ring-3 {
+  inset: 24px;
+  border-top-color: rgba(139, 0, 255, 0.4);
+  border-bottom-color: rgba(139, 0, 255, 0.4);
+  animation: mt-spin 3s linear infinite;
+}
+
+.mt-orbit-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  margin: -3px 0 0 -3px;
+}
+
+.mt-orbit-dot-1 {
+  background: #ff1493;
+  box-shadow: 0 0 10px #ff1493, 0 0 20px #ff1493;
+  animation: mt-orbit-move-1 2s linear infinite;
+}
+
+.mt-orbit-dot-2 {
+  background: #00ffff;
+  box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+  animation: mt-orbit-move-2 2.5s linear infinite reverse;
+}
+
+.mt-orbit-dot-3 {
+  background: #8b00ff;
+  box-shadow: 0 0 10px #8b00ff, 0 0 20px #8b00ff;
+  animation: mt-orbit-move-3 3s linear infinite;
+}
+
+.mt-orbit-core {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  top: 50%;
+  left: 50%;
+  margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0%, #ff1493 50%, transparent 70%);
+  box-shadow: 0 0 20px rgba(255, 20, 147, 0.6), 0 0 40px rgba(255, 20, 147, 0.3);
+  animation: mt-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes mt-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes mt-orbit-move-1 {
+  to { transform: rotate(360deg) translateX(60px); }
+}
+
+@keyframes mt-orbit-move-2 {
+  to { transform: rotate(360deg) translateX(48px); }
+}
+
+@keyframes mt-orbit-move-3 {
+  to { transform: rotate(360deg) translateX(36px); }
+}
+
+@keyframes mt-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.7; }
+}
+
+.mt-progress-percent {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+  font-family: monospace;
+  letter-spacing: 0.2em;
+  margin-top: 0.75rem;
+  text-align: center;
+}
 

@@ -3,8 +3,11 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { FiSearch, FiArchive } from "react-icons/fi";
+import { RandomPostButton } from "./random-post-button";
+import type { PostPreview } from "@/lib/posts";
 
 interface FilterPanelProps {
+  posts: PostPreview[];
   categories: string[];
   tags: string[];
   selectedCategory: string;
@@ -16,6 +19,7 @@ interface FilterPanelProps {
 }
 
 export function FilterPanel({
+  posts,
   categories,
   tags,
   selectedCategory,
@@ -71,21 +75,24 @@ export function FilterPanel({
         </div>
       </div>
 
-      {/* 归档按钮 + 搜索框 */}
+      {/* 归档按钮 + 随机按钮 + 搜索框 */}
       <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
-        <Link
-          href="/blog/archive"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl
-            border border-warm-gray/40 dark:border-warm-gray-dark/40
-            text-ink-black dark:text-rice-white text-sm font-medium
-            transition-all duration-300
-            hover:bg-ink-black/5 dark:hover:bg-rice-white/5
-            hover:border-warm-gray/60 dark:hover:border-warm-gray-dark/60
-            active:scale-[0.97] shrink-0"
-        >
-          <FiArchive className="w-4 h-4" />
-          归档
-        </Link>
+        <div className="flex gap-3 shrink-0">
+          <Link
+            href="/blog/archive"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl
+              border border-warm-gray/40 dark:border-warm-gray-dark/40
+              text-ink-black dark:text-rice-white text-sm font-medium
+              transition-all duration-300
+              hover:bg-ink-black/5 dark:hover:bg-rice-white/5
+              hover:border-warm-gray/60 dark:hover:border-warm-gray-dark/60
+              active:scale-[0.97]"
+          >
+            <FiArchive className="w-4 h-4" />
+            归档
+          </Link>
+          <RandomPostButton posts={posts} />
+        </div>
 
         <div className="relative flex-1">
           <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-warm-gray-dark dark:text-warm-gray" />
