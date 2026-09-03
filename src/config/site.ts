@@ -22,7 +22,7 @@ export const siteConfig = {
 
   hero: {
     greeting: "你好，我是",
-    subtitle: "大一学生 | 数据科学与大数据技术专业",
+    subtitle: "大二学生 | 数据科学与大数据技术专业",
     bio: "这里沉淀知识笔记、数学推导、算法分析，也记录数据、代码与成长的细碎感悟。不求一步到位，只求日日精进。愿以热爱为引，期待与你同行。",
     quote: "We are not behind. We are just not there yet.",
     ctaLabel: "阅读博客",
