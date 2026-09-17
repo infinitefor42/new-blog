@@ -3,6 +3,7 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { FiHeart } from "react-icons/fi";
+import { VisitCount } from "@/components/common/busuanzi";
 
 export function Footer() {
   const ref = useRef(null);
@@ -27,6 +28,10 @@ export function Footer() {
             <p className="text-xs text-ink-gray/30 dark:text-rice-white-dim/30">
               使用 Next.js 构建
             </p>
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 mt-3 text-xs text-ink-gray/40 dark:text-rice-white-dim/40">
+              <VisitCount metric="site_pv" />
+              <VisitCount metric="site_uv" />
+            </div>
           </div>
         </motion.div>
       </div>

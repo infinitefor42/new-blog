@@ -356,19 +356,87 @@ body > * {
 }
 
 /* ========================================
-   行内数学公式溢出处理
+   公式箱（块级公式容器）
    ======================================== */
 .prose .katex-display {
+  position: relative;
+  display: block;
+  margin: 1.75em 0;
+  padding: 2.2em 1.25em 1.2em;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(25, 19, 15, 0.08);
+  border-left: 3px solid var(--accent);
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(25, 19, 15, 0.04);
+}
+
+/* 左上角标签；放在外层箱子上，公式横向滚动时不会跟着跑 */
+.prose .katex-display::before {
+  content: "公式";
+  position: absolute;
+  top: 0.9em;
+  left: 1.1em;
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  opacity: 0.85;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* 公式过宽时在箱子内部横向滚动 */
+.prose .katex-display > .katex {
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
-  padding: 0.5em 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(25, 19, 15, 0.15) transparent;
+}
+
+.prose .katex-display > .katex::-webkit-scrollbar {
+  height: 4px;
+}
+
+.prose .katex-display > .katex::-webkit-scrollbar-thumb {
+  background: rgba(25, 19, 15, 0.15);
+  border-radius: 2px;
+}
+
+.dark .prose .katex-display {
+  background: rgba(245, 240, 232, 0.04);
+  border-color: rgba(245, 240, 232, 0.1);
+  border-left-color: var(--accent);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+}
+
+.dark .prose .katex-display > .katex {
+  scrollbar-color: rgba(245, 240, 232, 0.15) transparent;
+}
+
+.dark .prose .katex-display > .katex::-webkit-scrollbar-thumb {
+  background: rgba(245, 240, 232, 0.15);
 }
 
 .prose p .katex,
 .prose li .katex,
 .prose td .katex {
   word-break: break-word;
+}
+
+/* ========================================
+   不蒜子访问统计
+   ======================================== */
+/* 默认隐藏，取数成功后由脚本置为 inline；服务不可用时保持隐藏，不会露出空标签 */
+.visit-count {
+  display: none;
+}
+
+.visit-count > svg {
+  display: inline-block;
+  vertical-align: -0.125em;
+  margin-right: 0.375rem;
 }
 
 @media (max-width: 640px) {
@@ -385,6 +453,12 @@ body > * {
 
   .prose .katex {
     font-size: 0.9em;
+  }
+
+  .prose .katex-display {
+    margin: 1.25em 0;
+    padding: 2em 0.75em 0.9em;
+    border-radius: 10px;
   }
 
   .prose table {

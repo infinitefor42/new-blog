@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { FiArrowLeft, FiCalendar, FiClock, FiExternalLink } from "react-icons/fi";
+import { FiArrowLeft, FiCalendar, FiClock, FiExternalLink, FiEye } from "react-icons/fi";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
@@ -16,6 +16,7 @@ import { useEffect } from "react";
 import { siteConfig } from "@/config/site";
 import { slugify } from "@/lib/slugify";
 import { CodeBlock } from "@/components/common/code-block";
+import { VisitCount } from "@/components/common/busuanzi";
 
 interface BlogPostProps {
   post: PostMeta;
@@ -195,6 +196,7 @@ export function BlogPost({ post }: BlogPostProps) {
               <FiClock className="w-4 h-4" />
               {post.readingTime} 分钟阅读
             </span>
+            <VisitCount metric="page_pv" icon={<FiEye className="w-4 h-4" />} />
           </div>
         </header>
 

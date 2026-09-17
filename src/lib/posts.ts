@@ -83,6 +83,28 @@ export function getAllPosts(): PostPreview[] {
   );
 }
 
+/**
+ * 把独占一行的 `$$...$$` 展开成 remark-math 能识别的块级公式。
+ *
+ * remark-math 的块级公式要求 `$$` 与公式内容分行书写（`$$\n公式\n$$`），
+ * 写成单行 `$$公式$$` 时只会被当成行内公式，不会居中、也拿不到公式箱样式。
+ * 围栏代码块（``` 包裹）内的内容原样保留。
+ */
+function normalizeDisplayMath(markdown: string): string {
+  return markdown
+    .split(/(```[\s\S]*?```)/g)
+    .map((chunk, index) =>
+      index % 2 === 1
+        ? chunk
+        : chunk.replace(
+            /^([ \t]*(?:>[ \t]*)*)\$\$(.+?)\$\$[ \t]*$/gm,
+            (_, prefix: string, body: string) =>
+              `${prefix}$$\n${prefix}${body.trim()}\n${prefix}$$`
+          )
+    )
+    .join("");
+}
+
 /** 根据 slug 获取单篇文章 */
 export function getPostBySlug(slug: string): PostMeta | null {
   const fullPath = path.join(postsDirectory, `${slug}.md`);
@@ -121,7 +143,7 @@ export function getPostBySlug(slug: string): PostMeta | null {
     categories,
     excerpt: generateExcerpt(content),
     readingTime: estimateReadingTime(content),
-    content,
+    content: normalizeDisplayMath(content),
   };
 }
 

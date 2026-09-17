@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "@/components/providers";
 import { ThemeScript } from "@/components/theme-script";
 import { ServiceWorkerRegister } from "@/components/common/service-worker-register";
+import { BusuanziScript } from "@/components/common/busuanzi";
 import { siteConfig } from "@/config/site";
 import "./globals.css";
 
@@ -75,6 +76,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col">
         <Providers>{children}</Providers>
+        <BusuanziScript />
         <ServiceWorkerRegister />
       </body>
     </html>
