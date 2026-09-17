@@ -32,9 +32,9 @@ export const siteConfig = {
     title: "核心技能",
     subtitle: "我的工程实践",
     cards: [
-      { emoji: "💻", title: "核心修炼", desc: "C 语言 / 数据结构与算法" },
+      { emoji: "💻", title: "核心修炼", desc: "C 语言 / 数据结构与算法 / Python" },
       { emoji: "🛠️", title: "工具链", desc: "Git 版本控制 / MiMo Code" },
-      { emoji: "📝", title: "技能解锁", desc: "Linux操作系统" },
+      { emoji: "📝", title: "技能解锁", desc: "Linux 操作系统 / MySQL 数据库" },
       { emoji: "🧠", title: "兴趣点", desc: "数学 / 计算机专业探索" },
     ],
   },
