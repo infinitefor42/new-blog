@@ -2,6 +2,8 @@
  * 主题初始化脚本（内联到 <head>）
  * 在页面加载前执行，防止暗黑模式切换时的闪烁
  */
+import Script from "next/script";
+
 export function ThemeScript() {
   const script = `
     (function() {
@@ -26,9 +28,10 @@ export function ThemeScript() {
   `;
 
   return (
-    <script
+    <Script
+      id="theme-init"
+      strategy="beforeInteractive"
       dangerouslySetInnerHTML={{ __html: script }}
-      suppressHydrationWarning
     />
   );
 }

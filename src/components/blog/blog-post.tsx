@@ -12,7 +12,8 @@ import type { PostMeta } from "@/lib/posts";
 import { GiscusComments } from "./giscus-comments";
 import { ReadingProgress } from "./reading-progress";
 import { TableOfContents } from "./table-of-contents";
-import { useEffect } from "react";
+import { BackToTop } from "@/components/common/back-to-top";
+import { Children, isValidElement, useEffect } from "react";
 import { siteConfig } from "@/config/site";
 import { slugify } from "@/lib/slugify";
 import { CodeBlock } from "@/components/common/code-block";
@@ -37,6 +38,18 @@ function extractText(children: React.ReactNode): string {
 /** 判断是否为外部链接 */
 function isExternal(href: string): boolean {
   return href.startsWith("http://") || href.startsWith("https://");
+}
+
+/** 判断段落内容是否只由一张图片（figure）构成 */
+function isFigureOnly(children: React.ReactNode): boolean {
+  const arr = Children.toArray(children).filter(
+    (c) => !(typeof c === "string" && c.trim() === "")
+  );
+  return (
+    arr.length === 1 &&
+    isValidElement(arr[0]) &&
+    arr[0].type === "figure"
+  );
 }
 
 /** 自定义 Markdown 渲染组件 */
@@ -74,6 +87,15 @@ const markdownComponents: Components = {
         {alt && <figcaption>{alt}</figcaption>}
       </figure>
     );
+  },
+  p({ children, ...props }) {
+    // 图片段落：react-markdown 会把 ![alt](src) 包进 <p>，
+    // 若直接输出 <p><figure> 会触发非法嵌套导致 hydration 错误，
+    // 这里改为直接渲染 figure。
+    if (isFigureOnly(children)) {
+      return <>{children}</>;
+    }
+    return <p {...props}>{children}</p>;
   },
   a: ({ href, children, ...props }) => {
     const url = href || "";
@@ -165,6 +187,7 @@ export function BlogPost({ post }: BlogPostProps) {
     <article className="max-w-3xl mx-auto">
       <ReadingProgress />
       <TableOfContents markdown={post.content} />
+      <BackToTop />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
