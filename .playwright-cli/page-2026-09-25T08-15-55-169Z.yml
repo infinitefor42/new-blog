@@ -1,0 +1,44 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e4]:
+        - link "INFINITE" [ref=e5] [cursor=pointer]:
+          - /url: /
+        - generic [ref=e7]:
+          - link "首页" [ref=e8] [cursor=pointer]:
+            - /url: /
+          - link "博客" [ref=e10] [cursor=pointer]:
+            - /url: /blog
+        - generic [ref=e12] [cursor=pointer]
+  - main [ref=e20]:
+    - generic [ref=e23]:
+      - img "个人头像" [ref=e26]
+      - generic [ref=e28]:
+        - paragraph [ref=e29]: 你好，我是
+        - heading "I N F I N I T E" [level=1] [ref=e31]:
+          - generic [ref=e32]: I
+          - generic [ref=e33]: "N"
+          - generic [ref=e34]: F
+          - generic [ref=e35]: I
+          - generic [ref=e36]: "N"
+          - generic [ref=e37]: I
+          - generic [ref=e38]: T
+          - generic [ref=e39]: E
+        - heading [level=2] [ref=e41]
+        - paragraph [ref=e44]: 这里沉淀知识笔记、数学推导、算法分析，也记录数据、代码与成长的细碎感悟。不求一步到位，只求日日精进。愿以热爱为引，期待与你同行。
+        - blockquote [ref=e45]: “We are not behind. We are just not there yet.”
+        - link "阅读博客" [ref=e47] [cursor=pointer]:
+          - /url: /blog
+          - strong [ref=e48]: 阅读博客
+        - generic [ref=e54]:
+          - link "GitHub" [ref=e55] [cursor=pointer]:
+            - /url: https://github.com/infinitefor42
+          - link "Email" [ref=e58] [cursor=pointer]:
+            - /url: mailto:pcodeinfinite@qq.com
+      - link "向下滚动" [ref=e63] [cursor=pointer]:
+        - /url: "#skills"
+  - contentinfo [ref=e71]:
+    - generic [ref=e74]:
+      - paragraph [ref=e75]: © 2026 Bowen Cao
+      - paragraph [ref=e78]: 使用 Next.js 构建
+  - button "Open Next.js Dev Tools" [ref=e84] [cursor=pointer]

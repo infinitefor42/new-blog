@@ -3,12 +3,13 @@
 import { motion, type Variants } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { FiArrowDown, FiArrowRight, FiMail } from "react-icons/fi";
+import { FiArrowDown, FiMail } from "react-icons/fi";
 import { FaGithub } from "react-icons/fa";
 import { appleEasing, createContainerVariants, createCardVariants } from "@/lib/animations";
 import { siteConfig } from "@/config/site";
 import { SplitText } from "@/components/common/split-text";
 import { Typewriter } from "@/components/common/typewriter";
+import { SpaceButton } from "@/components/common/space-button";
 
 const containerVariants = createContainerVariants(0.12, 0.3);
 const itemVariants = createCardVariants(0.8, 40);
@@ -110,19 +111,7 @@ export function Hero() {
               variants={itemVariants}
               className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10"
             >
-              <Link
-                href="/blog"
-                className="group relative inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl
-                  bg-ink-black dark:bg-rice-white text-paper-bg dark:text-ink-deep
-                  font-medium text-sm sm:text-base
-                  transition-all duration-500
-                  hover:shadow-[0_20px_40px_rgba(25,19,15,0.2)] dark:hover:shadow-[0_20px_40px_rgba(245,240,232,0.15)]
-                  hover:scale-[1.02] active:scale-[0.98]"
-                style={{ transitionTimingFunction: `cubic-bezier(${appleEasing.join(",")})` }}
-              >
-                {siteConfig.hero.ctaLabel}
-                <FiArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-              </Link>
+              <SpaceButton href="/blog">{siteConfig.hero.ctaLabel}</SpaceButton>
             </motion.div>
 
             {/* 社交链接 - 玻璃拟态胶囊 */}

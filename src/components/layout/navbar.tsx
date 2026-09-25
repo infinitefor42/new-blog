@@ -3,22 +3,16 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiSun, FiMoon, FiMenu, FiX } from "react-icons/fi";
-import { useTheme } from "next-themes";
+import { FiMenu, FiX } from "react-icons/fi";
 import { useState, useEffect, useCallback } from "react";
 import { siteConfig } from "@/config/site";
+import { ThemeToggle } from "./theme-toggle";
 
 export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { theme, setTheme, resolvedTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -88,32 +82,7 @@ export function Navbar() {
             </div>
 
             <div className="flex items-center gap-2 relative">
-              <button
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="flex items-center justify-center w-10 h-10 rounded-xl
-                  text-ink-gray dark:text-rice-white-dim
-                  hover:bg-ink-black/5 dark:hover:bg-rice-white/10
-                  transition-all duration-200 active:scale-95"
-                aria-label="切换主题"
-              >
-                {mounted ? (
-                  <motion.span
-                    key={resolvedTheme}
-                    initial={{ rotate: -90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
-                    className="flex items-center justify-center"
-                  >
-                    {resolvedTheme === "dark" ? (
-                      <FiSun className="w-5 h-5" />
-                    ) : (
-                      <FiMoon className="w-5 h-5" />
-                    )}
-                  </motion.span>
-                ) : (
-                  <div className="w-5 h-5" />
-                )}
-              </button>
+              <ThemeToggle />
 
               <button
                 onClick={handleMobileMenuToggle}
