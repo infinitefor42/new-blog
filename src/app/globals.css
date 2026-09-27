@@ -362,28 +362,12 @@ body > * {
   position: relative;
   display: block;
   margin: 1.75em 0;
-  padding: 2.2em 1.25em 1.2em;
+  padding: 1.2em 1.25em;
   background: rgba(255, 255, 255, 0.4);
   border: 1px solid rgba(25, 19, 15, 0.08);
   border-left: 3px solid var(--accent);
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(25, 19, 15, 0.04);
-}
-
-/* 左上角标签；放在外层箱子上，公式横向滚动时不会跟着跑 */
-.prose .katex-display::before {
-  content: "公式";
-  position: absolute;
-  top: 0.9em;
-  left: 1.1em;
-  font-family: var(--font-sans);
-  font-size: 0.68rem;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  color: var(--accent);
-  opacity: 0.85;
-  user-select: none;
-  pointer-events: none;
 }
 
 /* 公式过宽时在箱子内部横向滚动 */
@@ -1552,7 +1536,7 @@ body > * {
 }
 
 .bb8-toggle__checkbox:checked + .bb8-toggle__container .bb8__body {
-  transform: rotate(765deg);
+  transform: rotate(225deg);
 }
 
 .bb8-toggle__checkbox:hover + .bb8-toggle__container .bb8__head::before {

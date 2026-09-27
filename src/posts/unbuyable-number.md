@@ -6,7 +6,7 @@ mathjax: true
 categories: 
   - 算法
 tags:
-  - 数论
+  - 数据结构
 
 ---
 ### 题目背景与核心痛点

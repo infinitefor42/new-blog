@@ -45,6 +45,7 @@ next-env.d.ts
 # AI agents & Editor local state
 /.claude/
 /.mimocode/
+/.playwright-cli/
 
 # Logs
 *.log
