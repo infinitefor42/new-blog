@@ -1,3 +1,28 @@
+export interface NavChild {
+  label: string;
+  href: string;
+}
+
+export interface NavItem {
+  label: string;
+  href: string;
+  children?: NavChild[];
+}
+
+export const navItems: NavItem[] = [
+  { label: "首页", href: "/" },
+  {
+    label: "博客",
+    href: "/blog",
+    children: [
+      { label: "分类", href: "/blog/categories" },
+      { label: "标签", href: "/blog/tags" },
+      { label: "归档", href: "/blog/archive" },
+      { label: "搜索", href: "/blog/search" },
+    ],
+  },
+];
+
 export const siteConfig = {
   name: "INFINITE",
   author: "Bowen Cao",
@@ -15,10 +40,7 @@ export const siteConfig = {
     email: "mailto:pcodeinfinite@qq.com",
   },
 
-  nav: [
-    { label: "首页", href: "/" },
-    { label: "博客", href: "/blog" },
-  ],
+  nav: navItems,
 
   hero: {
     greeting: "你好，我是",
@@ -30,12 +52,12 @@ export const siteConfig = {
 
   skills: {
     title: "核心技能",
-    subtitle: "我的工程实践",
+    subtitle: "我的学习与实践",
     cards: [
-      { emoji: "💻", title: "核心修炼", desc: "C 语言 / 数据结构与算法 / Python" },
-      { emoji: "🛠️", title: "工具链", desc: "Git 版本控制 / MiMo Code" },
-      { emoji: "📝", title: "技能解锁", desc: "Linux 操作系统 / MySQL 数据库" },
-      { emoji: "🧠", title: "兴趣点", desc: "数学 / 计算机专业探索" },
+      { emoji: "💻", title: "编程基础", desc: "C 语言 / Python / 数据结构与算法" },
+      { emoji: "🖥️", title: "系统与数据", desc: "Linux 操作系统 / MySQL 数据库" },
+      { emoji: "🛠️", title: "工程工具", desc: "Git 版本控制 / 命令行 / MiMo Code" },
+      { emoji: "🧮", title: "数学基础", desc: "高等数学 / 线性代数" },
     ],
   },
 

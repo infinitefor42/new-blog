@@ -122,7 +122,7 @@ export function BlogPreview({ posts }: BlogPreviewProps) {
 
           <motion.div variants={cardVariants} className="text-center mt-12">
             <Link
-              href="/blog"
+              href="/blog/archive"
               className="group inline-flex items-center gap-2 px-8 py-4 rounded-2xl
                 border border-warm-gray/40 dark:border-warm-gray-dark/40
                 text-ink-black dark:text-rice-white font-medium
