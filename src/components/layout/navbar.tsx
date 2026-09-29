@@ -241,69 +241,35 @@ export function Navbar() {
             />
             {/* 右侧抽屉面板 - 固定在汉堡菜单按钮正下方 */}
             <div
-              style={{ position: "fixed", right: "8px", top: "56px", zIndex: 60 }}
+              style={{ position: "fixed", right: "8px", top: "64px", zIndex: 60 }}
               className="bg-paper-bg/95 dark:bg-ink-deep/95
                 shadow-2xl border border-black/5 dark:border-rice-white/10
-                md:hidden rounded-xl w-44"
+                md:hidden rounded-xl w-28"
             >
-              {/* 关闭按钮 */}
-              <div className="flex justify-end p-2">
-                <button
-                  onClick={() => setIsMenuOpen(false)}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg
-                    text-ink-gray dark:text-rice-white-dim
-                    hover:bg-ink-black/5 dark:hover:bg-rice-white/10
-                    transition-all duration-200"
-                >
-                  <FiX className="w-4 h-4" />
-                </button>
-              </div>
-
               {/* 导航链接 */}
-              <nav className="p-2 space-y-1">
+              <nav className="p-2 pt-3 space-y-1">
                 {siteConfig.nav.map((item) => {
                   const children = inBlogSection ? item.children : undefined;
 
                   return children ? (
                     <div key={item.href}>
-                      <div className="flex items-center">
-                        <Link
-                          href={item.href}
-                          className={`flex-1 flex items-center justify-center py-3 rounded-xl text-sm font-medium
-                            transition-all duration-200 no-underline
-                            ${
-                              isActive(item.href)
-                                ? "text-ink-black dark:text-rice-white bg-ink-black/5 dark:bg-rice-white/10"
-                                : "text-ink-gray dark:text-rice-white-dim hover:bg-ink-black/5 dark:hover:bg-rice-white/10"
-                            }`}
-                          onClick={(e) => handleNavClick(e, item.href)}
-                        >
-                          {item.label}
-                        </Link>
-                        <button
-                          onClick={() =>
-                            setMobileExpanded(
-                              mobileExpanded === item.href ? null : item.href
-                            )
-                          }
-                          aria-expanded={mobileExpanded === item.href}
-                          aria-label={`展开${item.label}子菜单`}
-                          className="w-8 h-8 flex items-center justify-center rounded-lg
-                            text-ink-gray dark:text-rice-white-dim
-                            hover:bg-ink-black/5 dark:hover:bg-rice-white/10
-                            transition-all duration-200"
-                        >
-                          <motion.span
-                            animate={{
-                              rotate: mobileExpanded === item.href ? 180 : 0,
-                            }}
-                            transition={{ duration: 0.2 }}
-                            className="flex items-center justify-center"
-                          >
-                            <FiChevronDown className="w-4 h-4" />
-                          </motion.span>
-                        </button>
-                      </div>
+                      <button
+                        onClick={() =>
+                          setMobileExpanded(
+                            mobileExpanded === item.href ? null : item.href
+                          )
+                        }
+                        aria-expanded={mobileExpanded === item.href}
+                        className={`w-full flex items-center justify-center py-3 rounded-xl text-sm font-medium
+                          transition-all duration-200
+                          ${
+                            isActive(item.href)
+                              ? "text-ink-black dark:text-rice-white bg-ink-black/5 dark:bg-rice-white/10"
+                              : "text-ink-gray dark:text-rice-white-dim hover:bg-ink-black/5 dark:hover:bg-rice-white/10"
+                          }`}
+                      >
+                        {item.label}
+                      </button>
 
                       <AnimatePresence initial={false}>
                         {mobileExpanded === item.href && (

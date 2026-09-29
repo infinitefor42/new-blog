@@ -1,6 +1,6 @@
 // Service Worker - INFINITE
 // 更新部署后请手动递增版本号以清除旧缓存
-const CACHE_NAME = "infinite-blog-v2";
+const CACHE_NAME = "infinite-blog-v3";
 
 // 需要预缓存的资源
 const PRECACHE_ASSETS = [
@@ -38,7 +38,7 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-// 获取事件 - Network First 策略
+// 获取事件 - 区分资源类型使用不同策略
 self.addEventListener("fetch", (event) => {
   // 只处理 GET 请求
   if (event.request.method !== "GET") return;
@@ -46,11 +46,25 @@ self.addEventListener("fetch", (event) => {
   // 跳过非同源请求
   if (!event.request.url.startsWith(self.location.origin)) return;
 
-  // 跳过 API 请求和动态内容
-  if (
-    event.request.url.includes("/api/") ||
-    event.request.url.includes("/_next/")
-  ) {
+  // 跳过 API 请求
+  if (event.request.url.includes("/api/")) {
+    return;
+  }
+
+  // _next/static 资源（JS/CSS）用 Cache First，文件名带 hash 可永久缓存
+  if (event.request.url.includes("/_next/")) {
+    event.respondWith(
+      caches.open(CACHE_NAME).then(async (cache) => {
+        const cachedResponse = await cache.match(event.request);
+        if (cachedResponse) return cachedResponse;
+
+        const networkResponse = await fetch(event.request);
+        if (networkResponse.ok) {
+          cache.put(event.request, networkResponse.clone());
+        }
+        return networkResponse;
+      })
+    );
     return;
   }
 
