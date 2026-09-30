@@ -34,7 +34,7 @@ INFINITE 是一个以 **宣纸暖米色 `#f3eee5`** 为底色、融合 **宋体�
 | **3D** | Three.js + React Three Fiber | 3D 粒子系统与场景渲染 |
 | **图标** | Lucide React | 矢量图标库 |
 | **评论** | GitHub Giscus | 基于 GitHub Discussions，明暗主题丝滑联动 |
-| **主题** | next-themes | 亮色 / 暗色 / 互相切换/|
+| **主题** | next-themes | 亮色 / 暗色切换 |
 
 ---
 
@@ -47,12 +47,13 @@ my-new-blog/
 │       └── deploy.yml              # GitHub Pages 自动部署工作流
 │
 ├── public/                         # 静态公共资源
-│   ├── images/website-logo.png     # 个人头像/网站Logo
+│   ├── images/                     # 网站 Logo 与文章配图
+│   ├── audio/                      # 记忆树背景音乐
+│   ├── games/                      # HTML5 小游戏（贪吃蛇）
+│   ├── icons/                      # PWA 图标（192 / 512）
 │   ├── CNAME                       # 自定义域名绑定
 │   ├── manifest.json               # PWA 应用清单
-│   ├── sw.js                       # Service Worker（离线缓存）
-│   ├── icons/                      # PWA 图标（192 / 512）
-│   └── games/
+│   └── sw.js                       # Service Worker（静态资源缓存）
 │
 ├── src/
 │   ├── app/                        # Next.js App Router 路由
@@ -60,52 +61,73 @@ my-new-blog/
 │   │   ├── page.tsx                # 首页（Hero + 技能 + 项目 + 博客预览）
 │   │   ├── globals.css             # 全局样式（宣纸背景、玻璃拟态、排版系统）
 │   │   ├── not-found.tsx           # 404 页面
+│   │   ├── search-index.json/      # 全文搜索静态索引（构建时生成）
+│   │   ├── memory-tree/
+│   │   │   └── page.tsx            # 记忆树页面入口
 │   │   └── blog/
-│   │       ├── page.tsx            # 博客列表页（筛选 + 分类）
+│   │       ├── layout.tsx          # 博客分区布局
+│   │       ├── page.tsx            # 博客列表页（标签云 + 分类筛选）
 │   │       ├── archive/page.tsx    # 文章归档页
+│   │       ├── search/page.tsx     # 全文搜索页
+│   │       ├── tags/               # 标签聚合页（列表 + 单标签）
+│   │       ├── categories/         # 分类聚合页（列表 + 单分类）
 │   │       └── [slug]/page.tsx     # 文章详情页（SSG 静态生成）
-│   │
-│   │   └── memory-tree/
-│   │       └── page.tsx            # 记忆树页面入口
 │   │
 │   ├── components/
 │   │   ├── landing/                # 首页板块组件
 │   │   │   ├── hero.tsx            # 头像、座右铭、社交链接胶囊
 │   │   │   ├── skills-section.tsx  # 核心技能卡片网格
 │   │   │   ├── projects-section.tsx# 项目作品展示
-│   │   │   └── blog-preview.tsx    # 最新文章预览
+│   │   │   ├── blog-preview.tsx    # 最新文章预览
+│   │   │   ├── landing-sections.tsx# 非首屏区块聚合（合并 chunk）
+│   │   │   └── lazy-sections.tsx   # 非首屏区块懒加载入口
 │   │   │
 │   │   ├── blog/                   # 博客功能组件
 │   │   │   ├── blog-post.tsx       # 文章渲染（Markdown + 代码高亮 + 数学公式）
 │   │   │   ├── blog-card.tsx       # 文章卡片
-│   │   │   ├── blog-list-client.tsx# 博客列表客户端组件
-│   │   │   ├── filter-panel.tsx    # 标签 / 分类筛选面板
+│   │   │   ├── post-grid.tsx       # 文章网格列表
+│   │   │   ├── page-header.tsx     # 分区页头
+│   │   │   ├── search-client.tsx   # 搜索客户端组件
+│   │   │   ├── table-of-contents.tsx # 文章目录（TOC）
+│   │   │   ├── reading-progress.tsx# 阅读进度条
 │   │   │   ├── giscus-comments.tsx # Giscus 评论组件（明暗主题联动）
-│   │   │   └── MemoryTree.tsx      # 记忆树 3D 场景组件
+│   │   │   ├── MemoryTree.tsx      # 记忆树 3D 场景组件
+│   │   │   └── memory-tree/        # 记忆树子场景（粒子树 / 能量束 / 克莱因瓶等）
 │   │   │
 │   │   ├── layout/                 # 全局布局组件
 │   │   │   ├── navbar.tsx          # 顶部导航栏（滚动感知 + 移动端抽屉）
+│   │   │   ├── theme-toggle.tsx    # 暗亮主题切换按钮
 │   │   │   └── footer.tsx          # 页脚
 │   │   │
 │   │   ├── common/                 # 通用组件
-│   │   │   └── service-worker-register.tsx
+│   │   │   ├── back-to-top.tsx     # 回到顶部
+│   │   │   ├── busuanzi.tsx        # 不蒜子访问量统计
+│   │   │   ├── code-block.tsx      # 代码块（文件名 + 复制按钮）
+│   │   │   ├── typewriter.tsx      # 打字机效果
+│   │   │   ├── space-button.tsx    # 太空风格按钮
+│   │   │   ├── border-glow.tsx     # 边框辉光
+│   │   │   ├── spotlight-card.tsx  # 聚光灯卡片
+│   │   │   ├── split-text.tsx      # 文字分割动画
+│   │   │   └── service-worker-register.tsx # SW 注册与更新提示
 │   │   │
 │   │   ├── providers.tsx           # 全局 Provider（HeroUI + next-themes）
 │   │   └── theme-script.tsx        # 防闪烁暗色模式初始化脚本
 │   │
 │   ├── lib/                        # 工具库
 │   │   ├── posts.ts                # Markdown 文章加载与元数据解析
+│   │   ├── slugify.ts              # 标题转 URL slug（与 TOC 共用）
 │   │   └── animations.ts           # 共享动画常量与变体工厂
 │   │
 │   ├── config/                     # 配置文件
+│   │   ├── site.ts                 # 站点信息（导航、社交链接）
 │   │   └── photos.ts               # 记忆树相册数据配置
 │   │
 │   └── posts/                      # 博客文章（Markdown 源文件）
-│       
 │
 ├── next.config.ts                  # Next.js 配置（静态导出 + PWA headers）
 ├── tsconfig.json                   # TypeScript 编译配置
 ├── pnpm-workspace.yaml             # pnpm 工作区配置
+├── tunnel.js                       # localtunnel 临时公网预览脚本
 ├── .env.local                      # 环境变量（Giscus 配置，不提交）
 └── package.json                    # 项目依赖与脚本
 ```
@@ -126,6 +148,20 @@ my-new-blog/
 - 修复 Tailwind Typography 默认反引号伪元素（`::before` / `::after`）导致的行内代码外露 Bug
 - 行内代码渲染为暖灰色微代码块：`rgba(25,19,15,0.05)` 背景 + 圆角边框 + 微妙阴影
 - 完美支持数学公式（KaTeX）、表格（GFM）、任务列表等扩展语法
+- 代码块带文件名顶栏与一键复制按钮
+- 文章目录（TOC）锚点跳转 + 顶部阅读进度条 + 回到顶部
+
+### 🔍 全文搜索与聚合页
+
+- 构建时生成静态搜索索引（`/search-index.json`），客户端检索标题 / 摘要 / 标签
+- 标签云按文章数分档展示，标签 / 分类均有独立聚合页
+
+### ⚡ 性能与 PWA
+
+- Service Worker 对 `_next/static` 静态资源采用 Cache First 策略，二次访问秒开
+- 首页非首屏区块懒加载 + 合并动态 import，减少 chunk 碎片化
+- PWA 应用清单 + 图标，支持添加到主屏幕
+- 不蒜子访问量统计（本地开发环境自动屏蔽，避免污染数据）
 
 ### 🎮 原生游戏实验室
 
