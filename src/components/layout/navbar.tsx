@@ -71,6 +71,11 @@ export function Navbar() {
   // 仅在 /blog 分区内，才给「博客」展示二级下拉
   const inBlogSection = pathname.startsWith("/blog");
 
+  // 打开移动端菜单时，博客分区内默认展开「博客」子菜单
+  useEffect(() => {
+    if (isMenuOpen && inBlogSection) setMobileExpanded("/blog");
+  }, [isMenuOpen, inBlogSection]);
+
   const handleMobileMenuToggle = () => {
     setIsMenuOpen((prev) => !prev);
   };
@@ -239,12 +244,16 @@ export function Navbar() {
               className="fixed inset-0 z-[45] bg-black/30 dark:bg-black/50 md:hidden"
               onClick={() => setIsMenuOpen(false)}
             />
-            {/* 右侧抽屉面板 - 固定在汉堡菜单按钮正下方 */}
-            <div
+            {/* 右侧抽屉面板 - 固定在汉堡菜单按钮正下方，带入场动画 */}
+            <motion.div
+              initial={{ opacity: 0, y: -8, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -8, scale: 0.95 }}
+              transition={{ duration: 0.2, ease: appleEasing }}
               style={{ position: "fixed", right: "8px", top: "64px", zIndex: 60 }}
               className="bg-paper-bg/95 dark:bg-ink-deep/95
                 shadow-2xl border border-black/5 dark:border-rice-white/10
-                md:hidden rounded-xl w-28"
+                md:hidden rounded-xl w-28 origin-top-right"
             >
               {/* 导航链接 */}
               <nav className="p-2 pt-3 space-y-1">
@@ -278,16 +287,19 @@ export function Navbar() {
                             animate={{ height: "auto", opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
                             transition={{ duration: 0.25, ease: appleEasing }}
-                            className="overflow-hidden pl-2"
+                            className="overflow-hidden ml-4 pl-2 border-l-2 border-ink-black/10 dark:border-rice-white/10"
                           >
                             {children.map((child) => (
                               <Link
                                 key={child.href}
                                 href={child.href}
-                                className="block text-center py-2.5 rounded-xl text-xs no-underline
-                                  text-ink-gray dark:text-rice-white-dim
-                                  hover:bg-ink-black/5 dark:hover:bg-rice-white/10
-                                  transition-all duration-200"
+                                className={`block text-center py-2.5 rounded-xl text-xs no-underline
+                                  transition-all duration-200
+                                  ${
+                                    isActive(child.href)
+                                      ? "text-ink-black dark:text-rice-white bg-ink-black/5 dark:bg-rice-white/10 font-medium"
+                                      : "text-ink-gray dark:text-rice-white-dim hover:bg-ink-black/5 dark:hover:bg-rice-white/10"
+                                  }`}
                                 onClick={(e) => handleNavClick(e, child.href)}
                               >
                                 {child.label}
@@ -315,7 +327,7 @@ export function Navbar() {
                   );
                 })}
               </nav>
-            </div>
+            </motion.div>
           </>
         )}
       </AnimatePresence>
