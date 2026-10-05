@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiList, FiX } from "react-icons/fi";
+import { FiX } from "react-icons/fi";
+import { ListMorphIcon } from "@/components/common/morph-icon";
 import { slugify } from "@/lib/slugify";
 
 interface TocItem {
@@ -121,7 +122,7 @@ export function TableOfContents({ markdown }: { markdown: string }) {
             hover:text-ink-black dark:hover:text-rice-white transition-colors"
           aria-label="目录"
         >
-          {mobileOpen ? <FiX className="w-5 h-5" /> : <FiList className="w-5 h-5" />}
+          <ListMorphIcon open={mobileOpen} className="w-5 h-5" />
         </button>
 
         <AnimatePresence>

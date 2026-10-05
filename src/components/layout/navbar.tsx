@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiMenu, FiX, FiChevronDown } from "react-icons/fi";
+import { FiChevronDown } from "react-icons/fi";
 import { useState, useEffect, useRef } from "react";
 import { siteConfig } from "@/config/site";
 import { appleEasing } from "@/lib/animations";
+import { MenuMorphIcon } from "@/components/common/morph-icon";
 import { ThemeToggle } from "./theme-toggle";
 
 export function Navbar() {
@@ -224,7 +225,7 @@ export function Navbar() {
                   transition-all duration-200"
                 aria-label={isMenuOpen ? "关闭菜单" : "打开菜单"}
               >
-                {isMenuOpen ? <FiX className="w-5 h-5" /> : <FiMenu className="w-5 h-5" />}
+                <MenuMorphIcon open={isMenuOpen} className="w-5 h-5" />
               </button>
             </div>
           </div>
