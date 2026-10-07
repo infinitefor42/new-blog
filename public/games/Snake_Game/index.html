@@ -518,6 +518,212 @@
             font-size: 16px;
         }
 
+        /* 模式选择 */
+        .mode-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .mode-label {
+            font-size: 13px;
+            color: #555;
+        }
+
+        #settings input[type="radio"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        #settings select {
+            padding: 3px 8px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background: white;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        #settings input:disabled,
+        #settings select:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        #settings.locked label {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* 状态指示 */
+        #boost-display { font-weight: bold; color: #00BFFF; }
+        #combo-display { font-weight: bold; color: #FF69B4; }
+        #level-display { font-weight: bold; color: #4CAF50; }
+
+        /* 排行榜模式标签页 */
+        #lb-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .lb-tab {
+            padding: 4px 12px;
+            font-size: 12px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            background: white;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .lb-tab.active {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .mode-badge {
+            font-size: 11px;
+            padding: 1px 8px;
+            border-radius: 10px;
+            color: white;
+        }
+
+        .mode-badge.mode-classic { background: #4CAF50; }
+        .mode-badge.mode-timed { background: #FF5722; }
+        .mode-badge.mode-endless { background: #9C27B0; }
+        .mode-badge.mode-level { background: #2196F3; }
+
+        /* 破纪录庆祝 */
+        #record-overlay {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: clamp(28px, 7vw, 42px);
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+            z-index: 12;
+            pointer-events: none;
+            opacity: 0;
+            white-space: nowrap;
+        }
+
+        #record-overlay.show {
+            animation: record-pop 2.5s ease forwards;
+        }
+
+        @keyframes record-pop {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            15% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+            30% { transform: translate(-50%, -50%) scale(1); }
+            80% { opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
+
+        /* 过关界面 */
+        #level-complete {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.95);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: clamp(18px, 5vw, 24px);
+            display: none;
+            width: 85%;
+            box-shadow: 0 0 30px rgba(76, 175, 80, 0.4);
+            z-index: 15;
+        }
+
+        #level-complete .stats {
+            font-size: 14px;
+            margin: 10px 0 15px 0;
+            color: #aaa;
+        }
+
+        #level-complete .btn-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        #level-complete .control-btn {
+            width: auto;
+            height: auto;
+            padding: 10px 18px;
+            font-size: 14px;
+        }
+
+        /* ==================== 页面布局 ==================== */
+        /* 移动端：单列竖排（保持原样） */
+        #page-layout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        #col-center, #col-left, #col-right {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        /* 桌面端：三栏布局，消除两侧空白 */
+        @media (min-width: 1024px) {
+            #page-layout {
+                display: grid;
+                grid-template-columns: 280px minmax(0, 520px) 280px;
+                grid-template-areas: "left center right";
+                justify-content: center;
+                gap: 20px;
+                align-items: start;
+            }
+
+            #col-center { grid-area: center; max-width: 520px; }
+            #col-left { grid-area: left; max-width: 280px; }
+            #col-right { grid-area: right; max-width: 280px; }
+
+            /* 中栏元素跟随画布加宽 */
+            #col-center #game-container,
+            #col-center #game-info,
+            #col-center #settings {
+                max-width: 520px;
+            }
+
+            /* 侧栏卡片占满栏宽 */
+            #col-left #leaderboard,
+            #col-left #achievements,
+            #col-right #keyboard-info,
+            #col-right #game-rules {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            /* 侧栏成就网格收窄为单列，避免文字挤压 */
+            #col-left .achievement-grid {
+                grid-template-columns: 1fr;
+            }
+
+            /* 评论区与三栏总宽对齐 */
+            #comments {
+                max-width: 1120px;
+            }
+        }
+
         @media (max-width: 768px) {
             #keyboard-info {
                 display: none;
@@ -528,10 +734,15 @@
 <body>
     <h1>贪吃蛇游戏</h1>
 
+    <div id="page-layout">
+    <div id="col-center">
     <div id="game-info">
         <div>分数: <span id="score">0</span></div>
         <div>最高分: <span id="high-score">0</span></div>
         <div id="timer-display" style="display: none;">时间: <span id="timer">60</span>s</div>
+        <div id="boost-display" style="display: none;">⚡加速: <span id="boost-steps">0</span>步</div>
+        <div id="combo-display" style="display: none;">连击 x<span id="combo-count">1</span></div>
+        <div id="level-display" style="display: none;">目标: <span id="level-target">0</span>分</div>
         <div>
             倍速:
             <select id="speed-select">
@@ -545,18 +756,39 @@
     </div>
 
     <div id="settings">
-        <label>
-            <input type="checkbox" id="wall-pass"> 穿墙模式
-        </label>
-        <label>
-            <input type="checkbox" id="difficulty-up" checked> 难度递增
-        </label>
-        <label>
-            <input type="checkbox" id="endless-mode"> 无尽模式
-        </label>
-        <label>
-            <input type="checkbox" id="timed-mode"> 限时挑战
-        </label>
+        <div class="mode-row">
+            <span class="mode-label">模式：</span>
+            <label>
+                <input type="radio" name="game-mode" value="classic" checked> 经典
+            </label>
+            <label>
+                <input type="radio" name="game-mode" value="timed"> 限时挑战
+            </label>
+            <label>
+                <input type="radio" name="game-mode" value="endless"> 无尽
+            </label>
+            <label>
+                <input type="radio" name="game-mode" value="level"> 关卡
+            </label>
+        </div>
+        <div class="mode-row">
+            <label>
+                <input type="checkbox" id="wall-pass"> 穿墙模式
+            </label>
+            <label>
+                <input type="checkbox" id="difficulty-up" checked> 难度递增
+            </label>
+            <span id="timed-options" class="mode-label" style="display: none;">时长：
+                <select id="timed-duration">
+                    <option value="30">30s</option>
+                    <option value="60" selected>60s</option>
+                    <option value="120">120s</option>
+                </select>
+            </span>
+            <span id="level-options" class="mode-label" style="display: none;">关卡：
+                <select id="level-select"></select>
+            </span>
+        </div>
     </div>
 
     <div id="skin-selector">
@@ -593,12 +825,27 @@
             <option value="gem">宝石</option>
             <option value="emoji">表情</option>
         </select>
+        <label style="margin-left: 15px; display: flex; align-items: center; gap: 5px; cursor: pointer;">
+            <input type="checkbox" id="vibration-toggle" checked> 震动
+        </label>
+        <label style="margin-left: 15px; display: flex; align-items: center; gap: 5px; cursor: pointer;">
+            <input type="checkbox" id="particles-toggle" checked> 粒子特效
+        </label>
     </div>
 
     <div id="game-container">
         <canvas id="game-board" width="400" height="400"></canvas>
         <div id="countdown"></div>
         <div id="pause-overlay">暂停中</div>
+        <div id="record-overlay">🎉 新纪录！</div>
+        <div id="level-complete">
+            <div id="level-complete-title">🎉 过关！</div>
+            <div class="stats" id="level-complete-stats"></div>
+            <div class="btn-row">
+                <button id="next-level-btn" class="control-btn" style="background-color: #4CAF50;">下一关</button>
+                <button id="replay-level-btn" class="control-btn">再玩一次</button>
+            </div>
+        </div>
         <div id="game-over">
             <div>游戏结束!</div>
             <div>最终分数: <span id="final-score">0</span></div>
@@ -621,9 +868,18 @@
             <button id="right" class="control-btn">→</button>
         </div>
     </div>
+    </div><!-- /col-center -->
 
+    <div id="col-left">
     <div id="leaderboard">
         <h3>排行榜</h3>
+        <div id="lb-tabs">
+            <button class="lb-tab active" data-mode="all">全部</button>
+            <button class="lb-tab" data-mode="classic">经典</button>
+            <button class="lb-tab" data-mode="timed">限时</button>
+            <button class="lb-tab" data-mode="endless">无尽</button>
+            <button class="lb-tab" data-mode="level">关卡</button>
+        </div>
         <ul id="leaderboard-list"></ul>
         <div id="game-stats"></div>
     </div>
@@ -632,15 +888,9 @@
         <h3>成就 <span class="badge" id="achievement-count">0/8</span></h3>
         <div class="achievement-grid" id="achievement-grid"></div>
     </div>
+    </div><!-- /col-left -->
 
-    <div id="achievement-toast">
-        <div class="toast-icon">🏆</div>
-        <div class="toast-content">
-            <div class="toast-title" id="toast-title">成就解锁！</div>
-            <div class="toast-desc" id="toast-desc">描述</div>
-        </div>
-    </div>
-
+    <div id="col-right">
     <div id="keyboard-info">
         <h3>键盘控制规则：</h3>
         <ul>
@@ -660,15 +910,28 @@
     <div id="game-rules">
         <h3>规则解读</h3>
         <ul>
-            <li><strong>食物分值</strong>：普通食物（红色）+10分，金色加分食物 +30分，闪电加速食物 +10分并加速 20 步</li>
-            <li><strong>游戏结束</strong>：撞墙或撞到自己身体即结束（无尽/穿墙模式可穿过墙壁）</li>
-            <li><strong>穿墙模式</strong>：蛇从一侧穿出，从对侧穿入</li>
+            <li><strong>食物分值</strong>：普通食物（红色）+10分，金色加分食物 +30分，闪电加速食物 +10分并加速 20 步（1.5 倍速）</li>
+            <li><strong>游戏模式（单选）</strong>：经典 / 限时挑战 / 无尽 / 关卡，四选一</li>
+            <li><strong>经典模式</strong>：撞墙或撞到自己身体即结束</li>
+            <li><strong>限时挑战</strong>：30 / 60 / 120 秒可选，时间到即结束；3 秒内连续进食触发连击加分</li>
             <li><strong>无尽模式</strong>：自动开启穿墙，永不撞墙，可无限游玩</li>
-            <li><strong>限时挑战</strong>：60 秒倒计时，时间到即结束，比拼限时内得分</li>
-            <li><strong>难度递增</strong>：随分数提高，蛇的移动速度逐渐加快</li>
+            <li><strong>关卡模式</strong>：避开障碍物地图，达到目标分数即可过关，共 8 关逐关解锁</li>
+            <li><strong>修饰开关（可多选）</strong>：穿墙模式（从对侧穿入）、难度递增（随分数加快速度），可与任意模式组合</li>
             <li><strong>倍速</strong>：可调整整体游戏速度（0.5x ~ 3x）</li>
+            <li><strong>排行榜</strong>：按模式独立排行，穿墙/无尽的高分不会碾压经典榜单</li>
+            <li><strong>皮肤解锁</strong>：海洋（单局 300 分）、黄金（单局 500 分）、赛博（通关全部关卡）</li>
         </ul>
-        <p class="rules-tip">💡 成就系统和排行榜数据保存在浏览器本地</p>
+        <p class="rules-tip">💡 设置、成就、关卡进度和排行榜数据保存在浏览器本地</p>
+    </div>
+    </div><!-- /col-right -->
+    </div><!-- /page-layout -->
+
+    <div id="achievement-toast">
+        <div class="toast-icon">🏆</div>
+        <div class="toast-content">
+            <div class="toast-title" id="toast-title">成就解锁！</div>
+            <div class="toast-desc" id="toast-desc">描述</div>
+        </div>
     </div>
 
     <!-- 评论区 -->
@@ -680,6 +943,9 @@
     <script src="snake.js"></script>
     <script>
         setTimeout(() => {
+            // 跟随博客主题（next-themes 写入的 localStorage.theme）
+            const _t = localStorage.getItem('theme');
+            const _dark = _t === 'dark' || ((_t === 'system' || !_t) && window.matchMedia('(prefers-color-scheme: dark)').matches);
             const giscusScript = document.createElement('script');
             giscusScript.src = 'https://giscus.app/client.js';
             giscusScript.setAttribute('data-repo', 'infinitefor42/new-blog');
@@ -691,7 +957,7 @@
             giscusScript.setAttribute('data-reactions-enabled', '1');
             giscusScript.setAttribute('data-emit-metadata', '0');
             giscusScript.setAttribute('data-input-position', 'top');
-            giscusScript.setAttribute('data-theme', 'noborder_light');
+            giscusScript.setAttribute('data-theme', _dark ? 'noborder_dark' : 'noborder_light');
             giscusScript.setAttribute('data-lang', 'zh-CN');
             giscusScript.setAttribute('data-loading', 'lazy');
             giscusScript.crossOrigin = 'anonymous';
@@ -713,6 +979,9 @@
                 this.specialEat = this.createTone(1200, 0.15, 'sine', 0.4);
                 this.gameOver = this.createTone(440, 0.3, 'sawtooth', 0.2);
                 this.countdown = this.createTone(660, 0.08, 'sine', 0.2);
+                this.record1 = this.createTone(523, 0.12, 'sine', 0.35);
+                this.record2 = this.createTone(659, 0.12, 'sine', 0.35);
+                this.record3 = this.createTone(784, 0.25, 'sine', 0.4);
                 this.loaded = true;
             },
 
@@ -741,13 +1010,22 @@
             playEat() { if (this.loaded && this.eat) this.eat.play(); },
             playSpecialEat() { if (this.loaded && this.specialEat) this.specialEat.play(); },
             playGameOver() { if (this.loaded && this.gameOver) this.gameOver.play(); },
-            playCountdown() { if (this.loaded && this.countdown) this.countdown.play(); }
+            playCountdown() { if (this.loaded && this.countdown) this.countdown.play(); },
+            playRecord() {
+                if (!this.loaded) return;
+                this.record1.play();
+                setTimeout(() => this.record2.play(), 120);
+                setTimeout(() => this.record3.play(), 240);
+            }
         };
 
         Sounds.init();
 
         // ==================== 震动反馈 ====================
+        // 可通过「震动」开关关闭，选择结果随设置持久化
         function vibrate(duration) {
+            const toggle = document.getElementById('vibration-toggle');
+            if (toggle && !toggle.checked) return;
             if (navigator.vibrate) {
                 navigator.vibrate(duration);
             }
@@ -757,6 +1035,9 @@
         const particles = [];
 
         function createParticles(x, y, color, count) {
+            // 「粒子特效」开关关闭时不产生粒子
+            const toggle = document.getElementById('particles-toggle');
+            if (toggle && !toggle.checked) return;
             for (let i = 0; i < count; i++) {
                 particles.push({
                     x, y,
@@ -881,7 +1162,8 @@
                 bodySaturation: [80, 100],
                 bodyLightness: [45, 60],
                 eyeColor: '#FFF',
-                pupilColor: '#8B0000'
+                pupilColor: '#8B0000',
+                unlock: 'score_500'
             },
             purple: {
                 name: '紫色',
@@ -908,7 +1190,8 @@
                 bodySaturation: [70, 90],
                 bodyLightness: [40, 60],
                 eyeColor: '#E0FFFF',
-                pupilColor: '#008080'
+                pupilColor: '#008080',
+                unlock: 'score_300'
             },
             cyber: {
                 name: '赛博',
@@ -917,15 +1200,37 @@
                 bodySaturation: [90, 100],
                 bodyLightness: [50, 70],
                 eyeColor: '#00FF00',
-                pupilColor: '#000'
+                pupilColor: '#000',
+                unlock: 'level_all'
             }
         };
 
         let currentSkin = 'classic';
         const skinSelect = document.getElementById('skin-select');
 
+        // 皮肤解锁状态（由成就驱动）
+        function isSkinUnlocked(key) {
+            const req = SKINS[key].unlock;
+            return !req || getUnlockedAchievements().includes(req);
+        }
+
+        function refreshSkinOptions() {
+            skinSelect.innerHTML = '';
+            Object.entries(SKINS).forEach(([key, skin]) => {
+                const opt = document.createElement('option');
+                opt.value = key;
+                const unlocked = isSkinUnlocked(key);
+                opt.textContent = unlocked ? skin.name : `${skin.name} 🔒`;
+                opt.disabled = !unlocked;
+                skinSelect.appendChild(opt);
+            });
+            if (!isSkinUnlocked(currentSkin)) currentSkin = 'classic';
+            skinSelect.value = currentSkin;
+        }
+
         skinSelect.addEventListener('change', (e) => {
             currentSkin = e.target.value;
+            saveSettings();
         });
 
         function getSkinColor(skin, index, snakeLength) {
@@ -1080,6 +1385,7 @@
         foodSelect.addEventListener('change', (e) => {
             currentFoodType = e.target.value;
             currentFruitIndex = 0;
+            saveSettings();
         });
 
         function drawFood() {
@@ -1205,6 +1511,7 @@
 
         bgSelect.addEventListener('change', (e) => {
             currentBg = e.target.value;
+            saveSettings();
         });
 
         // 海洋背景气泡
@@ -1307,15 +1614,33 @@
             }
         }
 
+        // 绘制障碍物（关卡模式）
+        function drawObstacles() {
+            if (!currentObstacles.length) return;
+            currentObstacles.forEach(([ox, oy]) => {
+                const x = ox * cellSize;
+                const y = oy * cellSize;
+                ctx.fillStyle = '#5a5a6e';
+                drawRoundRect(ctx, x + 1, y + 1, cellSize - 2, cellSize - 2, cellSize * 0.15);
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                // 顶部高光
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
+                ctx.fillRect(x + 3, y + 3, cellSize - 6, 3);
+            });
+        }
+
         function render() {
             if (!ctx) return;
 
             // 绘制背景
             drawBackground();
 
-            // 绘制网格
+            // 绘制网格（无尽模式运行时高亮为蓝紫色）
             const bg = BACKGROUNDS[currentBg];
-            ctx.strokeStyle = currentBg === 'endless' && isRunning ? 'rgba(100, 100, 255, 0.08)' : bg.gridColor;
+            ctx.strokeStyle = (gameMode === 'endless' && isRunning) ? 'rgba(100, 100, 255, 0.08)' : bg.gridColor;
             ctx.lineWidth = 1;
             for (let i = 0; i <= GRID_SIZE; i++) {
                 ctx.beginPath();
@@ -1328,6 +1653,7 @@
                 ctx.stroke();
             }
 
+            drawObstacles();
             drawFood();
             drawSnake();
             drawParticles(ctx, cellSize);
@@ -1353,13 +1679,33 @@
         let lastScore = 0;
         let wallPass = false;
         let difficultyUp = true;
-        let endlessMode = false;
-        let timedMode = false;
+        let gameMode = 'classic'; // classic | timed | endless | level
         let timedDuration = 60; // 限时挑战时长（秒）
         let timeRemaining = 0;
         let timerInterval = null;
         let gameStartTime = 0;
         let deathAnimation = null;
+        // 连击（限时模式）
+        let bonusScore = 0;
+        let combo = 0;
+        let lastEatTime = 0;
+        // 关卡模式
+        let currentObstacles = [];
+        let currentLevelIndex = 0;
+        let levelCompleted = false;
+        let pendingLevel = null;
+        let settingsLocked = false;
+
+        function totalScore() {
+            return gameState.score + bonusScore;
+        }
+
+        const MODE_LABELS = { classic: '经典', timed: '限时挑战', endless: '无尽', level: '关卡' };
+
+        function modeLabel() {
+            if (gameMode === 'level') return '关卡·' + LEVELS[currentLevelIndex].name;
+            return MODE_LABELS[gameMode] || '经典';
+        }
 
         // DOM 元素
         const scoreElement = document.getElementById('score');
@@ -1373,10 +1719,27 @@
         const gameStatsElement = document.getElementById('game-stats');
         const wallPassCheckbox = document.getElementById('wall-pass');
         const difficultyCheckbox = document.getElementById('difficulty-up');
-        const endlessCheckbox = document.getElementById('endless-mode');
-        const timedCheckbox = document.getElementById('timed-mode');
+        const timedOptions = document.getElementById('timed-options');
+        const timedDurationSelect = document.getElementById('timed-duration');
+        const levelOptions = document.getElementById('level-options');
+        const levelSelect = document.getElementById('level-select');
         const timerDisplay = document.getElementById('timer-display');
         const timerElement = document.getElementById('timer');
+        const boostDisplay = document.getElementById('boost-display');
+        const boostSteps = document.getElementById('boost-steps');
+        const comboDisplay = document.getElementById('combo-display');
+        const comboCount = document.getElementById('combo-count');
+        const levelDisplay = document.getElementById('level-display');
+        const levelTarget = document.getElementById('level-target');
+        const recordOverlay = document.getElementById('record-overlay');
+        const levelCompleteElement = document.getElementById('level-complete');
+        const levelCompleteTitle = document.getElementById('level-complete-title');
+        const levelCompleteStats = document.getElementById('level-complete-stats');
+        const nextLevelBtn = document.getElementById('next-level-btn');
+        const replayLevelBtn = document.getElementById('replay-level-btn');
+        const settingsElement = document.getElementById('settings');
+        const vibrationToggle = document.getElementById('vibration-toggle');
+        const particlesToggle = document.getElementById('particles-toggle');
 
         // 控制按钮
         const upBtn = document.getElementById('up');
@@ -1402,18 +1765,24 @@
             const leaderboard = getLeaderboard();
             const entry = {
                 score,
+                mode: gameMode,
                 date: new Date().toLocaleDateString(),
                 time: Math.floor((Date.now() - gameStartTime) / 1000)
             };
             leaderboard.push(entry);
             leaderboard.sort((a, b) => b.score - a.score);
-            const top5 = leaderboard.slice(0, 5);
-            localStorage.setItem('snakeLeaderboard', JSON.stringify(top5));
-            return top5;
+            // 全局保留 15 条，各模式筛选后取前 5 展示
+            const top15 = leaderboard.slice(0, 15);
+            localStorage.setItem('snakeLeaderboard', JSON.stringify(top15));
+            return top15;
         }
 
+        let lbFilter = 'all';
+
         function renderLeaderboard() {
-            const leaderboard = getLeaderboard();
+            const leaderboard = getLeaderboard()
+                .filter(e => lbFilter === 'all' || (e.mode || 'classic') === lbFilter)
+                .slice(0, 5);
             leaderboardList.innerHTML = '';
 
             if (leaderboard.length === 0) {
@@ -1424,9 +1793,11 @@
             leaderboard.forEach((entry, index) => {
                 const li = document.createElement('li');
                 const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
+                const mode = entry.mode || 'classic';
                 li.innerHTML = `
                     <span class="rank ${rankClass}">${index + 1}.</span>
                     <span>${entry.date}</span>
+                    <span class="mode-badge mode-${mode}">${MODE_LABELS[mode] || '经典'}</span>
                     <span class="lb-score">${entry.score}分</span>
                 `;
                 leaderboardList.appendChild(li);
@@ -1503,7 +1874,7 @@
             },
             {
                 id: 'max_score_3000',
-                name: '万分选手',
+                name: '三千分传奇',
                 desc: '单局得分达到 3000 分',
                 icon: '💯',
                 check: (stats) => stats.maxScore >= 3000
@@ -1514,6 +1885,27 @@
                 desc: '累计游玩 500 局',
                 icon: '🏆',
                 check: (stats) => stats.games >= 500
+            },
+            {
+                id: 'level_first',
+                name: '初出茅庐',
+                desc: '通过关卡模式第 1 关',
+                icon: '🗝️',
+                custom: true
+            },
+            {
+                id: 'level_half',
+                name: '过关斩将',
+                desc: '通过关卡模式第 4 关',
+                icon: '⚔️',
+                custom: true
+            },
+            {
+                id: 'level_all',
+                name: '通关达人',
+                desc: '通过关卡模式全部 8 关（解锁赛博皮肤）',
+                icon: '🌟',
+                custom: true
             }
         ];
 
@@ -1530,13 +1922,21 @@
             if (!unlocked.includes(achievementId)) {
                 unlocked.push(achievementId);
                 localStorage.setItem('snakeAchievements', JSON.stringify(unlocked));
-                
+
                 // 显示成就通知
                 const achievement = ACHIEVEMENTS.find(a => a.id === achievementId);
                 if (achievement) {
                     showAchievementToast(achievement);
+
+                    // 成就联动皮肤解锁
+                    const unlockedSkin = Object.keys(SKINS).find(k => SKINS[k].unlock === achievementId);
+                    if (unlockedSkin) {
+                        document.getElementById('toast-desc').textContent =
+                            `${achievement.desc}（解锁皮肤：${SKINS[unlockedSkin].name}）`;
+                        refreshSkinOptions();
+                    }
                 }
-                
+
                 // 更新显示
                 renderAchievements();
             }
@@ -1545,8 +1945,9 @@
         function checkAchievements() {
             const stats = getGameStats();
             const unlocked = getUnlockedAchievements();
-            
+
             ACHIEVEMENTS.forEach(achievement => {
+                if (achievement.custom) return; // 自定义触发类成就不走统计检查
                 if (!unlocked.includes(achievement.id) && achievement.check(stats)) {
                     unlockAchievement(achievement.id);
                 }
@@ -1589,12 +1990,255 @@
             }).join('');
         }
 
+        // ==================== 关卡系统 ====================
+        // 20x20 网格，蛇初始位于 (8,10)(9,10)(10,10) 向右移动，障碍物需避开中心区域
+        const LEVELS = [
+            {
+                name: '初露锋芒', target: 50,
+                obstacles: [[5, 5], [14, 5], [5, 14], [14, 14]]
+            },
+            {
+                name: '四方立柱', target: 80,
+                obstacles: [
+                    [4, 4], [5, 4], [4, 5], [5, 5],
+                    [14, 4], [15, 4], [14, 5], [15, 5],
+                    [4, 14], [5, 14], [4, 15], [5, 15],
+                    [14, 14], [15, 14], [14, 15], [15, 15]
+                ]
+            },
+            {
+                name: '上下回廊', target: 100,
+                obstacles: [
+                    ...[3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16].map(x => [x, 5]),
+                    ...[3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16].map(x => [x, 14])
+                ]
+            },
+            {
+                name: '左右夹击', target: 120,
+                obstacles: [
+                    ...[3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16].map(y => [5, y]),
+                    ...[3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16].map(y => [14, y])
+                ]
+            },
+            {
+                name: '回字迷城', target: 150,
+                obstacles: [
+                    ...[4, 5, 6, 7, 8, 11, 12, 13, 14, 15].map(x => [x, 4]),
+                    ...[4, 5, 6, 7, 8, 11, 12, 13, 14, 15].map(x => [x, 15]),
+                    ...[5, 6, 7, 8, 11, 12, 13, 14].map(y => [4, y]),
+                    ...[5, 6, 7, 8, 11, 12, 13, 14].map(y => [15, y])
+                ]
+            },
+            {
+                name: '双十字阵', target: 180,
+                obstacles: [
+                    [6, 5], [6, 6], [6, 7], [5, 6], [7, 6],
+                    [13, 5], [13, 6], [13, 7], [12, 6], [14, 6],
+                    [6, 12], [6, 13], [6, 14], [5, 13], [7, 13],
+                    [13, 12], [13, 13], [13, 14], [12, 13], [14, 13]
+                ]
+            },
+            {
+                name: '锯齿长墙', target: 200,
+                obstacles: [
+                    ...[2, 3, 4, 7, 8, 9, 10, 11, 12, 15, 16, 17].map(x => [x, 7]),
+                    ...[2, 3, 4, 7, 8, 9, 10, 11, 12, 15, 16, 17].map(x => [x, 12]),
+                    [9, 3], [10, 3], [9, 16], [10, 16]
+                ]
+            },
+            {
+                name: '死亡回廊', target: 250,
+                obstacles: [
+                    ...[2, 3, 4, 7, 8, 9, 10, 11, 12, 15, 16, 17].map(y => [4, y]),
+                    ...[2, 3, 4, 7, 8, 9, 10, 11, 12, 15, 16, 17].map(y => [15, y]),
+                    ...[6, 7, 8, 9, 10, 11, 12, 13].map(x => [x, 4]),
+                    ...[6, 7, 8, 9, 10, 11, 12, 13].map(x => [x, 15]),
+                    [6, 9], [6, 11], [13, 9], [13, 11]
+                ]
+            }
+        ];
+
+        function getLevelProgress() {
+            return parseInt(localStorage.getItem('snakeLevelProgress') || '1');
+        }
+
+        function setLevelProgress(v) {
+            localStorage.setItem('snakeLevelProgress', String(v));
+        }
+
+        function buildLevelSelect() {
+            const progress = getLevelProgress();
+            levelSelect.innerHTML = '';
+            LEVELS.forEach((lv, i) => {
+                const opt = document.createElement('option');
+                opt.value = i;
+                const unlocked = i < progress;
+                opt.textContent = `第${i + 1}关 · ${lv.name}${unlocked ? '' : ' 🔒'}`;
+                opt.disabled = !unlocked;
+                levelSelect.appendChild(opt);
+            });
+            let idx = pendingLevel != null ? pendingLevel : currentLevelIndex;
+            if (isNaN(idx) || idx < 0) idx = 0;
+            if (idx >= progress) idx = progress - 1;
+            levelSelect.value = idx;
+            currentLevelIndex = idx;
+        }
+
+        // ==================== 设置持久化 ====================
+        function saveSettings() {
+            try {
+                const settings = {
+                    mode: document.querySelector('input[name="game-mode"]:checked').value,
+                    wallPass: wallPassCheckbox.checked,
+                    difficultyUp: difficultyCheckbox.checked,
+                    timedDuration: timedDurationSelect.value,
+                    level: levelSelect.value,
+                    skin: currentSkin,
+                    bg: currentBg,
+                    food: currentFoodType,
+                    speed: speedSelect.value,
+                    vibration: vibrationToggle.checked,
+                    particles: particlesToggle.checked
+                };
+                localStorage.setItem('snakeSettings', JSON.stringify(settings));
+            } catch (e) { /* 隐私模式下忽略 */ }
+        }
+
+        function loadSettings() {
+            let s = {};
+            try {
+                s = JSON.parse(localStorage.getItem('snakeSettings') || '{}');
+            } catch (e) { /* 忽略损坏数据 */ }
+
+            if (s.mode && ['classic', 'timed', 'endless', 'level'].includes(s.mode)) {
+                const radio = document.querySelector(`input[name="game-mode"][value="${s.mode}"]`);
+                if (radio) radio.checked = true;
+            }
+            if (typeof s.wallPass === 'boolean') wallPassCheckbox.checked = s.wallPass;
+            if (typeof s.difficultyUp === 'boolean') difficultyCheckbox.checked = s.difficultyUp;
+            if (s.timedDuration) timedDurationSelect.value = s.timedDuration;
+            if (s.speed) speedSelect.value = s.speed;
+            if (s.bg && BACKGROUNDS[s.bg]) { currentBg = s.bg; bgSelect.value = s.bg; }
+            if (s.food && FOOD_TYPES[s.food]) { currentFoodType = s.food; foodSelect.value = s.food; }
+            if (s.skin && SKINS[s.skin]) currentSkin = s.skin;
+            if (s.level != null) pendingLevel = parseInt(s.level);
+            if (typeof s.vibration === 'boolean') vibrationToggle.checked = s.vibration;
+            if (typeof s.particles === 'boolean') particlesToggle.checked = s.particles;
+
+            // 旧版全局最高分迁移到经典模式
+            const legacy = localStorage.getItem('snakeHighScore');
+            if (legacy && !localStorage.getItem('snakeHighScore_classic')) {
+                localStorage.setItem('snakeHighScore_classic', legacy);
+            }
+        }
+
+        // ==================== 模式 UI 控制 ====================
+        function applyModeUI() {
+            gameMode = document.querySelector('input[name="game-mode"]:checked').value;
+            timedOptions.style.display = gameMode === 'timed' ? 'inline' : 'none';
+            levelOptions.style.display = gameMode === 'level' ? 'inline' : 'none';
+            levelDisplay.style.display = gameMode === 'level' ? 'inline' : 'none';
+
+            // 无尽模式强制穿墙
+            if (gameMode === 'endless') {
+                wallPassCheckbox.checked = true;
+                wallPassCheckbox.disabled = true;
+                wallPass = true;
+            } else {
+                wallPassCheckbox.disabled = settingsLocked;
+                wallPass = wallPassCheckbox.checked;
+            }
+
+            if (gameMode === 'level') {
+                levelTarget.textContent = LEVELS[currentLevelIndex].target;
+                currentObstacles = LEVELS[currentLevelIndex].obstacles;
+            } else {
+                currentObstacles = [];
+            }
+            loadHighScore();
+        }
+
+        function setSettingsLocked(locked) {
+            settingsLocked = locked;
+            settingsElement.classList.toggle('locked', locked);
+            document.querySelectorAll('input[name="game-mode"]').forEach(r => r.disabled = locked);
+            difficultyCheckbox.disabled = locked;
+            wallPassCheckbox.disabled = locked || gameMode === 'endless';
+            timedDurationSelect.disabled = locked;
+            levelSelect.disabled = locked;
+        }
+
+        function applyObstaclesToEngine() {
+            Module.ccall('clear_obstacles', null, [], []);
+            if (gameMode === 'level') {
+                LEVELS[currentLevelIndex].obstacles.forEach(([x, y]) => {
+                    Module.ccall('add_obstacle', null, ['number', 'number'], [x, y]);
+                });
+            }
+        }
+
+        // ==================== 破纪录庆祝 ====================
+        function showRecordCelebration() {
+            recordOverlay.classList.remove('show');
+            void recordOverlay.offsetWidth; // 重置动画
+            recordOverlay.classList.add('show');
+            Sounds.playRecord();
+            vibrate([100, 50, 100]);
+            setTimeout(() => recordOverlay.classList.remove('show'), 2500);
+        }
+
+        // ==================== 过关处理 ====================
+        function completeLevel() {
+            levelCompleted = true;
+            isRunning = false;
+            if (gameLoopId) {
+                clearTimeout(gameLoopId);
+                gameLoopId = null;
+            }
+
+            const total = totalScore();
+            const timePlayed = Math.floor((Date.now() - gameStartTime) / 1000);
+
+            // 解锁下一关
+            const progress = getLevelProgress();
+            if (currentLevelIndex + 1 >= progress && progress < LEVELS.length) {
+                setLevelProgress(currentLevelIndex + 2);
+            }
+
+            // 关卡成就
+            if (currentLevelIndex === 0) unlockAchievement('level_first');
+            if (currentLevelIndex === 3) unlockAchievement('level_half');
+            if (currentLevelIndex === LEVELS.length - 1) unlockAchievement('level_all');
+
+            const isRecord = updateHighScore(total);
+            saveToLeaderboard(total);
+            updateGameStats(total);
+            checkAchievements();
+            renderLeaderboard();
+            buildLevelSelect();
+
+            boostDisplay.style.display = 'none';
+            comboDisplay.style.display = 'none';
+            setSettingsLocked(false);
+
+            Sounds.playSpecialEat();
+            vibrate([100, 50, 100]);
+            createParticles(gameState.snake[0].x, gameState.snake[0].y, '#4CAF50', 30);
+
+            levelCompleteTitle.textContent = `🎉 过关！${LEVELS[currentLevelIndex].name}`;
+            levelCompleteStats.textContent = `得分: ${total} | 目标: ${LEVELS[currentLevelIndex].target} | 用时: ${timePlayed}秒`;
+            nextLevelBtn.style.display = currentLevelIndex + 1 < LEVELS.length ? 'inline-block' : 'none';
+            levelCompleteElement.style.display = 'block';
+
+            if (isRecord && total > 0) showRecordCelebration();
+        }
+
         // ==================== 首次提示 ====================
         function showFirstTimeHint() {
             const shown = localStorage.getItem('snakeHintShown');
             if (!shown) {
                 setTimeout(() => {
-                    alert('欢迎来到贪吃蛇！\n\n操作说明：\n• 滑动或点击方向键控制蛇的移动\n• 吃到红色食物得10分\n• 吃到金色食物(+30分)或闪电食物有惊喜\n• 开启"穿墙模式"可以穿过墙壁\n• 开启"难度递增"会随分数提高速度');
+                    alert('欢迎来到贪吃蛇！\n\n操作说明：\n• 滑动或点击方向键控制蛇的移动\n• 吃到红色食物得10分\n• 吃到金色食物(+30分)或闪电食物(加速)有惊喜\n• 四种游戏模式：经典 / 限时挑战(连击加分) / 无尽 / 关卡(障碍物地图)\n• 穿墙、难度递增可与任意模式组合\n• 达成成就可以解锁限定皮肤！');
                     localStorage.setItem('snakeHintShown', 'true');
                 }, 500);
             }
@@ -1604,6 +2248,14 @@
         function updateGameState() {
             const stateStr = Module.ccall('get_game_state', 'string', [], []);
             gameState = JSON.parse(stateStr);
+
+            // 闪电加速指示（C 引擎维护 speed_boost 剩余步数）
+            if (gameState.speed_boost > 0) {
+                boostDisplay.style.display = 'inline';
+                boostSteps.textContent = gameState.speed_boost;
+            } else {
+                boostDisplay.style.display = 'none';
+            }
 
             // 检测是否吃到食物
             if (gameState.score > lastScore) {
@@ -1623,7 +2275,21 @@
                     createParticles(gameState.food.x, gameState.food.y, '#ff4444', 12);
                     createParticles(gameState.food.x, gameState.food.y, '#ffaa00', 8);
                     Sounds.playEat();
-                    vibrate(50);
+                    // 普通食物不震动，避免后期高速进食时震动过于频繁
+                }
+
+                // 连击加成（限时模式：3 秒内连续进食）
+                if (gameMode === 'timed' && isRunning) {
+                    const now = Date.now();
+                    combo = (now - lastEatTime <= 3000) ? combo + 1 : 1;
+                    lastEatTime = now;
+                    if (combo >= 2) {
+                        bonusScore += (combo - 1) * 5;
+                        comboDisplay.style.display = 'inline';
+                        comboCount.textContent = combo;
+                    } else {
+                        comboDisplay.style.display = 'none';
+                    }
                 }
 
                 lastScore = gameState.score;
@@ -1634,22 +2300,34 @@
                 }
             }
 
-            scoreElement.textContent = gameState.score;
+            scoreElement.textContent = totalScore();
+
+            // 关卡模式：达标过关
+            if (gameMode === 'level' && isRunning && !levelCompleted &&
+                gameState.score >= LEVELS[currentLevelIndex].target) {
+                completeLevel();
+                return;
+            }
 
             // 游戏结束
             if (gameState.game_over) {
                 if (!gameOverElement.style.display || gameOverElement.style.display === 'none') {
-                    finalScoreElement.textContent = gameState.score;
+                    const total = totalScore();
+                    finalScoreElement.textContent = total;
                     const timePlayed = Math.floor((Date.now() - gameStartTime) / 1000);
-                    gameOverStats.textContent = `用时: ${timePlayed}秒 | 长度: ${gameState.snake.length}`;
+                    gameOverStats.textContent = `${modeLabel()} | 用时: ${timePlayed}秒 | 长度: ${gameState.snake.length}`;
                     gameOverElement.style.display = 'block';
-                    updateHighScore(gameState.score);
-                    saveToLeaderboard(gameState.score);
-                    updateGameStats(gameState.score);
+                    const isRecord = updateHighScore(total);
+                    saveToLeaderboard(total);
+                    updateGameStats(total);
                     checkAchievements(); // 检查成就
                     renderLeaderboard();
                     Sounds.playGameOver();
                     vibrate(200);
+                    boostDisplay.style.display = 'none';
+                    comboDisplay.style.display = 'none';
+                    setSettingsLocked(false);
+                    if (isRecord && total > 0) showRecordCelebration();
 
                     // 死亡动画
                     startDeathAnimation();
@@ -1683,7 +2361,9 @@
             updateGameState();
 
             if (!gameState.game_over && isRunning) {
-                const interval = 150 / gameSpeed;
+                // 闪电食物：加速期间 1.5 倍速
+                const boostMult = (gameState.speed_boost > 0) ? 1.5 : 1;
+                const interval = 150 / (gameSpeed * boostMult);
                 gameLoopId = setTimeout(gameLoop, interval);
             }
         }
@@ -1701,19 +2381,28 @@
         // ==================== 游戏控制 ====================
         function initGame() {
             Module.ccall('init_game', null, [], []);
-            
-            // 设置穿墙模式
-            wallPass = wallPassCheckbox.checked;
+
+            // 应用当前模式与障碍物（init_game 会清空引擎内障碍物）
+            applyModeUI();
             Module.ccall('set_wall_pass', null, ['number'], [wallPass ? 1 : 0]);
-            
+            applyObstaclesToEngine();
+
             updateGameState();
             isRunning = false;
             isPaused = false;
             lastScore = 0;
+            bonusScore = 0;
+            combo = 0;
+            levelCompleted = false;
             gameSpeed = parseFloat(speedSelect.value);
             baseSpeed = gameSpeed;
             particles.length = 0;
-            
+            boostDisplay.style.display = 'none';
+            comboDisplay.style.display = 'none';
+            levelCompleteElement.style.display = 'none';
+            recordOverlay.classList.remove('show');
+            setSettingsLocked(false);
+
             // 重置计时器
             if (timerInterval) {
                 clearInterval(timerInterval);
@@ -1723,17 +2412,17 @@
             timerDisplay.style.display = 'none';
             timerElement.style.color = '#ff6b6b';
             timerElement.style.animation = 'none';
-            
+
             if (deathAnimation) {
                 clearInterval(deathAnimation.timer);
                 deathAnimation = null;
             }
             pauseOverlay.style.display = 'none';
             countdownElement.style.display = 'none';
-            
+
             // 重置游戏结束标题
             gameOverElement.querySelector('div:first-child').textContent = '游戏结束!';
-            
+
             loadHighScore();
             renderLeaderboard();
             renderGameStats();
@@ -1742,17 +2431,22 @@
 
         function startGame() {
             if (!isRunning && !gameState.game_over) {
+                applyModeUI();
                 wallPass = wallPassCheckbox.checked;
                 difficultyUp = difficultyCheckbox.checked;
-                endlessMode = endlessCheckbox.checked;
-                timedMode = timedCheckbox.checked;
-                
-                // 设置穿墙模式（无尽模式自动开启穿墙）
-                Module.ccall('set_wall_pass', null, ['number'], [(wallPass || endlessMode) ? 1 : 0]);
+                timedDuration = parseInt(timedDurationSelect.value);
+
+                // 设置穿墙模式（无尽模式已强制开启）
+                Module.ccall('set_wall_pass', null, ['number'], [wallPass ? 1 : 0]);
+                // 确保引擎障碍物与当前关卡一致
+                applyObstaclesToEngine();
+
+                // 游戏进行中锁定模式设置，避免误触无效开关
+                setSettingsLocked(true);
 
                 // 显示/隐藏计时器
-                timerDisplay.style.display = timedMode ? 'inline' : 'none';
-                if (timedMode) {
+                timerDisplay.style.display = gameMode === 'timed' ? 'inline' : 'none';
+                if (gameMode === 'timed') {
                     timeRemaining = timedDuration;
                     timerElement.textContent = timeRemaining;
                 }
@@ -1773,12 +2467,12 @@
                         countdownElement.style.display = 'none';
                         isRunning = true;
                         gameStartTime = Date.now();
-                        
+
                         // 启动限时计时器
-                        if (timedMode) {
+                        if (gameMode === 'timed') {
                             startTimer();
                         }
-                        
+
                         gameLoop();
                     }
                 }, 800);
@@ -1811,21 +2505,25 @@
                 clearTimeout(gameLoopId);
                 gameLoopId = null;
             }
-            
+
             // 显示结算界面
-            finalScoreElement.textContent = gameState.score;
-            const timePlayed = timedDuration;
-            gameOverStats.textContent = `限时挑战 | 用时: ${timePlayed}秒 | 长度: ${gameState.snake.length}`;
+            const total = totalScore();
+            finalScoreElement.textContent = total;
+            gameOverStats.textContent = `限时挑战(${timedDuration}s) | 连击加成: +${bonusScore} | 长度: ${gameState.snake.length}`;
             gameOverElement.querySelector('div:first-child').textContent = '时间到!';
             gameOverElement.style.display = 'block';
-            
-            updateHighScore(gameState.score);
-            saveToLeaderboard(gameState.score);
-            updateGameStats(gameState.score);
+
+            const isRecord = updateHighScore(total);
+            saveToLeaderboard(total);
+            updateGameStats(total);
             checkAchievements();
             renderLeaderboard();
             Sounds.playGameOver();
             vibrate(200);
+            boostDisplay.style.display = 'none';
+            comboDisplay.style.display = 'none';
+            setSettingsLocked(false);
+            if (isRecord && total > 0) showRecordCelebration();
             startDeathAnimation();
         }
 
@@ -1846,7 +2544,7 @@
                 } else {
                     pauseOverlay.style.display = 'none';
                     // 恢复计时器
-                    if (timedMode && timeRemaining > 0) {
+                    if (gameMode === 'timed' && timeRemaining > 0) {
                         startTimer();
                     }
                     gameLoop();
@@ -1854,22 +2552,30 @@
             }
         }
 
+        // 最高分按模式独立记录，避免穿墙/无尽刷分碾压经典模式
+        function highScoreKey() {
+            return 'snakeHighScore_' + gameMode;
+        }
+
         function loadHighScore() {
-            const highScore = localStorage.getItem('snakeHighScore') || 0;
+            const highScore = localStorage.getItem(highScoreKey()) || 0;
             highScoreElement.textContent = highScore;
         }
 
         function updateHighScore(score) {
-            const currentHighScore = parseInt(localStorage.getItem('snakeHighScore') || 0);
+            const currentHighScore = parseInt(localStorage.getItem(highScoreKey()) || 0);
             if (score > currentHighScore) {
-                localStorage.setItem('snakeHighScore', score);
+                localStorage.setItem(highScoreKey(), score);
                 highScoreElement.textContent = score;
+                return true;
             }
+            return false;
         }
 
         function changeSpeed() {
             baseSpeed = parseFloat(speedSelect.value);
             gameSpeed = difficultyUp ? Math.min(8, baseSpeed + Math.floor(gameState.score / 50) * 0.2) : baseSpeed;
+            saveSettings();
         }
 
         // ==================== 输入处理 ====================
@@ -1903,7 +2609,7 @@
         // ==================== 初始化 ====================
         async function main() {
             initCanvas();
-            
+
             // 加载 WASM 模块
             try {
                 Module = await SnakeModule();
@@ -1912,7 +2618,7 @@
                 document.body.innerHTML = '<div style="text-align:center;padding:40px;font-size:16px;color:#c00;">❌ 游戏引擎加载失败，请刷新页面重试</div>';
                 return;
             }
-            
+
             // 触摸滑动
             let touchStartX = 0, touchStartY = 0;
 
@@ -1945,8 +2651,64 @@
             pauseBtn.addEventListener('click', pauseGame);
             speedSelect.addEventListener('change', changeSpeed);
             gameOverRestartBtn.addEventListener('click', initGame);
-            
-            // 初始化游戏
+
+            // 模式切换事件
+            document.querySelectorAll('input[name="game-mode"]').forEach(radio => {
+                radio.addEventListener('change', () => {
+                    applyModeUI();
+                    applyObstaclesToEngine();
+                    saveSettings();
+                });
+            });
+            wallPassCheckbox.addEventListener('change', saveSettings);
+            difficultyCheckbox.addEventListener('change', saveSettings);
+            timedDurationSelect.addEventListener('change', saveSettings);
+            vibrationToggle.addEventListener('change', saveSettings);
+            particlesToggle.addEventListener('change', saveSettings);
+            levelSelect.addEventListener('change', () => {
+                currentLevelIndex = parseInt(levelSelect.value);
+                pendingLevel = null;
+                applyModeUI();
+                applyObstaclesToEngine();
+                saveSettings();
+            });
+
+            // 排行榜标签页
+            document.querySelectorAll('.lb-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.lb-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    lbFilter = tab.dataset.mode;
+                    renderLeaderboard();
+                });
+            });
+
+            // 关卡过关按钮
+            nextLevelBtn.addEventListener('click', () => {
+                const next = Math.min(currentLevelIndex + 1, LEVELS.length - 1);
+                levelSelect.value = next;
+                currentLevelIndex = next;
+                applyModeUI();
+                saveSettings();
+                initGame();
+                startGame();
+            });
+            replayLevelBtn.addEventListener('click', () => {
+                initGame();
+                startGame();
+            });
+
+            // 切后台自动暂停（避免限时模式被节流计时器坑杀）
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden && isRunning && !isPaused && !gameState.game_over && !levelCompleted) {
+                    pauseGame();
+                }
+            });
+
+            // 恢复用户设置 → 构建关卡/皮肤选项 → 初始化游戏
+            loadSettings();
+            refreshSkinOptions();
+            buildLevelSelect();
             initGame();
             startRenderLoop();
             showFirstTimeHint();

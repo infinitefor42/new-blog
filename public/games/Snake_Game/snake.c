@@ -30,6 +30,28 @@ typedef struct {
 static GameState game;
 static char json_buffer[16384];
 
+// 障碍物网格（关卡模式）：1 = 障碍物
+static unsigned char obstacle_grid[GRID_SIZE * GRID_SIZE];
+
+static int is_obstacle(int x, int y) {
+    if (x < 0 || x >= GRID_SIZE || y < 0 || y >= GRID_SIZE) return 0;
+    return obstacle_grid[y * GRID_SIZE + x] ? 1 : 0;
+}
+
+// 清空全部障碍物
+EMSCRIPTEN_KEEPALIVE
+void clear_obstacles() {
+    memset(obstacle_grid, 0, sizeof(obstacle_grid));
+}
+
+// 添加一个障碍物
+EMSCRIPTEN_KEEPALIVE
+void add_obstacle(int x, int y) {
+    if (x >= 0 && x < GRID_SIZE && y >= 0 && y < GRID_SIZE) {
+        obstacle_grid[y * GRID_SIZE + x] = 1;
+    }
+}
+
 // 方向偏移: up, right, down, left
 const int dx[] = {0, 1, 0, -1};
 const int dy[] = {-1, 0, 1, 0};
@@ -43,10 +65,14 @@ Point random_food_position() {
         valid = 1;
         pos.x = rand() % GRID_SIZE;
         pos.y = rand() % GRID_SIZE;
-        for (int i = 0; i < game.snake_length; i++) {
-            if (game.snake[i].x == pos.x && game.snake[i].y == pos.y) {
-                valid = 0;
-                break;
+        if (is_obstacle(pos.x, pos.y)) {
+            valid = 0;
+        } else {
+            for (int i = 0; i < game.snake_length; i++) {
+                if (game.snake[i].x == pos.x && game.snake[i].y == pos.y) {
+                    valid = 0;
+                    break;
+                }
             }
         }
         attempts++;
@@ -57,10 +83,14 @@ Point random_food_position() {
         for (int y = 0; y < GRID_SIZE; y++) {
             for (int x = 0; x < GRID_SIZE; x++) {
                 valid = 1;
-                for (int i = 0; i < game.snake_length; i++) {
-                    if (game.snake[i].x == x && game.snake[i].y == y) {
-                        valid = 0;
-                        break;
+                if (is_obstacle(x, y)) {
+                    valid = 0;
+                } else {
+                    for (int i = 0; i < game.snake_length; i++) {
+                        if (game.snake[i].x == x && game.snake[i].y == y) {
+                            valid = 0;
+                            break;
+                        }
                     }
                 }
                 if (valid) {
@@ -104,7 +134,9 @@ void init_game() {
     game.game_over = 0;
     game.wall_pass = 0;
     game.speed_boost = 0;
-    
+
+    clear_obstacles();
+
     spawn_food();
 }
 
@@ -133,6 +165,12 @@ void game_loop() {
         }
     }
     
+    // 障碍物碰撞检测（穿墙模式下仍然生效）
+    if (is_obstacle(new_head.x, new_head.y)) {
+        game.game_over = 1;
+        return;
+    }
+
     // 自身碰撞检测
     for (int i = 0; i < game.snake_length; i++) {
         if (game.snake[i].x == new_head.x && game.snake[i].y == new_head.y) {
