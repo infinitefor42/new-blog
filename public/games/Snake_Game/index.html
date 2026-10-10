@@ -213,10 +213,18 @@
         #skin-selector {
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px 14px;
             margin: 10px 0;
             font-size: 13px;
             color: #555;
+        }
+
+        #skin-selector span,
+        #skin-selector label,
+        #settings label {
+            white-space: nowrap;
         }
 
         #skin-selector select {
@@ -729,6 +737,37 @@
                 display: none;
             }
         }
+
+        /* 窄屏优化：收紧选择器间距，防止溢出 */
+        @media (max-width: 480px) {
+            #skin-selector {
+                gap: 6px 10px;
+                font-size: 12px;
+            }
+
+            #settings {
+                gap: 6px;
+            }
+
+            #settings select,
+            #skin-selector select {
+                max-width: 130px;
+            }
+
+            /* 成就改单列，避免 360px 窄屏挤压溢出 */
+            .achievement-grid {
+                grid-template-columns: 1fr;
+            }
+
+            /* 容器加内边距兜底，彻底杜绝横向溢出 */
+            #col-center,
+            #settings,
+            #skin-selector {
+                padding-left: 8px;
+                padding-right: 8px;
+                box-sizing: border-box;
+            }
+        }
     </style>
 </head>
 <body>
@@ -805,7 +844,7 @@
             <option value="ocean">海洋</option>
             <option value="cyber">赛博</option>
         </select>
-        <span style="margin-left: 15px;">背景：</span>
+        <span>背景：</span>
         <select id="bg-select">
             <option value="dark">深色</option>
             <option value="light">浅色</option>
@@ -816,7 +855,7 @@
             <option value="forest">森林</option>
             <option value="neon-bg">霓虹</option>
         </select>
-        <span style="margin-left: 15px;">食物：</span>
+        <span>食物：</span>
         <select id="food-select">
             <option value="classic">经典</option>
             <option value="fruit">水果</option>
@@ -825,10 +864,10 @@
             <option value="gem">宝石</option>
             <option value="emoji">表情</option>
         </select>
-        <label style="margin-left: 15px; display: flex; align-items: center; gap: 5px; cursor: pointer;">
+        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
             <input type="checkbox" id="vibration-toggle" checked> 震动
         </label>
-        <label style="margin-left: 15px; display: flex; align-items: center; gap: 5px; cursor: pointer;">
+        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
             <input type="checkbox" id="particles-toggle" checked> 粒子特效
         </label>
     </div>

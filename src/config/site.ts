@@ -21,6 +21,7 @@ export const navItems: NavItem[] = [
       { label: "搜索", href: "/blog/search" },
     ],
   },
+  { label: "留言墙", href: "/guestbook" },
 ];
 
 export const siteConfig = {

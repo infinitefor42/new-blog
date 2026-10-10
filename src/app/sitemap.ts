@@ -45,6 +45,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
+      url: `${BASE_URL}/guestbook`,
+      lastModified: new Date().toISOString().split("T")[0],
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
       url: `${BASE_URL}/blog/archive`,
       lastModified: new Date().toISOString().split("T")[0],
       changeFrequency: "monthly",
