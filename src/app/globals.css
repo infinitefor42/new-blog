@@ -82,6 +82,8 @@ body {
   line-height: 1.75;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* 防横向滚动条（走马灯全屏出血布局在 Windows 常驻滚动条下 100vw 会溢出） */
+  overflow-x: clip;
 }
 
 /* ========================================
@@ -555,6 +557,35 @@ body > * {
 
 .animate-fade-in {
   animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* ========================================
+   技术栈走马灯（核心技能区）
+   双份相同内容 + 平移 -50% 实现无缝无限循环
+   ======================================== */
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  animation: marquee-scroll 42s linear infinite;
+  will-change: transform;
+}
+
+/* 悬停视口任意位置即暂停滚动 */
+.marquee-viewport:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
 }
 
 /* ========================================
