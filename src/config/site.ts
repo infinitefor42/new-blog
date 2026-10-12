@@ -5,11 +5,12 @@ import {
   SiHeroui,
   SiLucide,
   SiNextdotjs,
+  SiPnpm,
+  SiSupabase,
   SiTailwindcss,
   SiThreedotjs,
   SiTypescript,
 } from "react-icons/si";
-import { TbSunMoon } from "react-icons/tb";
 
 export interface NavChild {
   label: string;
@@ -66,14 +67,14 @@ export const siteConfig = {
 
   skills: {
     title: "核心技能",
-    subtitle: "构建博客的技术栈",
+    subtitle: "构建博客的技术栈或工具",
     cards: [
       { emoji: "💻", title: "编程基础", desc: "C 语言 / Python / 数据结构与算法" },
       { emoji: "🖥️", title: "系统与数据", desc: "Linux 操作系统 / MySQL 数据库" },
       { emoji: "🛠️", title: "工程工具", desc: "Git 版本控制 / 命令行 / MiMo Code" },
       { emoji: "🧮", title: "数学基础", desc: "高等数学 / 线性代数" },
     ],
-    // 走马灯条目：本博客实际使用的技术栈
+    // 走马灯条目：本博客实际使用的技术栈与工具
     stack: [
       { name: "Next.js 16", icon: SiNextdotjs },
       { name: "TypeScript 5", icon: SiTypescript },
@@ -83,7 +84,8 @@ export const siteConfig = {
       { name: "Three.js + React Three Fiber", icon: SiThreedotjs },
       { name: "Lucide React", icon: SiLucide },
       { name: "GitHub Giscus", icon: SiGithub },
-      { name: "next-themes", icon: TbSunMoon },
+      { name: "Supabase", icon: SiSupabase },
+      { name: "pnpm", icon: SiPnpm },
     ] as { name: string; icon: IconType }[],
   },
 
