@@ -67,7 +67,7 @@ export const siteConfig = {
 
   skills: {
     title: "核心技能",
-    subtitle: "构建博客的技术栈或工具",
+    subtitle: "构建博客的技术栈",
     cards: [
       { emoji: "💻", title: "编程基础", desc: "C 语言 / Python / 数据结构与算法" },
       { emoji: "🖥️", title: "系统与数据", desc: "Linux 操作系统 / MySQL 数据库" },
