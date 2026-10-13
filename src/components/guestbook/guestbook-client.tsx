@@ -5,6 +5,34 @@ import { motion } from "framer-motion";
 import { FiSearch, FiSend, FiEdit3, FiRefreshCw, FiHeart } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa";
 import {
+  TbStar, TbHeart, TbCloud, TbFlower, TbSparkles, TbMoon, TbSun, TbBolt,
+  TbSnowflake, TbLeaf, TbButterfly, TbCat, TbDog, TbFish, TbBug, TbMushroom,
+  TbCherry, TbApple, TbCarrot, TbPizza, TbCoffee, TbBeer, TbCake, TbCandy,
+  TbIceCream, TbIceCream2, TbRocket, TbUfo, TbPlanet, TbComet, TbRainbow,
+  TbUmbrella, TbBalloon, TbGift, TbCrown, TbDiamond, TbKey, TbBell,
+  TbBookmark, TbFlag, TbTrophy, TbMedal, TbMusic, TbHeadphones, TbCamera,
+  TbPalette, TbBrush, TbPencil, TbBook, TbChess, TbDice, TbPuzzle,
+  TbBallFootball, TbBallBasketball, TbBallTennis, TbBallVolleyball, TbBike,
+  TbCar, TbPlane, TbSailboat, TbAnchor, TbMountain, TbTree, TbCactus,
+  TbFlame, TbDroplet, TbWind, TbGhost, TbRobot, TbAlien, TbMoodSmile,
+  TbMoodHappy, TbHeartHandshake, TbFeather, TbCookie, TbLollipop, TbCup,
+  TbTeapot, TbPin, TbMapPin, TbCompass, TbGlobe, TbWorld, TbMoon2,
+  TbSunHigh, TbCloudRain, TbCloudSnow, TbAbacus, TbAmbulance, TbAntenna,
+  TbAtom, TbAxe, TbBackpack, TbBallAmericanFootball, TbBattery, TbBlocks,
+  TbBriefcase, TbBuilding, TbBulb, TbBurger, TbBus, TbCalculator, TbCamper,
+  TbCandle, TbCaravan, TbCircle, TbCloudStorm, TbClover, TbConfetti, TbDna,
+  TbDrone, TbEgg, TbFiretruck, TbHammer, TbHelicopter, TbHelmet, TbHexagon,
+  TbHome, TbLamp, TbLetterA, TbLifebuoy, TbMagnet, TbMailbox, TbMask,
+  TbMessageCircle, TbMessages, TbMeteor, TbMicroscope, TbMilk, TbMoonStars,
+  TbMoped, TbOctagon, TbPaw, TbPeace, TbPerfume, TbPhone, TbPill, TbPlug,
+  TbQuote, TbRadio, TbRuler, TbSalad, TbSatellite, TbScissors, TbScooter,
+  TbSeedling, TbShield, TbShip, TbShirt, TbShoe, TbSignature, TbSkateboard,
+  TbSnowman, TbSquare, TbStars, TbStethoscope, TbSubmarine, TbSunset,
+  TbSunset2, TbSword, TbTelescope, TbTent, TbTheater, TbThumbUp, TbTool,
+  TbTools, TbTower, TbTractor, TbTrain, TbTriangle, TbTruck, TbUmbrella2,
+  TbVirus, TbWheelchair, TbWriting,
+} from "react-icons/tb";
+import {
   fetchMessages,
   insertMessage,
   updateLikeCount,
@@ -69,6 +97,260 @@ const COLOR_KEYS = Object.keys(NOTE_COLORS);
 /** 便签随机微旋转角度（按索引确定性取值，避免 hydration 不一致） */
 const ROTATIONS = [-1.5, 1.2, -0.8, 1.8, -2, 0.6, -1.1, 1.5];
 
+/**
+ * 可选图案标识（用户头像）：发表留言时自主选择，随留言存入数据库，
+ * 每条留言的图案永久固定，不随列表长度 / 排序变化。
+ */
+const AVATAR_OPTIONS = [
+  { key: "star", Icon: TbStar, label: "星星" },
+  { key: "heart", Icon: TbHeart, label: "爱心" },
+  { key: "cloud", Icon: TbCloud, label: "云朵" },
+  { key: "flower", Icon: TbFlower, label: "花朵" },
+  { key: "sparkles", Icon: TbSparkles, label: "闪烁" },
+  { key: "moon", Icon: TbMoon, label: "月亮" },
+  { key: "sun", Icon: TbSun, label: "太阳" },
+  { key: "bolt", Icon: TbBolt, label: "闪电" },
+  { key: "snowflake", Icon: TbSnowflake, label: "雪花" },
+  { key: "leaf", Icon: TbLeaf, label: "叶子" },
+  { key: "butterfly", Icon: TbButterfly, label: "蝴蝶" },
+  { key: "cat", Icon: TbCat, label: "猫咪" },
+  { key: "dog", Icon: TbDog, label: "小狗" },
+  { key: "fish", Icon: TbFish, label: "小鱼" },
+  { key: "bug", Icon: TbBug, label: "瓢虫" },
+  { key: "mushroom", Icon: TbMushroom, label: "蘑菇" },
+  { key: "cherry", Icon: TbCherry, label: "樱桃" },
+  { key: "apple", Icon: TbApple, label: "苹果" },
+  { key: "carrot", Icon: TbCarrot, label: "胡萝卜" },
+  { key: "pizza", Icon: TbPizza, label: "披萨" },
+  { key: "coffee", Icon: TbCoffee, label: "咖啡" },
+  { key: "beer", Icon: TbBeer, label: "啤酒" },
+  { key: "cake", Icon: TbCake, label: "蛋糕" },
+  { key: "candy", Icon: TbCandy, label: "糖果" },
+  { key: "icecream", Icon: TbIceCream, label: "冰淇淋" },
+  { key: "cone", Icon: TbIceCream2, label: "甜筒" },
+  { key: "rocket", Icon: TbRocket, label: "火箭" },
+  { key: "ufo", Icon: TbUfo, label: "飞碟" },
+  { key: "planet", Icon: TbPlanet, label: "星球" },
+  { key: "comet", Icon: TbComet, label: "彗星" },
+  { key: "rainbow", Icon: TbRainbow, label: "彩虹" },
+  { key: "umbrella", Icon: TbUmbrella, label: "雨伞" },
+  { key: "balloon", Icon: TbBalloon, label: "气球" },
+  { key: "gift", Icon: TbGift, label: "礼物" },
+  { key: "crown", Icon: TbCrown, label: "皇冠" },
+  { key: "diamond", Icon: TbDiamond, label: "钻石" },
+  { key: "key", Icon: TbKey, label: "钥匙" },
+  { key: "bell", Icon: TbBell, label: "铃铛" },
+  { key: "bookmark", Icon: TbBookmark, label: "书签" },
+  { key: "flag", Icon: TbFlag, label: "旗帜" },
+  { key: "trophy", Icon: TbTrophy, label: "奖杯" },
+  { key: "medal", Icon: TbMedal, label: "奖牌" },
+  { key: "music", Icon: TbMusic, label: "音乐" },
+  { key: "headphones", Icon: TbHeadphones, label: "耳机" },
+  { key: "camera", Icon: TbCamera, label: "相机" },
+  { key: "palette", Icon: TbPalette, label: "调色板" },
+  { key: "brush", Icon: TbBrush, label: "画笔" },
+  { key: "pencil", Icon: TbPencil, label: "铅笔" },
+  { key: "book", Icon: TbBook, label: "书本" },
+  { key: "chess", Icon: TbChess, label: "象棋" },
+  { key: "dice", Icon: TbDice, label: "骰子" },
+  { key: "puzzle", Icon: TbPuzzle, label: "拼图" },
+  { key: "football", Icon: TbBallFootball, label: "足球" },
+  { key: "basketball", Icon: TbBallBasketball, label: "篮球" },
+  { key: "tennis", Icon: TbBallTennis, label: "网球" },
+  { key: "volleyball", Icon: TbBallVolleyball, label: "排球" },
+  { key: "bike", Icon: TbBike, label: "单车" },
+  { key: "car", Icon: TbCar, label: "汽车" },
+  { key: "plane", Icon: TbPlane, label: "飞机" },
+  { key: "sailboat", Icon: TbSailboat, label: "帆船" },
+  { key: "anchor", Icon: TbAnchor, label: "船锚" },
+  { key: "mountain", Icon: TbMountain, label: "山峰" },
+  { key: "tree", Icon: TbTree, label: "树木" },
+  { key: "cactus", Icon: TbCactus, label: "仙人掌" },
+  { key: "flame", Icon: TbFlame, label: "火焰" },
+  { key: "droplet", Icon: TbDroplet, label: "水滴" },
+  { key: "wind", Icon: TbWind, label: "微风" },
+  { key: "ghost", Icon: TbGhost, label: "幽灵" },
+  { key: "robot", Icon: TbRobot, label: "机器人" },
+  { key: "alien", Icon: TbAlien, label: "外星人" },
+  { key: "smile", Icon: TbMoodSmile, label: "微笑" },
+  { key: "happy", Icon: TbMoodHappy, label: "开心" },
+  { key: "handshake", Icon: TbHeartHandshake, label: "比心" },
+  { key: "feather", Icon: TbFeather, label: "羽毛" },
+  { key: "cookie", Icon: TbCookie, label: "曲奇" },
+  { key: "lollipop", Icon: TbLollipop, label: "棒棒糖" },
+  { key: "cup", Icon: TbCup, label: "杯子" },
+  { key: "teapot", Icon: TbTeapot, label: "茶壶" },
+  { key: "pin", Icon: TbPin, label: "图钉" },
+  { key: "mappin", Icon: TbMapPin, label: "定位" },
+  { key: "compass", Icon: TbCompass, label: "指南针" },
+  { key: "globe", Icon: TbGlobe, label: "地球仪" },
+  { key: "world", Icon: TbWorld, label: "世界" },
+  { key: "moon2", Icon: TbMoon2, label: "弯月" },
+  { key: "sunhigh", Icon: TbSunHigh, label: "骄阳" },
+  { key: "rain", Icon: TbCloudRain, label: "下雨" },
+  { key: "snow", Icon: TbCloudSnow, label: "下雪" },
+  { key: "abacus", Icon: TbAbacus, label: "算盘" },
+  { key: "ambulance", Icon: TbAmbulance, label: "救护车" },
+  { key: "antenna", Icon: TbAntenna, label: "天线" },
+  { key: "atom", Icon: TbAtom, label: "原子" },
+  { key: "axe", Icon: TbAxe, label: "斧头" },
+  { key: "backpack", Icon: TbBackpack, label: "背包" },
+  { key: "rugby", Icon: TbBallAmericanFootball, label: "橄榄球" },
+  { key: "battery", Icon: TbBattery, label: "电池" },
+  { key: "blocks", Icon: TbBlocks, label: "积木" },
+  { key: "briefcase", Icon: TbBriefcase, label: "公文包" },
+  { key: "building", Icon: TbBuilding, label: "大楼" },
+  { key: "bulb", Icon: TbBulb, label: "灯泡" },
+  { key: "burger", Icon: TbBurger, label: "汉堡" },
+  { key: "bus", Icon: TbBus, label: "巴士" },
+  { key: "calculator", Icon: TbCalculator, label: "计算器" },
+  { key: "camper", Icon: TbCamper, label: "房车" },
+  { key: "candle", Icon: TbCandle, label: "蜡烛" },
+  { key: "caravan", Icon: TbCaravan, label: "大篷车" },
+  { key: "circle", Icon: TbCircle, label: "圆圈" },
+  { key: "storm", Icon: TbCloudStorm, label: "暴风雨" },
+  { key: "clover", Icon: TbClover, label: "三叶草" },
+  { key: "confetti", Icon: TbConfetti, label: "彩带" },
+  { key: "dna", Icon: TbDna, label: "DNA" },
+  { key: "drone", Icon: TbDrone, label: "无人机" },
+  { key: "egg", Icon: TbEgg, label: "鸡蛋" },
+  { key: "firetruck", Icon: TbFiretruck, label: "消防车" },
+  { key: "hammer", Icon: TbHammer, label: "锤子" },
+  { key: "helicopter", Icon: TbHelicopter, label: "直升机" },
+  { key: "helmet", Icon: TbHelmet, label: "头盔" },
+  { key: "hexagon", Icon: TbHexagon, label: "六边形" },
+  { key: "home", Icon: TbHome, label: "小屋" },
+  { key: "lamp", Icon: TbLamp, label: "台灯" },
+  { key: "lettera", Icon: TbLetterA, label: "字母A" },
+  { key: "lifebuoy", Icon: TbLifebuoy, label: "救生圈" },
+  { key: "magnet", Icon: TbMagnet, label: "磁铁" },
+  { key: "mailbox", Icon: TbMailbox, label: "信箱" },
+  { key: "mask", Icon: TbMask, label: "面具" },
+  { key: "message", Icon: TbMessageCircle, label: "对话" },
+  { key: "messages", Icon: TbMessages, label: "消息" },
+  { key: "meteor", Icon: TbMeteor, label: "流星" },
+  { key: "microscope", Icon: TbMicroscope, label: "显微镜" },
+  { key: "milk", Icon: TbMilk, label: "牛奶" },
+  { key: "moonstars", Icon: TbMoonStars, label: "星月" },
+  { key: "moped", Icon: TbMoped, label: "小摩托" },
+  { key: "octagon", Icon: TbOctagon, label: "八边形" },
+  { key: "paw", Icon: TbPaw, label: "爪印" },
+  { key: "peace", Icon: TbPeace, label: "和平" },
+  { key: "perfume", Icon: TbPerfume, label: "香水" },
+  { key: "phone", Icon: TbPhone, label: "电话" },
+  { key: "pill", Icon: TbPill, label: "药丸" },
+  { key: "plug", Icon: TbPlug, label: "插头" },
+  { key: "quote", Icon: TbQuote, label: "引号" },
+  { key: "radio", Icon: TbRadio, label: "收音机" },
+  { key: "ruler", Icon: TbRuler, label: "尺子" },
+  { key: "salad", Icon: TbSalad, label: "沙拉" },
+  { key: "satellite", Icon: TbSatellite, label: "卫星" },
+  { key: "scissors", Icon: TbScissors, label: "剪刀" },
+  { key: "scooter", Icon: TbScooter, label: "滑板车" },
+  { key: "seedling", Icon: TbSeedling, label: "幼苗" },
+  { key: "shield", Icon: TbShield, label: "盾牌" },
+  { key: "ship", Icon: TbShip, label: "轮船" },
+  { key: "shirt", Icon: TbShirt, label: "T恤" },
+  { key: "shoe", Icon: TbShoe, label: "鞋子" },
+  { key: "signature", Icon: TbSignature, label: "签名" },
+  { key: "skateboard", Icon: TbSkateboard, label: "滑板" },
+  { key: "snowman", Icon: TbSnowman, label: "雪人" },
+  { key: "square", Icon: TbSquare, label: "方块" },
+  { key: "stars", Icon: TbStars, label: "群星" },
+  { key: "stethoscope", Icon: TbStethoscope, label: "听诊器" },
+  { key: "submarine", Icon: TbSubmarine, label: "潜水艇" },
+  { key: "sunset", Icon: TbSunset, label: "日落" },
+  { key: "sunset2", Icon: TbSunset2, label: "夕阳" },
+  { key: "sword", Icon: TbSword, label: "宝剑" },
+  { key: "telescope", Icon: TbTelescope, label: "望远镜" },
+  { key: "tent", Icon: TbTent, label: "帐篷" },
+  { key: "theater", Icon: TbTheater, label: "剧院" },
+  { key: "thumbup", Icon: TbThumbUp, label: "点赞" },
+  { key: "tool", Icon: TbTool, label: "工具" },
+  { key: "tools", Icon: TbTools, label: "工具箱" },
+  { key: "tower", Icon: TbTower, label: "高塔" },
+  { key: "tractor", Icon: TbTractor, label: "拖拉机" },
+  { key: "train", Icon: TbTrain, label: "火车" },
+  { key: "triangle", Icon: TbTriangle, label: "三角" },
+  { key: "truck", Icon: TbTruck, label: "卡车" },
+  { key: "umbrella2", Icon: TbUmbrella2, label: "阳伞" },
+  { key: "virus", Icon: TbVirus, label: "病毒" },
+  { key: "wheelchair", Icon: TbWheelchair, label: "轮椅" },
+  { key: "writing", Icon: TbWriting, label: "手写" },
+] as const;
+
+/**
+ * 每个图案的语义化配色（柔和中调色系，明暗主题下均协调）。
+ * 类名需完整字面量以被 Tailwind 扫描。
+ */
+const AVATAR_COLORS: Record<string, string> = {
+  star: "text-amber-400", heart: "text-rose-400", cloud: "text-sky-400",
+  flower: "text-pink-400", sparkles: "text-violet-400", moon: "text-indigo-400",
+  sun: "text-amber-500", bolt: "text-yellow-500", snowflake: "text-cyan-400",
+  leaf: "text-green-500", butterfly: "text-fuchsia-400", cat: "text-orange-400",
+  dog: "text-amber-500", fish: "text-sky-500", bug: "text-red-400",
+  mushroom: "text-orange-300", cherry: "text-rose-500", apple: "text-red-500",
+  carrot: "text-orange-500", pizza: "text-yellow-500", coffee: "text-amber-600",
+  beer: "text-yellow-400", cake: "text-pink-300", candy: "text-fuchsia-300",
+  icecream: "text-pink-400", cone: "text-amber-400", rocket: "text-red-400",
+  ufo: "text-purple-400", planet: "text-indigo-400", comet: "text-sky-300",
+  rainbow: "text-teal-400", umbrella: "text-blue-400", balloon: "text-red-300",
+  gift: "text-rose-400", crown: "text-yellow-500", diamond: "text-cyan-300",
+  key: "text-amber-500", bell: "text-yellow-400", bookmark: "text-blue-400",
+  flag: "text-red-500", trophy: "text-amber-500", medal: "text-yellow-500",
+  music: "text-violet-500", headphones: "text-indigo-500", camera: "text-stone-500",
+  palette: "text-rose-400", brush: "text-orange-400", pencil: "text-amber-600",
+  book: "text-blue-500", chess: "text-stone-500", dice: "text-stone-400",
+  puzzle: "text-green-400", football: "text-emerald-500", basketball: "text-orange-500",
+  tennis: "text-lime-500", volleyball: "text-sky-400", bike: "text-blue-500",
+  car: "text-red-500", plane: "text-sky-500", sailboat: "text-cyan-500",
+  anchor: "text-stone-500", mountain: "text-emerald-600", tree: "text-green-600",
+  cactus: "text-green-500", flame: "text-orange-500", droplet: "text-blue-400",
+  wind: "text-teal-300", ghost: "text-stone-400", robot: "text-stone-500",
+  alien: "text-green-400", smile: "text-yellow-400", happy: "text-amber-400",
+  handshake: "text-rose-400", feather: "text-stone-400", cookie: "text-amber-600",
+  lollipop: "text-pink-400", cup: "text-sky-400", teapot: "text-teal-500",
+  pin: "text-red-400", mappin: "text-rose-500", compass: "text-red-500",
+  globe: "text-blue-500", world: "text-teal-500", moon2: "text-indigo-300",
+  sunhigh: "text-amber-500", rain: "text-blue-400", snow: "text-cyan-300",
+  abacus: "text-amber-600", ambulance: "text-red-400", antenna: "text-stone-500",
+  atom: "text-violet-500", axe: "text-stone-500", backpack: "text-orange-400",
+  rugby: "text-amber-600", battery: "text-green-500", blocks: "text-blue-400",
+  briefcase: "text-amber-600", building: "text-stone-400", bulb: "text-yellow-400",
+  burger: "text-amber-500", bus: "text-yellow-500", calculator: "text-stone-500",
+  camper: "text-teal-400", candle: "text-orange-300", caravan: "text-orange-400",
+  circle: "text-blue-400", storm: "text-indigo-500", clover: "text-green-500",
+  confetti: "text-pink-400", dna: "text-teal-500", drone: "text-stone-500",
+  egg: "text-amber-300", firetruck: "text-red-500", hammer: "text-stone-500",
+  helicopter: "text-sky-500", helmet: "text-orange-500", hexagon: "text-violet-400",
+  home: "text-amber-500", lamp: "text-yellow-400", lettera: "text-blue-500",
+  lifebuoy: "text-red-400", magnet: "text-red-500", mailbox: "text-blue-500",
+  mask: "text-purple-400", message: "text-green-500", messages: "text-teal-500",
+  meteor: "text-orange-400", microscope: "text-stone-500", milk: "text-sky-300",
+  moonstars: "text-indigo-400", moped: "text-teal-500", octagon: "text-rose-400",
+  paw: "text-amber-500", peace: "text-green-400", perfume: "text-pink-300",
+  phone: "text-green-500", pill: "text-rose-400", plug: "text-amber-500",
+  quote: "text-stone-400", radio: "text-orange-400", ruler: "text-amber-500",
+  salad: "text-green-500", satellite: "text-stone-500", scissors: "text-stone-500",
+  scooter: "text-red-400", seedling: "text-green-400", shield: "text-blue-500",
+  ship: "text-blue-500", shirt: "text-sky-400", shoe: "text-orange-400",
+  signature: "text-indigo-500", skateboard: "text-violet-500", snowman: "text-sky-300",
+  square: "text-teal-400", stars: "text-yellow-400", stethoscope: "text-red-400",
+  submarine: "text-yellow-500", sunset: "text-orange-500", sunset2: "text-rose-400",
+  sword: "text-stone-500", telescope: "text-indigo-500", tent: "text-orange-400",
+  theater: "text-red-400", thumbup: "text-blue-500", tool: "text-stone-500",
+  tools: "text-amber-600", tower: "text-stone-400", tractor: "text-green-600",
+  train: "text-blue-500", triangle: "text-amber-400", truck: "text-blue-400",
+  umbrella2: "text-violet-400", virus: "text-green-500", wheelchair: "text-blue-500",
+  writing: "text-stone-500",
+};
+
+/** key → 图标组件 索引表，未知 key 回退到星星 */
+const AVATAR_MAP: Record<string, (typeof AVATAR_OPTIONS)[number]["Icon"]> =
+  Object.fromEntries(AVATAR_OPTIONS.map((o) => [o.key, o.Icon]));
+
+const DEFAULT_AVATAR = "star";
+
 const MAX_LENGTH = 500;
 const PAGE_SIZE = 30;
 
@@ -82,9 +364,14 @@ const LIKED_KEY = "guestbook_liked";
 /** 草稿暂存键：输入中的昵称 / 正文 / 配色 */
 const DRAFT_KEY = "guestbook_draft";
 
-type Draft = { nickname: string; content: string; color: string };
+type Draft = { nickname: string; content: string; color: string; avatar: string };
 
-const EMPTY_DRAFT: Draft = { nickname: "", content: "", color: "yellow" };
+const EMPTY_DRAFT: Draft = {
+  nickname: "",
+  content: "",
+  color: "yellow",
+  avatar: DEFAULT_AVATAR,
+};
 
 function readDraft(): Draft {
   try {
@@ -99,6 +386,10 @@ function readDraft(): Draft {
         typeof draft.color === "string" && NOTE_COLORS[draft.color]
           ? draft.color
           : "yellow",
+      avatar:
+        typeof draft.avatar === "string" && AVATAR_MAP[draft.avatar]
+          ? draft.avatar
+          : DEFAULT_AVATAR,
     };
   } catch {
     return EMPTY_DRAFT;
@@ -140,24 +431,6 @@ function containsBlockedWord(text: string) {
   return BLOCKED_WORDS.some((w) => lower.includes(w.toLowerCase()));
 }
 
-function formatDate(iso: string) {
-  const d = new Date(iso);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
-
-/** 相对时间：刚刚 / N 分钟前 / N 小时前 / N 天前 / 绝对日期 */
-function relativeTime(iso: string) {
-  const diff = Date.now() - new Date(iso).getTime();
-  const minutes = Math.floor(diff / 60000);
-  if (minutes < 1) return "刚刚";
-  if (minutes < 60) return `${minutes} 分钟前`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours} 小时前`;
-  const days = Math.floor(hours / 24);
-  if (days < 7) return `${days} 天前`;
-  return formatDate(iso);
-}
-
 function StickyNote({
   message,
   index,
@@ -171,48 +444,66 @@ function StickyNote({
 }) {
   const color = NOTE_COLORS[message.color] ?? NOTE_COLORS.yellow;
   const rotation = ROTATIONS[index % ROTATIONS.length];
+  // ① 图钉 / 胶带混排：奇数索引用图钉，偶数保留胶带，增加随机感
+  const usePin = index % 2 === 1;
+  // ② 用户自主选择的图案标识（头像），随留言入库、永久固定
+  const AvatarIcon = AVATAR_MAP[message.avatar] ?? AVATAR_MAP[DEFAULT_AVATAR];
 
   return (
+    // 外层包裹：透明的 pt-2 把图钉/胶带收进多列子项的盒模型内，
+    // 避免负值绝对定位元素溢出列边界被 Chrome 分片裁剪后“幽灵绘制”到前一列
     <motion.div
       initial={{ opacity: 0, y: 20, rotate: 0 }}
       animate={{ opacity: 1, y: 0, rotate: rotation }}
       transition={{ duration: 0.4, delay: Math.min(index * 0.05, 0.5) }}
       whileHover={{ rotate: 0, scale: 1.03, zIndex: 10 }}
-      className={`relative mb-5 break-inside-avoid rounded-md border p-4 pt-5 shadow-md shadow-black/5 dark:shadow-black/30 ${color.card}`}
+      className="relative mb-5 break-inside-avoid pt-2"
     >
-      {/* 顶部胶带 */}
-      <div className="absolute -top-2 left-1/2 h-5 w-16 -translate-x-1/2 -rotate-2 rounded-sm bg-ink-black/10 dark:bg-rice-white/20" />
-      <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink-black/85 dark:text-rice-white/90">
-        {message.content}
-      </p>
-      <div className="mt-3 flex items-center justify-between border-t border-ink-black/10 pt-2 dark:border-rice-white/15">
-        <span className="text-xs font-medium text-ink-black/60 dark:text-rice-white-dim">
-          {message.nickname}
-        </span>
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => onToggleLike(message)}
-            aria-label={liked ? "取消点赞" : "点赞"}
-            className={`flex items-center gap-1 text-xs transition-all hover:scale-110 ${
-              liked
-                ? "text-[#E2607F]"
-                : "text-ink-black/40 hover:text-[#E2607F] dark:text-rice-white-dim/70"
-            }`}
-          >
-            {liked ? (
-              <FaHeart className="h-3.5 w-3.5" />
-            ) : (
-              <FiHeart className="h-3.5 w-3.5" />
-            )}
-            <span>{message.like_count}</span>
-          </button>
-          <span
-            title={formatDate(message.created_at)}
-            className="text-xs text-ink-black/40 dark:text-rice-white-dim/70"
-          >
-            {relativeTime(message.created_at)}
+      {/* 顶部固定件：图钉与胶带混用（定位均相对于外层，视觉上仍压在卡片上沿） */}
+      {usePin ? (
+        <div className={`absolute left-1/2 top-0.5 z-10 h-3.5 w-3.5 -translate-x-1/2 rounded-full ${color.dot} shadow-[0_1px_2px_rgba(0,0,0,0.25)]`}>
+          <div className="absolute left-1 top-1 h-1 w-1 rounded-full bg-white/60" />
+        </div>
+      ) : (
+        <div className="absolute left-1/2 top-0 z-10 h-5 w-16 -translate-x-1/2 -rotate-2 rounded-sm bg-ink-black/10 dark:bg-rice-white/20" />
+      )}
+      <div className={`rounded-md border p-4 pt-5 shadow-md shadow-black/5 dark:shadow-black/30 ${color.card}`}>
+        <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink-black/85 dark:text-rice-white/90">
+          {message.content}
+        </p>
+        <div className="mt-3 flex items-center justify-between border-t border-ink-black/10 pt-2 dark:border-rice-white/15">
+          <span className="flex min-w-0 items-center gap-1.5">
+            {/* 用户图案标识（头像）徽章：浅色底托 + 图案自身配色 */}
+            <span
+              className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/70 dark:bg-rice-white/15"
+            >
+              <AvatarIcon
+                className={`h-3 w-3 ${AVATAR_COLORS[message.avatar] ?? "text-stone-400"}`}
+              />
+            </span>
+            <span className="truncate text-xs font-medium text-ink-black/60 dark:text-rice-white-dim">
+              {message.nickname}
+            </span>
           </span>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => onToggleLike(message)}
+              aria-label={liked ? "取消点赞" : "点赞"}
+              className={`flex items-center gap-1 text-xs transition-all hover:scale-110 ${
+                liked
+                  ? "text-[#E2607F]"
+                  : "text-ink-black/40 hover:text-[#E2607F] dark:text-rice-white-dim/70"
+              }`}
+            >
+              {liked ? (
+                <FaHeart className="h-3.5 w-3.5" />
+              ) : (
+                <FiHeart className="h-3.5 w-3.5" />
+              )}
+              <span>{message.like_count}</span>
+            </button>
+          </div>
         </div>
       </div>
     </motion.div>
@@ -230,6 +521,7 @@ export function GuestbookClient() {
   const [nickname, setNickname] = useState("");
   const [content, setContent] = useState("");
   const [color, setColor] = useState("yellow");
+  const [avatar, setAvatar] = useState(DEFAULT_AVATAR);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [submitOk, setSubmitOk] = useState(false);
@@ -242,6 +534,60 @@ export function GuestbookClient() {
   // 草稿是否已从 localStorage 恢复过（防止恢复前的初始空值把草稿覆盖掉）
   const draftRestored = useRef(false);
 
+  // 图案选择器滚动状态：驱动上下渐隐遮罩与右侧迷你进度条
+  const pickerRef = useRef<HTMLDivElement>(null);
+  const [pickerScroll, setPickerScroll] = useState({
+    canUp: false,
+    canDown: true,
+    progress: 0,
+    thumbRatio: 0.2,
+  });
+  const handlePickerScroll = () => {
+    const el = pickerRef.current;
+    if (!el) return;
+    const { scrollTop, scrollHeight, clientHeight } = el;
+    const max = scrollHeight - clientHeight;
+    setPickerScroll({
+      canUp: scrollTop > 4,
+      canDown: scrollTop < max - 4,
+      progress: max > 0 ? scrollTop / max : 0,
+      thumbRatio: scrollHeight > 0 ? clientHeight / scrollHeight : 1,
+    });
+  };
+
+  // 逐行滚动：浏览器原生滚轮一格约滚 100~120px（≈3~4 行），
+  // 这里拦截 wheel 事件，把每格折算为恰好一行（36px），平滑归位；
+  // 触控板微小连续增量先累加，满 50px 阈值才滚一行，避免过敏。
+  // 需非 passive 监听才能 preventDefault，故用原生 addEventListener。
+  const wheelAccRef = useRef(0);
+  useEffect(() => {
+    const el = pickerRef.current;
+    if (!el) return;
+    const ROW_HEIGHT = 36; // h-8 (32px) + gap-1 (4px)
+    const TOUCHPAD_THRESHOLD = 50;
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      // Firefox 按"行"上报（deltaMode=1），折算成像素
+      const delta = e.deltaMode === 1 ? e.deltaY * 33 : e.deltaY;
+      let rows = 0;
+      if (Math.abs(delta) >= TOUCHPAD_THRESHOLD) {
+        // 鼠标滚轮：一格 = 一行，与滚动量大小无关
+        rows = Math.sign(delta);
+        wheelAccRef.current = 0;
+      } else {
+        // 触控板：累加微增量，满阈值滚一行
+        wheelAccRef.current += delta;
+        rows = Math.trunc(wheelAccRef.current / TOUCHPAD_THRESHOLD);
+        wheelAccRef.current -= rows * TOUCHPAD_THRESHOLD;
+      }
+      if (rows !== 0) {
+        el.scrollBy({ top: rows * ROW_HEIGHT, behavior: "smooth" });
+      }
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, []);
+
   // 挂载后恢复草稿 + 点赞记录。
   // localStorage 只在浏览器存在，无法用于 state 初始化（会导致 SSR/hydration 不一致），
   // 因此挂载后同步一次。首帧不渲染输入值，用户无感知。
@@ -251,6 +597,7 @@ export function GuestbookClient() {
     setNickname(draft.nickname);
     setContent(draft.content);
     setColor(draft.color);
+    setAvatar(draft.avatar);
     setLikedIds(readLikedIds());
     draftRestored.current = true;
   }, []);
@@ -264,19 +611,19 @@ export function GuestbookClient() {
     }
     try {
       const isEmpty =
-        !nickname.trim() && !content.trim() && color === "yellow";
+        !nickname.trim() && !content.trim() && color === "yellow" && avatar === DEFAULT_AVATAR;
       if (isEmpty) {
         localStorage.removeItem(DRAFT_KEY);
       } else {
         localStorage.setItem(
           DRAFT_KEY,
-          JSON.stringify({ nickname, content, color })
+          JSON.stringify({ nickname, content, color, avatar })
         );
       }
     } catch {
       /* 隐私模式 / 配额超限忽略 */
     }
-  }, [nickname, content, color]);
+  }, [nickname, content, color, avatar]);
 
   // 已从服务端加载的条数（分页游标）。
   // 不能直接用 messages.length：本地新提交的留言会前插，导致游标错位、翻页重复或漏读。
@@ -377,6 +724,7 @@ export function GuestbookClient() {
       nickname: nickname.trim() || "匿名",
       content: trimmed,
       color,
+      avatar,
     });
 
     setSubmitting(false);
@@ -628,6 +976,69 @@ export function GuestbookClient() {
                   }`}
                 />
               ))}
+            </div>
+
+            {/* 图案标识（头像）选择：随留言入库，永久固定 */}
+            <div>
+              <span className="text-xs text-ink-gray dark:text-rice-white-dim">
+                图案标识
+              </span>
+              {/*
+                滚动方案：惯性原生滚动 + proximity 软吸附（不抢控制权，靠近行边界才轻柔归位）
+                + 上下渐隐遮罩（暗示对应方向还有内容）+ 右侧迷你进度条（位置感）。
+                默认恰好展示 3 行（3×h-8 + 2×gap-1 + 上下 p-1 = 112px）。
+              */}
+              {(() => {
+                const fadeTop = "transparent, black 16px";
+                const fadeBottom = "black calc(100% - 16px), transparent";
+                const maskImage =
+                  pickerScroll.canUp && pickerScroll.canDown
+                    ? `linear-gradient(to bottom, ${fadeTop}, ${fadeBottom})`
+                    : pickerScroll.canUp
+                      ? `linear-gradient(to bottom, ${fadeTop})`
+                      : pickerScroll.canDown
+                        ? `linear-gradient(to bottom, ${fadeBottom})`
+                        : "none";
+                return (
+                  <div className="relative mt-2">
+                    <div
+                      ref={pickerRef}
+                      onScroll={handlePickerScroll}
+                      style={{ maskImage, WebkitMaskImage: maskImage }}
+                      className="grid max-h-[112px] snap-y snap-proximity grid-cols-8 gap-1 overflow-y-auto scroll-p-1 p-1 pr-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                    >
+                      {AVATAR_OPTIONS.map(({ key, Icon, label }) => (
+                  <button
+                    key={key}
+                    type="button"
+                    aria-label={label}
+                    title={label}
+                    onClick={() => setAvatar(key)}
+                    className={`flex h-8 w-8 snap-start items-center justify-center rounded-lg transition-all ${
+                      AVATAR_COLORS[key] ?? "text-stone-400"
+                    } ${
+                      avatar === key
+                        ? "scale-105 bg-ink-black/5 ring-2 ring-current dark:bg-rice-white/10"
+                        : "opacity-70 hover:bg-ink-black/5 hover:opacity-100 dark:hover:bg-rice-white/10"
+                    }`}
+                  >
+                    <Icon className="h-4 w-4" />
+                  </button>
+                      ))}
+                    </div>
+                    {/* 右侧迷你进度条：轨道 + 按滚动位置移动的滑块 */}
+                    <div className="pointer-events-none absolute bottom-1 right-0 top-1 w-[3px] rounded-full bg-ink-black/10 dark:bg-rice-white/15">
+                      <div
+                        className="absolute left-0 w-full rounded-full bg-ink-black/35 transition-[top] duration-75 dark:bg-rice-white/40"
+                        style={{
+                          height: `${pickerScroll.thumbRatio * 100}%`,
+                          top: `${pickerScroll.progress * (1 - pickerScroll.thumbRatio) * 100}%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
 
             {submitError && (

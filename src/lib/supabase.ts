@@ -18,6 +18,7 @@ export interface GuestbookMessage {
   nickname: string;
   content: string;
   color: string;
+  avatar: string;
   like_count: number;
   created_at: string;
 }
@@ -26,6 +27,7 @@ interface NewMessage {
   nickname: string;
   content: string;
   color: string;
+  avatar: string;
 }
 
 type Result<T> = { data: T | null; error: string | null };
