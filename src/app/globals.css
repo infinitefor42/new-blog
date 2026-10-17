@@ -411,20 +411,6 @@ body > * {
   word-break: break-word;
 }
 
-/* ========================================
-   不蒜子访问统计
-   ======================================== */
-/* 默认隐藏，取数成功后由脚本置为 inline；服务不可用时保持隐藏，不会露出空标签 */
-.visit-count {
-  display: none;
-}
-
-.visit-count > svg {
-  display: inline-block;
-  vertical-align: -0.125em;
-  margin-right: 0.375rem;
-}
-
 @media (max-width: 640px) {
   .prose pre {
     padding: 1em 0.75em;

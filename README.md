@@ -101,7 +101,8 @@ my-new-blog/
 │   │   │
 │   │   ├── common/                 # 通用组件
 │   │   │   ├── back-to-top.tsx     # 回到顶部
-│   │   │   ├── busuanzi.tsx        # 不蒜子访问量统计
+│   │   │   ├── page-view-tracker.tsx # 访问埋点（路由变化上报 Supabase）
+│   │   │   ├── visit-stats.tsx     # 访问量展示（页脚全站统计）
 │   │   │   ├── code-block.tsx      # 代码块（文件名 + 复制按钮）
 │   │   │   ├── typewriter.tsx      # 打字机效果
 │   │   │   ├── space-button.tsx    # 太空风格按钮
