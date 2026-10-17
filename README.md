@@ -12,7 +12,7 @@
 
 [🌐 在线预览](https://caobowen.top) · [📦 源码仓库](https://github.com/infinitefor42/new-blog)
 
-**🌐 简体中文（默认） | English（滚动至页面底部，点击「English Version」展开）**
+**🌐 简体中文（默认） | [English](README.en.md)**
 
 </div>
 
@@ -42,6 +42,9 @@ INFINITE 是一个以 **宣纸暖米色 `#F5EDE0`** 为底色、融合 **宋体�
 ---
 
 ## 📁 Project Structure
+
+<details>
+<summary>📂 <strong>点击展开完整项目结构</strong>（默认收起，点击标题查看框架层级）</summary>
 
 ```
 my-new-blog/
@@ -150,6 +153,8 @@ my-new-blog/
 └── package.json                    # 项目依赖与脚本
 ```
 
+</details>
+
 ---
 
 ## ✨ Key Features
@@ -235,80 +240,3 @@ my-new-blog/
 *以热爱为引，期待与你同行。*
 
 </div>
-
----
-
-<details>
-<summary>🌐 <strong>English Version (Click to expand)</strong></summary>
-
-<div align="center">
-
-# INFINITE
-
-**A modern personal blog & tech lab with "Chinese elegance · paper-texture minimalism" aesthetics**
-
-[🌐 Live Demo](https://caobowen.top) · [📦 Source](https://github.com/infinitefor42/new-blog)
-
-**🌐 English | [简体中文（返回顶部）](#readme)**
-
-</div>
-
----
-
-## 📖 About
-
-INFINITE is a personal tech blog built on a warm rice-paper palette (`#F5EDE0`), Songti serif typography, and glassmorphism components.
-
-## 🛠 Tech Stack
-
-| Layer | Tech | Notes |
-|:---|:---|:---|
-| **Framework** | Next.js 16 (App Router) | Static export (SSG), hosted on GitHub Pages |
-| **Language** | TypeScript 5 | Full type safety |
-| **Styling** | Tailwind CSS 4 | Utility CSS + custom theme tokens |
-| **UI Base** | HeroUI | Global provider & style infrastructure |
-| **Animation** | Framer Motion | Apple-easing transitions & SVG icon morphing |
-| **3D** | Three.js + React Three Fiber | Particle systems & scene rendering |
-| **Icons** | Lucide React / React Icons | Vector icon sets |
-| **Comments** | GitHub Giscus | Powered by GitHub Discussions, seamless theme sync |
-| **Backend** | Supabase | Guestbook storage & visit analytics (RLS + DB rate-limit triggers) |
-| **Theming** | next-themes | Light / dark mode |
-
-## ✨ Key Features
-
-- **🎨 Paper aesthetics** — `#F5EDE0` warm cream base with SVG noise texture, Songti SC headings, three-tier glassmorphism cards
-- **📝 Polished Markdown** — KaTeX math, GFM tables, PrismLight on-demand highlighting, filename bar + one-click copy, TOC anchors with deduplicated heading IDs
-- **🔍 Full-text search** — Build-time static index (`/search-index.json`), client-side search over title / excerpt / body, tag & category aggregation pages
-- **💬 Guestbook** — Anonymous notes with draft autosave, atomic like counting via Supabase RPC, layered anti-spam (client filters + DB rate-limit triggers), anon role locked to SELECT + INSERT only
-- **📊 Self-hosted analytics** — PV/UV stats on Supabase (replacing busuanzi), RLS write-only for anon, DB-level insert rate limiting
-- **⚡ Performance & PWA** — Service Worker Cache First for hashed assets, lazy below-fold sections, installable manifest
-- **🎮 Game lab** — Classic Snake (keyboard + touch), served at `/games/Snake_Game/index.html`, MIT licensed
-- **🌳 Memory Tree** — 174,000-particle Three.js dreamscape, CC0 original synthesized ambient music, album system, 3-tier device-adaptive particle scaling (35%/60%/100%), audio loaded on demand
-- **💬 Giscus comments** — Theme-synced via `postMessage` on every post page
-- **📱 Responsive** — Adaptive layouts, mobile drawer navigation, touch gestures
-
-## 🚀 Quick Start
-
-```bash
-pnpm install     # Install dependencies
-pnpm dev         # Dev server on :3000
-pnpm build       # Static export to ./out
-pnpm lint        # ESLint
-```
-
-Copy `.env.local` with your Giscus & Supabase variables (see `src/config/site.ts` and `supabase/page_views.sql` for reference). Deploy by pushing to `main` — GitHub Actions builds and publishes to GitHub Pages automatically.
-
-## 📄 License
-
-- **Code**: open-sourced under the [MIT License](LICENSE)
-- **Articles** (posts under `src/posts/` and their illustrations): licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) — attribution to **INFINITE (caobowen.top)** with a link to the original article is required; no commercial use; derivatives must be shared under the same license
-
----
-
-<div align="center">
-
-**Built with ❤️ by INFINITE**
-
-</div>
-
-</details>
