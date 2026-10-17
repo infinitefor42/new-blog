@@ -1,9 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import bash from "react-syntax-highlighter/dist/esm/languages/prism/bash";
+import c from "react-syntax-highlighter/dist/esm/languages/prism/c";
+import javascript from "react-syntax-highlighter/dist/esm/languages/prism/javascript";
+import latex from "react-syntax-highlighter/dist/esm/languages/prism/latex";
+import markdown from "react-syntax-highlighter/dist/esm/languages/prism/markdown";
+import typescript from "react-syntax-highlighter/dist/esm/languages/prism/typescript";
 import { FiCopy, FiCheck, FiFile } from "react-icons/fi";
+
+// 仅注册文章实际用到的语言（bash/c/javascript/latex/markdown/typescript），
+// 避免全量 Prism 打包全部语言包撑大文章页 chunk（gitignore 无对应语言包，保持无高亮渲染，与此前行为一致）
+SyntaxHighlighter.registerLanguage("bash", bash);
+SyntaxHighlighter.registerLanguage("c", c);
+SyntaxHighlighter.registerLanguage("javascript", javascript);
+SyntaxHighlighter.registerLanguage("latex", latex);
+SyntaxHighlighter.registerLanguage("markdown", markdown);
+SyntaxHighlighter.registerLanguage("typescript", typescript);
 
 interface CodeBlockProps {
   code: string;
@@ -21,9 +36,13 @@ export function CodeBlock({
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // 非安全上下文或权限被拒绝时剪贴板不可用，静默忽略
+    }
   };
 
   return (

@@ -46,8 +46,19 @@ function toTimestamp(value: unknown): number {
   return Number.isNaN(t) ? 0 : t;
 }
 
+/**
+ * 构建期模块级缓存：分类/标签/归档等页面在一次构建中会多次调用
+ * getAllPosts，缓存可避免重复全量读盘。
+ * 仅生产构建启用——开发模式下模块常驻，缓存会屏蔽新增文章的热更新。
+ */
+let allPostsCache: PostPreview[] | null = null;
+
 /** 获取所有文章的预览元数据（按时间降序，不含正文） */
 export function getAllPosts(): PostPreview[] {
+  if (process.env.NODE_ENV === "production" && allPostsCache) {
+    return allPostsCache;
+  }
+
   if (!fs.existsSync(postsDirectory)) return [];
 
   const fileNames = fs
@@ -88,9 +99,14 @@ export function getAllPosts(): PostPreview[] {
     };
   });
 
-  return entries
+  const posts = entries
     .sort((a, b) => b.timestamp - a.timestamp)
     .map((entry) => entry.post);
+
+  if (process.env.NODE_ENV === "production") {
+    allPostsCache = posts;
+  }
+  return posts;
 }
 
 /**

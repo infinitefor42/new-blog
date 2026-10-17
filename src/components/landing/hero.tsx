@@ -1,7 +1,6 @@
 "use client";
 
 import { motion, type Variants } from "framer-motion";
-import Link from "next/link";
 import Image from "next/image";
 import { FiArrowDown, FiMail } from "react-icons/fi";
 import { FaGithub } from "react-icons/fa";

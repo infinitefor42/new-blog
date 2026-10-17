@@ -51,6 +51,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
+      url: `${BASE_URL}/memory-tree`,
+      lastModified: new Date().toISOString().split("T")[0],
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
       url: `${BASE_URL}/blog/archive`,
       lastModified: new Date().toISOString().split("T")[0],
       changeFrequency: "monthly",

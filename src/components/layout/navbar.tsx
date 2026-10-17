@@ -73,9 +73,12 @@ export function Navbar() {
   const inBlogSection = pathname.startsWith("/blog");
 
   // 打开移动端菜单时，博客分区内默认展开「博客」子菜单
-  useEffect(() => {
+  //（渲染期调整状态，替代 effect 内同步 setState）
+  const [prevMenuOpen, setPrevMenuOpen] = useState(false);
+  if (isMenuOpen !== prevMenuOpen) {
+    setPrevMenuOpen(isMenuOpen);
     if (isMenuOpen && inBlogSection) setMobileExpanded("/blog");
-  }, [isMenuOpen, inBlogSection]);
+  }
 
   const handleMobileMenuToggle = () => {
     setIsMenuOpen((prev) => !prev);

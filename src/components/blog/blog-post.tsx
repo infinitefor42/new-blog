@@ -13,9 +13,9 @@ import { GiscusComments } from "./giscus-comments";
 import { ReadingProgress } from "./reading-progress";
 import { TableOfContents } from "./table-of-contents";
 import { BackToTop } from "@/components/common/back-to-top";
-import { Children, isValidElement, useEffect } from "react";
+import { Children, isValidElement, useEffect, useMemo } from "react";
 import { siteConfig } from "@/config/site";
-import { slugify } from "@/lib/slugify";
+import { createHeadingIdGenerator } from "@/lib/slugify";
 import { CodeBlock } from "@/components/common/code-block";
 
 interface BlogPostProps {
@@ -51,8 +51,11 @@ function isFigureOnly(children: React.ReactNode): boolean {
   );
 }
 
-/** 自定义 Markdown 渲染组件 */
-const markdownComponents: Components = {
+/** 自定义 Markdown 渲染组件（工厂模式：每篇文章独立的标题 ID 生成器，保证重名标题锚点唯一且与 TOC 一致） */
+function createMarkdownComponents(): Components {
+  const headingId = createHeadingIdGenerator();
+
+  const components: Components = {
   code({ className, children, ...props }) {
     const isInline = !className;
     if (isInline) {
@@ -134,18 +137,30 @@ const markdownComponents: Components = {
       );
     }
 
+    // 站内锚点（#xxx）保持原生跳转；其余站内链接用 Link 走客户端导航
+    if (url.startsWith("#")) {
+      return (
+        <a
+          href={url}
+          className="text-ink-black dark:text-rice-white
+            underline underline-offset-2 decoration-warm-gray dark:decoration-warm-gray-dark
+            hover:decoration-ink-black dark:hover:decoration-rice-white transition-colors"
+          {...props}
+        >
+          {children}
+        </a>
+      );
+    }
+
     return (
-      <a
+      <Link
         href={url}
-        target="_blank"
-        rel="noopener noreferrer"
         className="text-ink-black dark:text-rice-white
           underline underline-offset-2 decoration-warm-gray dark:decoration-warm-gray-dark
           hover:decoration-ink-black dark:hover:decoration-rice-white transition-colors"
-        {...props}
       >
         {children}
-      </a>
+      </Link>
     );
   },
   table({ children, ...props }) {
@@ -157,15 +172,25 @@ const markdownComponents: Components = {
   },
   h2({ children, ...props }) {
     const text = extractText(children);
-    return <h2 id={slugify(text)} {...props}>{children}</h2>;
+    return <h2 id={headingId(text)} {...props}>{children}</h2>;
   },
   h3({ children, ...props }) {
     const text = extractText(children);
-    return <h3 id={slugify(text)} {...props}>{children}</h3>;
+    return <h3 id={headingId(text)} {...props}>{children}</h3>;
   },
-};
+  };
+
+  return components;
+}
 
 export function BlogPost({ post }: BlogPostProps) {
+  // 每篇文章一份渲染组件（内含独立的标题 ID 生成器，slug 变化时重置）
+  const components = useMemo(
+    () => createMarkdownComponents(),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- post.slug 作为重置信号
+    [post.slug]
+  );
+
   // 动态加载 KaTeX CSS（仅博客文章页需要）
   useEffect(() => {
     const link = document.createElement("link");
@@ -226,7 +251,7 @@ export function BlogPost({ post }: BlogPostProps) {
             <ReactMarkdown
               remarkPlugins={[remarkGfm, remarkMath]}
               rehypePlugins={[rehypeKatex]}
-              components={markdownComponents}
+              components={components}
             >
               {post.content}
             </ReactMarkdown>

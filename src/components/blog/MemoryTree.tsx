@@ -11,6 +11,7 @@ import React, {
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
 import {
   X,
   ArrowLeft,
@@ -29,6 +30,21 @@ import KleinBottle from "./memory-tree/KleinBottle";
 import MediaNode, { getNebulaPos } from "./memory-tree/MediaNode";
 import MusicVisualizer from "./memory-tree/MusicVisualizer";
 import FrameTrigger from "./memory-tree/FrameTrigger";
+
+/**
+ * 低端设备粒子降级：按硬件并发数/内存/移动端 UA 判定质量档。
+ * 本组件经 next/dynamic ssr:false 加载，模块级执行时 navigator 必存在。
+ */
+function detectQualityScale(): number {
+  const cores = navigator.hardwareConcurrency ?? 4;
+  const mem = (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8;
+  const mobile = /Mobi|Android/i.test(navigator.userAgent);
+  if (mobile && (cores <= 4 || mem <= 4)) return 0.35;
+  if (mobile || cores <= 4 || mem <= 4) return 0.6;
+  return 1;
+}
+
+const QUALITY_SCALE = detectQualityScale();
 
 export default function MemoryTree({
   onPhotoClick,
@@ -61,17 +77,13 @@ export default function MemoryTree({
   }, []);
 
   useEffect(() => {
-    if (!audioRef.current) return;
-    audioRef.current.src = MUSIC_LIST[currentTrack].src;
-    if (isPlaying) audioRef.current.play().catch(() => {});
-  }, [currentTrack]);
-
-  useEffect(() => {
-    if (!audioRef.current) return;
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.src = MUSIC_LIST[currentTrack].src;
     if (isPlaying) {
-      audioRef.current.play().catch(() => {});
+      audio.play().catch(() => {});
     } else {
-      audioRef.current.pause();
+      audio.pause();
     }
   }, [isPlaying, currentTrack]);
 
@@ -85,10 +97,11 @@ export default function MemoryTree({
     setIsPlaying(true);
   };
 
-  // Simulated progress
-  const startTimeRef = useRef(performance.now());
+  // Simulated progress（起始时间在 effect 中惰性初始化，避免渲染期调用 performance.now）
+  const startTimeRef = useRef(0);
 
   useEffect(() => {
+    if (startTimeRef.current === 0) startTimeRef.current = performance.now();
     const startTime = startTimeRef.current;
     const minLoadTime = 3500;
 
@@ -124,6 +137,13 @@ export default function MemoryTree({
 
   const isLoaded = progress >= 100 || forceLoad;
 
+  // Auto-play music on load（渲染期调整状态，替代 effect 内同步 setState）
+  const [wasLoaded, setWasLoaded] = useState(false);
+  if (isLoaded !== wasLoaded) {
+    setWasLoaded(isLoaded);
+    if (isLoaded) setIsPlaying(true);
+  }
+
   // Temporarily override page background while MemoryTree is mounted
   useEffect(() => {
     const style = document.createElement("style");
@@ -131,11 +151,6 @@ export default function MemoryTree({
     document.head.appendChild(style);
     return () => { document.head.removeChild(style); };
   }, []);
-
-  // Auto-play music on load
-  useEffect(() => {
-    if (isLoaded) setIsPlaying(true);
-  }, [isLoaded]);
 
   const photoPositions = useMemo(
     () => PHOTO_DATA.map((_, i) => getNebulaPos(i, PHOTO_DATA.length)),
@@ -282,7 +297,7 @@ export default function MemoryTree({
           gap: isMobile ? "8px" : "15px",
         }}
       >
-        <a
+        <Link
           href="/blog/memory-tree"
           style={{
             background: "rgba(255, 255, 255, 0.03)",
@@ -304,7 +319,7 @@ export default function MemoryTree({
           }}
         >
           <ArrowLeft size={isMobile ? 12 : 16} strokeWidth={3} /> 返回文章
-        </a>
+        </Link>
 
         {/* Music controls */}
         <div
@@ -461,7 +476,7 @@ export default function MemoryTree({
         </div>
       </div>
 
-      <audio ref={audioRef} src={MUSIC_LIST[currentTrack].src} loop />
+      <audio ref={audioRef} src={MUSIC_LIST[currentTrack].src} loop preload="none" />
 
       <Canvas
         dpr={isMobile ? [1, 1.2] : [1, 1.5]}
@@ -473,12 +488,12 @@ export default function MemoryTree({
         <Suspense fallback={null}>
           <fog attach="fog" args={["#000000", 30, 150]} />
           <group position={[0, -12, 0]}>
-            <ParticleWave />
-            <StarDust />
-            <EnergyBeam />
-            <RadiantTree />
-            <LuminousPedestal />
-            <KleinBottle />
+            <ParticleWave scale={QUALITY_SCALE} />
+            <StarDust scale={QUALITY_SCALE} />
+            <EnergyBeam scale={QUALITY_SCALE} />
+            <RadiantTree scale={QUALITY_SCALE} />
+            <LuminousPedestal scale={QUALITY_SCALE} />
+            <KleinBottle scale={QUALITY_SCALE} />
             {PHOTO_DATA.map((p, i) => (
               <MediaNode
                 key={p.id}

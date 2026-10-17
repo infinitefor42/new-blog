@@ -22,6 +22,15 @@ const defaultChildVariants: Variants = {
   },
 };
 
+/** 预创建的 motion 组件映射：避免渲染期调用 motion.create 反复重建组件 */
+const MOTION_TAGS = {
+  h1: motion.create("h1"),
+  h2: motion.create("h2"),
+  h3: motion.create("h3"),
+  p: motion.create("p"),
+  span: motion.create("span"),
+} as const;
+
 export function SplitText({
   text,
   className = "",
@@ -30,7 +39,7 @@ export function SplitText({
   staggerChildren = 0.03,
   childVariants = defaultChildVariants,
 }: SplitTextProps) {
-  const MotionTag = motion.create(Tag);
+  const MotionTag = MOTION_TAGS[Tag];
 
   return (
     <MotionTag

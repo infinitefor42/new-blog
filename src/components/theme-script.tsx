@@ -1,9 +1,9 @@
 /**
  * 主题初始化脚本（内联到 <head>）
- * 在页面加载前执行，防止暗黑模式切换时的闪烁
+ * 在页面加载前执行，防止暗黑模式切换时的闪烁。
+ * App Router 中 next/script 的 beforeInteractive 不支持在页面级组件使用，
+ * 官方推荐直接使用内联 <script> 标签。
  */
-import Script from "next/script";
-
 export function ThemeScript() {
   const script = `
     (function() {
@@ -27,11 +27,5 @@ export function ThemeScript() {
     })();
   `;
 
-  return (
-    <Script
-      id="theme-init"
-      strategy="beforeInteractive"
-      dangerouslySetInnerHTML={{ __html: script }}
-    />
-  );
+  return <script dangerouslySetInnerHTML={{ __html: script }} />;
 }

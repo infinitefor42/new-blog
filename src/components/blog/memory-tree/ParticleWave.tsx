@@ -6,8 +6,30 @@ import * as THREE from "three";
 
 const COUNT = 35000;
 
-export default function ParticleWave() {
+/** 模块级生成一次波形粒子数据：避免渲染期调用 Math.random */
+function buildWaveData(): [Float32Array, Float32Array, Float32Array] {
+  const p = new Float32Array(COUNT * 3);
+  const o = new Float32Array(COUNT);
+  const y = new Float32Array(COUNT);
+  for (let i = 0; i < COUNT; i++) {
+    const r = 3.0 + Math.sqrt(Math.random()) * 58;
+    const theta = Math.random() * Math.PI * 2;
+    p[i * 3] = r * Math.cos(theta);
+    p[i * 3 + 1] = -11.5 + (Math.random() - 0.5) * 0.8;
+    p[i * 3 + 2] = r * Math.sin(theta);
+    o[i] = r;
+    y[i] = (Math.random() - 0.5) * 0.8;
+  }
+  return [p, o, y];
+}
+
+const [POSITIONS, OFFSETS, Y_OFFSETS] = buildWaveData();
+
+export default function ParticleWave({ scale = 1 }: { scale?: number }) {
   const meshRef = useRef<THREE.Points>(null);
+  // 低端设备按 scale 截取子集渲染（subarray 为零拷贝视图）
+  const count = Math.floor(COUNT * scale);
+  const positions = useMemo(() => POSITIONS.subarray(0, count * 3), [count]);
 
   const glowTexture = useMemo(() => {
     const canvas = document.createElement("canvas");
@@ -23,36 +45,16 @@ export default function ParticleWave() {
     return new THREE.CanvasTexture(canvas);
   }, []);
 
-  const [positions, offsets] = useMemo(() => {
-    const p = new Float32Array(COUNT * 3);
-    const o = new Float32Array(COUNT);
-    for (let i = 0; i < COUNT; i++) {
-      const r = 3.0 + Math.sqrt(Math.random()) * 58;
-      const theta = Math.random() * Math.PI * 2;
-      p[i * 3] = r * Math.cos(theta);
-      p[i * 3 + 1] = -11.5 + (Math.random() - 0.5) * 0.8;
-      p[i * 3 + 2] = r * Math.sin(theta);
-      o[i] = r;
-    }
-    return [p, o];
-  }, []);
-
-  const yOffsets = useMemo(() => {
-    const arr = new Float32Array(COUNT);
-    for (let i = 0; i < COUNT; i++) arr[i] = (Math.random() - 0.5) * 0.8;
-    return arr;
-  }, []);
-
   useFrame((state) => {
     if (meshRef.current) {
       const time = state.clock.elapsedTime;
       const posAttr = meshRef.current.geometry.attributes
         .position as THREE.BufferAttribute;
-      for (let i = 0; i < COUNT; i++) {
-        const r = offsets[i];
+      for (let i = 0; i < count; i++) {
+        const r = OFFSETS[i];
         const wave = Math.sin(r * 0.25 - time * 0.6) * 0.85;
         const wave2 = Math.cos(r * 0.12 + time * 0.4) * 0.3;
-        posAttr.setY(i, -11.5 + yOffsets[i] + wave + wave2);
+        posAttr.setY(i, -11.5 + Y_OFFSETS[i] + wave + wave2);
       }
       posAttr.needsUpdate = true;
       meshRef.current.rotation.y += 0.0003;

@@ -761,7 +761,7 @@ export function GuestbookClient() {
       localStorage.setItem(LIKED_KEY, JSON.stringify(nextLikedIds));
     } catch { /* 隐私模式忽略 */ }
 
-    const { data, error } = await updateLikeCount(message.id, nextCount);
+    const { data, error } = await updateLikeCount(message.id, liked ? -1 : 1);
     if (error) {
       // 回滚
       setLikedIds(likedIds);

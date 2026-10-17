@@ -46,18 +46,23 @@ function getOrCreateId(storage: Storage, key: string): string {
 
 /**
  * 上报一次页面访问。
- * 去重策略：同一会话（sessionStorage）同一路径只上报一次——
- * 标记在 fetch 之前写入，React 严格模式双调用 / 刷新页面都不会重复计数。
+ * 去重策略：同一会话（sessionStorage）同一路径只上报一次。
+ * - inFlight 集合同步去重：React 严格模式双调用时第二次直接跳过；
+ * - sessionStorage 标记仅在请求成功后写入：失败（网络/RLS）还能重试，
+ *   不会出现"第一次失败后本会话永远不计数"。
  * UV 由 visitor_id（localStorage，设备级）在数据库侧 count(distinct) 得出。
  */
+const inFlight = new Set<string>();
+
 export async function trackPageView(pagePath: string): Promise<void> {
   if (!isAnalyticsConfigured || !isTrackableHost()) return;
-  try {
-    const dedupKey = `pv_${pagePath}`;
-    if (sessionStorage.getItem(dedupKey)) return;
-    sessionStorage.setItem(dedupKey, "1");
 
-    await fetch(`${SUPABASE_URL}/rest/v1/page_views`, {
+  const dedupKey = `pv_${pagePath}`;
+  if (sessionStorage.getItem(dedupKey) || inFlight.has(dedupKey)) return;
+  inFlight.add(dedupKey);
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/page_views`, {
       method: "POST",
       headers: { ...JSON_HEADERS, Prefer: "return=minimal" },
       body: JSON.stringify({
@@ -68,8 +73,12 @@ export async function trackPageView(pagePath: string): Promise<void> {
         user_agent: navigator.userAgent,
       }),
     });
+    // 仅成功才记为"本会话已上报"，失败允许下次路由/刷新重试
+    if (res.ok) sessionStorage.setItem(dedupKey, "1");
   } catch {
     /* 埋点失败静默，不影响页面 */
+  } finally {
+    inFlight.delete(dedupKey);
   }
 }
 

@@ -37,7 +37,7 @@ No typecheck script — run `npx tsc --noEmit` if needed.
 
 ## Style Conventions
 
-- **Colors**: `paper-bg` (#f3eee5 warm cream), `ink-black` (#19130f), `ink-deep` (#121212 dark mode)
+- **Colors**: `paper-bg` (#F5EDE0 warm cream), `ink-black` (#19130f), `ink-deep` (#121212 dark mode)
 - **Fonts**: Songti SC for headings/logo, Geist for body text
 - **Components**: Glassmorphism cards (`glass-card` classes in globals.css)
 - **Animation**: Framer Motion for page transitions; `layoutId` for nav indicators

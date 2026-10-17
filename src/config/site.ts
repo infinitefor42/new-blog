@@ -46,8 +46,8 @@ export const siteConfig = {
   lang: "zh-CN",
 
   title: {
-    default: "DevLog",
-    template: "%s | DevLog",
+    default: "INFINITE",
+    template: "%s | INFINITE",
   },
 
   social: {

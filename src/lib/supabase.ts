@@ -80,26 +80,26 @@ export async function insertMessage(
 }
 
 /**
- * 更新点赞计数。
- * 安全性：anon 角色仅被授予 like_count 单列的 UPDATE 权限，
- * 即使被直接调用 API 也只能改点赞数，无法篡改留言内容。
+ * 原子递增/递减点赞计数。
+ * 通过 Supabase RPC（increment_guestbook_like）在服务端执行
+ * like_count = like_count + delta，避免客户端"读出→+1→写回"的并发竞态。
+ * 函数定义见 supabase/page_views.sql 末尾。
  */
 export async function updateLikeCount(
   id: number,
-  likeCount: number
-): Promise<Result<GuestbookMessage>> {
+  delta: 1 | -1
+): Promise<Result<Pick<GuestbookMessage, "like_count">>> {
   try {
-    const res = await fetch(`${REST_ENDPOINT}?id=eq.${id}`, {
-      method: "PATCH",
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/increment_guestbook_like`, {
+      method: "POST",
       headers: {
         ...AUTH_HEADERS,
         "Content-Type": "application/json",
-        Prefer: "return=representation",
       },
-      body: JSON.stringify({ like_count: Math.max(0, likeCount) }),
+      body: JSON.stringify({ p_id: id, p_delta: delta }),
     });
     if (!res.ok) return { data: null, error: `操作失败（HTTP ${res.status}）` };
-    const rows = (await res.json()) as GuestbookMessage[];
+    const rows = (await res.json()) as { like_count: number }[];
     return { data: rows[0] ?? null, error: null };
   } catch {
     return { data: null, error: "网络异常，请稍后重试" };

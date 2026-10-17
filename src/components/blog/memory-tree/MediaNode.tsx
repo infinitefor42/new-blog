@@ -21,17 +21,18 @@ const getNebulaPos = (i: number, total: number): [number, number, number] => {
 
 export { getNebulaPos };
 
-function LazyMaterial({ photo }: { photo: Photo }) {
-  const texture =
-    photo.type === "video"
-      ? useVideoTexture(photo.url, {
-          muted: true,
-          loop: true,
-          start: true,
-          crossOrigin: "Anonymous",
-        })
-      : useTexture(photo.url);
+function VideoMaterial({ url }: { url: string }) {
+  const texture = useVideoTexture(url, {
+    muted: true,
+    loop: true,
+    start: true,
+    crossOrigin: "Anonymous",
+  });
+  return <meshBasicMaterial map={texture} transparent opacity={1} fog={false} />;
+}
 
+function ImageMaterial({ url }: { url: string }) {
+  const texture = useTexture(url);
   return <meshBasicMaterial map={texture} transparent opacity={1} fog={false} />;
 }
 
@@ -88,7 +89,11 @@ export default function MediaNode({
     >
       <planeGeometry args={[3.6, 5.4]} />
       {shouldLoad && isVisible ? (
-        <LazyMaterial photo={photo} />
+        photo.type === "video" ? (
+          <VideoMaterial url={photo.url} />
+        ) : (
+          <ImageMaterial url={photo.url} />
+        )
       ) : (
         <meshBasicMaterial
           color={hovered ? "#ff1493" : "#222233"}

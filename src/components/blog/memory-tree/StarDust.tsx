@@ -5,28 +5,36 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { COLORS } from "./constants";
 
+/** 模块级生成一次星尘粒子数据：避免渲染期调用 Math.random */
+function buildPositions(count: number): Float32Array {
+  const p = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    const r = 25 + Math.random() * 65;
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(Math.random() * 2 - 1);
+    p[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+    p[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+    p[i * 3 + 2] = r * Math.cos(phi);
+  }
+  return p;
+}
+
+const TOTAL_COUNT = 5000;
+const COUNT_PER_TYPE = Math.floor(TOTAL_COUNT / 3);
+const POS_STAR = buildPositions(COUNT_PER_TYPE);
+const POS_SNOW = buildPositions(COUNT_PER_TYPE);
+const POS_MOON = buildPositions(COUNT_PER_TYPE);
+
 function PartSet({
-  count,
+  positions,
   texture,
   speedMult,
 }: {
-  count: number;
+  positions: Float32Array;
   texture: THREE.Texture;
   speedMult: number;
 }) {
   const meshRef = useRef<THREE.Points>(null);
-  const pos = useMemo(() => {
-    const p = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-      const r = 25 + Math.random() * 65;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(Math.random() * 2 - 1);
-      p[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-      p[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-      p[i * 3 + 2] = r * Math.cos(phi);
-    }
-    return p;
-  }, [count]);
 
   useFrame((state) => {
     if (meshRef.current) {
@@ -42,7 +50,7 @@ function PartSet({
   return (
     <points ref={meshRef}>
       <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[pos, 3]} />
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
       <pointsMaterial
         size={1.05}
@@ -58,9 +66,9 @@ function PartSet({
   );
 }
 
-export default function StarDust() {
-  const totalCount = 5000;
-  const countPerType = Math.floor(totalCount / 3);
+export default function StarDust({ scale = 1 }: { scale?: number }) {
+  // 低端设备按 scale 截取子集渲染
+  const count = Math.floor(COUNT_PER_TYPE * scale) * 3;
 
   const textures = useMemo(() => {
     const createTex = (drawFn: (ctx: CanvasRenderingContext2D) => void) => {
@@ -147,9 +155,9 @@ export default function StarDust() {
 
   return (
     <group>
-      <PartSet count={countPerType} texture={textures.star} speedMult={1.0} />
-      <PartSet count={countPerType} texture={textures.snow} speedMult={0.8} />
-      <PartSet count={countPerType} texture={textures.moon} speedMult={0.6} />
+      <PartSet positions={POS_STAR.subarray(0, count)} texture={textures.star} speedMult={1.0} />
+      <PartSet positions={POS_SNOW.subarray(0, count)} texture={textures.snow} speedMult={0.8} />
+      <PartSet positions={POS_MOON.subarray(0, count)} texture={textures.moon} speedMult={0.6} />
     </group>
   );
 }

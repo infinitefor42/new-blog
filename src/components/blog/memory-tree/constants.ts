@@ -1,9 +1,10 @@
 import * as THREE from "three";
 
+// 背景音乐：程序化合成的原创环境音乐（CC0，无版权风险）
 export const MUSIC_LIST = [
-  { title: "小半", src: "/audio/陈粒 - 小半.mp3" },
-  { title: "这世界那么多人", src: "/audio/莫文蔚 - 这世界那么多人.mp3" },
-  { title: "世界赠予我的", src: "/audio/王菲 - 世界赠予我的.mp3" },
+  { title: "星尘漫游", src: "/audio/ambient-stardust.wav" },
+  { title: "云端白日梦", src: "/audio/ambient-daydream.wav" },
+  { title: "夜幕低垂", src: "/audio/ambient-nightfall.wav" },
 ];
 
 export const COLORS = {

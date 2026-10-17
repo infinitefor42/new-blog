@@ -65,7 +65,6 @@ export function Typewriter({
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [texts, typingSpeed, deletingSpeed, pauseDuration]);
 
   return (

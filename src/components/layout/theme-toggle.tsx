@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { useTheme } from "next-themes";
+
+const emptySubscribe = () => () => {};
 
 /**
  * BB-8 主题切换开关（改编自 Uiverse.io by Galahhad）
@@ -9,11 +11,12 @@ import { useTheme } from "next-themes";
  */
 export function ThemeToggle() {
   const { setTheme, resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  // 用 useSyncExternalStore 区分服务端/客户端渲染，避免 mounted 反模式
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
 
   const isDark = mounted && resolvedTheme === "dark";
 

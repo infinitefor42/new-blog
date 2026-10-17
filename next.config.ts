@@ -21,24 +21,8 @@ const nextConfig: NextConfig = {
   // React 严格模式
   reactStrictMode: true,
 
-  // PWA headers
-  async headers() {
-    return [
-      {
-        source: "/sw.js",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=0, must-revalidate",
-          },
-          {
-            key: "Service-Worker-Allowed",
-            value: "/",
-          },
-        ],
-      },
-    ];
-  },
+  // 注意：静态导出（output: "export"）模式下 Next.js 会静默忽略 async headers()，
+  // sw.js 的缓存控制依赖 public/sw.js 中手动递增的缓存版本号实现更新。
 };
 
 export default nextConfig;

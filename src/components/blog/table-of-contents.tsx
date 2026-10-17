@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiX } from "react-icons/fi";
 import { ListMorphIcon } from "@/components/common/morph-icon";
-import { slugify } from "@/lib/slugify";
+import { createHeadingIdGenerator } from "@/lib/slugify";
 
 interface TocItem {
   id: string;
@@ -12,9 +12,10 @@ interface TocItem {
   level: number;
 }
 
-/** 从 Markdown 原文提取 h2/h3 标题并生成与 ReactMarkdown 一致的 slug ID */
+/** 从 Markdown 原文提取 h2/h3 标题，生成与 ReactMarkdown 渲染一致的 slug ID（重名按出现顺序追加 -1/-2…） */
 function extractHeadings(markdown: string): TocItem[] {
   const items: TocItem[] = [];
+  const headingId = createHeadingIdGenerator();
   const lines = markdown.split("\n");
   let inCodeBlock = false;
 
@@ -28,8 +29,13 @@ function extractHeadings(markdown: string): TocItem[] {
     const match = line.match(/^(#{2,3})\s+(.+)$/);
     if (match) {
       const level = match[1].length;
-      const text = match[2].replace(/[*`_\[\]()!]/g, "").trim();
-      const id = slugify(text);
+      // 与正文 extractText 对齐：图片整体移除，链接保留文字，再剥离强调/代码符号
+      const text = match[2]
+        .replace(/!\[[^\]]*\]\([^)]*\)/g, "")
+        .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
+        .replace(/[*`_[\]()!]/g, "")
+        .trim();
+      const id = headingId(text);
       items.push({ id, text, level });
     }
   }

@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // 静态资源目录：包含 Emscripten 生成物等第三方产物，不参与 lint
+    "public/**",
   ]),
 ]);
 
