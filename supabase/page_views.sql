@@ -33,12 +33,49 @@ create policy "anon insert only" on page_views
     and length(coalesce(user_agent, '')) <= 500
   );
 
+-- ---------- ③ 爬虫识别函数（③中的统计 RPC 依赖，需先定义） ----------
+-- immutable：同一 UA 永远返回同一结果，可用于索引与查询优化器内联
+
+-- 判定 UA 是否属于爬虫/机器人
+create or replace function is_bot_ua(ua text)
+returns boolean
+language sql immutable
+as $$
+  select coalesce(ua, '') ~* 'bot|crawler|spider|scraper|slurp|facebookexternalhit|headless|phantom|wget|curl|python-requests|scrapy|archive';
+$$;
+
+-- 从 UA 提取爬虫名称与版本号（人类访客返回 null）
+create or replace function bot_info(ua text)
+returns table(name text, version text)
+language sql immutable
+as $$
+  select
+    case
+      when ua ~* 'googlebot' then 'Googlebot'
+      when ua ~* 'bingbot' then 'bingbot'
+      when ua ~* 'baiduspider' then 'Baiduspider'
+      when ua ~* 'yandex' then 'YandexBot'
+      when ua ~* 'duckduckbot' then 'DuckDuckBot'
+      when ua ~* 'sogou' then 'Sogou'
+      when ua ~* 'bytespider' then 'Bytespider'
+      when ua ~* 'gptbot' then 'GPTBot'
+      when ua ~* 'claudebot|anthropic' then 'ClaudeBot'
+      when ua ~* 'ahrefsbot' then 'AhrefsBot'
+      when ua ~* 'semrushbot' then 'SemrushBot'
+      when ua ~* 'mj12bot' then 'MJ12bot'
+      when ua ~* 'petalbot' then 'PetalBot'
+      when is_bot_ua(ua) then 'other-bot'
+      else null
+    end,
+    substring(ua from '[Bb]ot/(\d+(?:\.\d+)*)');
+$$;
+
 -- ---------- ③ 聚合 RPC ----------
 -- security definer：函数以创建者（postgres）权限执行，绕过 RLS 读取原始表，
 -- 是 anon 角色唯一的读出口；只返回聚合数字，不暴露任何明细。
 -- set search_path = public：防 search_path 劫持，security definer 函数必写。
 
--- 站点总 PV / UV（页脚展示）
+-- 站点总 PV / UV（页脚展示，已排除爬虫流量）
 create or replace function get_site_stats()
 returns table(total_pv bigint, total_uv bigint)
 language plpgsql security definer
@@ -47,11 +84,12 @@ as $$
 begin
   return query
   select count(*)::bigint, count(distinct visitor_id)::bigint
-  from page_views;
+  from page_views
+  where not is_bot_ua(user_agent);
 end;
 $$;
 
--- 单篇文章：阅读量（PV）+ 独立读者数（UV）
+-- 单篇文章：阅读量（PV）+ 独立读者数（UV），已排除爬虫
 create or replace function get_post_stats(p_slug text)
 returns table(view_count bigint, reader_count bigint)
 language plpgsql security definer
@@ -61,7 +99,8 @@ begin
   return query
   select count(*)::bigint, count(distinct visitor_id)::bigint
   from page_views
-  where page_path = '/blog/' || left(p_slug, 200);
+  where page_path = '/blog/' || left(p_slug, 200)
+    and not is_bot_ua(user_agent);
 end;
 $$;
 
@@ -75,6 +114,7 @@ as $$
   select replace(page_path, '/blog/', '') as slug, count(*)::bigint as view_count
   from page_views
   where page_path ~ '^/blog/[^/]+$'
+    and not is_bot_ua(user_agent)
   group by page_path;
 $$;
 
@@ -178,7 +218,94 @@ create trigger page_views_rate_limit_trigger
   before insert on page_views
   for each row execute function page_views_rate_limit();
 
+-- ---------- ⑧ UTM 渠道追踪 + 访客视角视图 ----------
+-- 在 SQL Editor 单独执行本段；幂等，可重复运行
+
+-- 8.1 新增 UTM 字段（分享链接带 ?utm_source=xxx 时前端写入）
+alter table page_views
+  add column if not exists utm_source text,
+  add column if not exists utm_medium text,
+  add column if not exists utm_campaign text;
+
+-- 8.2 访客路径回溯与渠道分析索引
+create index if not exists idx_page_views_visitor on page_views (visitor_id, created_at);
+create index if not exists idx_page_views_session on page_views (session_id);
+
+-- 8.3 RLS 约束同步：重建插入策略，追加 UTM 长度限制
+drop policy if exists "anon insert only" on page_views;
+create policy "anon insert only" on page_views
+  for insert to anon
+  with check (
+    length(page_path) <= 300
+    and length(coalesce(referrer, '')) <= 500
+    and length(coalesce(user_agent, '')) <= 500
+    and length(coalesce(utm_source, '')) <= 100
+    and length(coalesce(utm_medium, '')) <= 100
+    and length(coalesce(utm_campaign, '')) <= 100
+  );
+
+-- 8.4 渠道归一化视图：回答"访客从哪来"
+-- 注意：仅 postgres 角色可查（RLS 在底层表生效），严禁 grant 给 anon
+create or replace view v_traffic_channels as
+select
+  case
+    when utm_source is not null then utm_source
+    when referrer is null or referrer = '' then 'direct'
+    when referrer ~* '(google|bing|baidu|sogou|duckduckgo|yandex)' then 'search'
+    when referrer ~* '(weibo|zhihu|t\.co|twitter|x\.com|weixin|mp\.weixin|xiaohongshu|douyin|bilibili)' then 'social'
+    when referrer ~* 'caobowen\.top' then 'internal'
+    else regexp_replace(referrer, '^https?://(www\.)?([^/]+).*$', '\2')
+  end as channel,
+  count(*)::bigint as pv,
+  count(distinct visitor_id)::bigint as uv
+from page_views
+where not is_bot_ua(user_agent)
+group by 1
+order by pv desc;
+
+-- 8.5 单访客访问路径视图：回答"谁来过、看了哪些页"
+create or replace view v_visitor_journeys as
+select
+  visitor_id,
+  count(distinct session_id)::bigint as visits,
+  min(created_at) as first_seen,
+  max(created_at) as last_seen,
+  jsonb_agg(
+    jsonb_build_object('path', page_path, 'at', created_at)
+    order by created_at
+  ) as journey
+from page_views
+group by visitor_id
+order by last_seen desc;
+
 -- ---------- 验证（可选） ----------
 -- select * from get_site_stats();
 -- select * from get_post_stats('hello-world');
 -- select * from get_all_post_views();
+-- select * from v_traffic_channels;
+-- select * from v_visitor_journeys;
+
+-- ---------- ⑨ 爬虫流量观测（可选执行） ----------
+-- 主统计（③④⑧）已全部排除爬虫；本段仅用于"看看爬虫都来了多少"
+
+-- 9.1 按爬虫名称 + 版本号聚合的观测视图
+create or replace view v_bot_traffic as
+select
+  (bot_info(user_agent)).name as bot_name,
+  (bot_info(user_agent)).version as bot_version,
+  count(*)::bigint as hits,
+  count(distinct page_path)::bigint as pages_crawled,
+  max(created_at) as last_seen
+from page_views
+where is_bot_ua(user_agent)
+group by 1, 2
+order by hits desc;
+
+-- 9.2 人类流量部分索引（可选，数据量超十万行后再建也来得及）
+-- create index if not exists idx_page_views_human
+--   on page_views (created_at)
+--   where not is_bot_ua(user_agent);
+
+-- 验证：
+-- select * from v_bot_traffic;
+-- select bot_info('Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)');

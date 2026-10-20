@@ -21,6 +21,11 @@ import {
 } from "lucide-react";
 import { PHOTO_DATA, ALBUM_DATA, type Photo, type Album } from "@/config/photos";
 import { MUSIC_LIST } from "./memory-tree/constants";
+import {
+  preReadyProgress,
+  readyNextProgress,
+  PRE_READY_CAP,
+} from "@/lib/memory-tree-loading";
 import ParticleWave from "./memory-tree/ParticleWave";
 import StarDust from "./memory-tree/StarDust";
 import EnergyBeam from "./memory-tree/EnergyBeam";
@@ -103,33 +108,21 @@ export default function MemoryTree({
   useEffect(() => {
     if (startTimeRef.current === 0) startTimeRef.current = performance.now();
     const startTime = startTimeRef.current;
-    const minLoadTime = 3500;
 
     if (canvasReady) {
+      // Canvas 首帧已就绪：快速收尾到 100%
       const interval = setInterval(() => {
-        const elapsed = performance.now() - startTime;
-        const minProgress = Math.min((elapsed / minLoadTime) * 100, 100);
-
-        setProgress((prev) => {
-          if (prev >= 100) {
-            clearInterval(interval);
-            return 100;
-          }
-          const target = Math.max(minProgress, prev + 0.5);
-          const next = prev + (target - prev) * 0.1;
-          return next >= 100 ? 100 : Math.max(prev, next);
-        });
+        setProgress((prev) =>
+          readyNextProgress(prev, performance.now() - startTime)
+        );
       }, 30);
       return () => clearInterval(interval);
     } else {
+      // Canvas 未就绪：模拟进度封顶 PRE_READY_CAP，避免"假接近完成"的等待感
       const interval = setInterval(() => {
-        const elapsed = (performance.now() - startTime) / 1000;
-        const t = Math.min(elapsed / 3.0, 1);
-        const eased = t < 0.3
-          ? 2 * t * t
-          : 1 - Math.pow(-2 * t + 2, 3) / 2;
-        const simulated = eased * 85;
-        setProgress((prev) => (prev < 85 ? Math.max(prev, simulated) : prev));
+        const elapsedSec = (performance.now() - startTime) / 1000;
+        const simulated = preReadyProgress(elapsedSec);
+        setProgress((prev) => (prev < PRE_READY_CAP ? Math.max(prev, simulated) : prev));
       }, 50);
       return () => clearInterval(interval);
     }
@@ -336,26 +329,28 @@ export default function MemoryTree({
             boxShadow: "0 8px 32px 0 rgba(0, 0, 0, 0.2)",
           }}
         >
-          <button
-            onClick={handlePrev}
-            className="mt-btn-icon"
-            style={{
-              background: "rgba(255, 255, 255, 0.05)",
-              border: "1px solid rgba(255, 255, 255, 0.15)",
-              cursor: "pointer",
-              padding: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "28px",
-              height: "28px",
-              borderRadius: "50%",
-              color: "white",
-              transition: "all 0.3s ease",
-            }}
-          >
-            <SkipForward size={11} style={{ transform: "rotate(180deg)" }} />
-          </button>
+          {MUSIC_LIST.length > 1 && (
+            <button
+              onClick={handlePrev}
+              className="mt-btn-icon"
+              style={{
+                background: "rgba(255, 255, 255, 0.05)",
+                border: "1px solid rgba(255, 255, 255, 0.15)",
+                cursor: "pointer",
+                padding: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "28px",
+                height: "28px",
+                borderRadius: "50%",
+                color: "white",
+                transition: "all 0.3s ease",
+              }}
+            >
+              <SkipForward size={11} style={{ transform: "rotate(180deg)" }} />
+            </button>
+          )}
 
           <button
             onClick={() => setIsPlaying(!isPlaying)}
@@ -436,26 +431,28 @@ export default function MemoryTree({
             </div>
           </button>
 
-          <button
-            onClick={handleNext}
-            className="mt-btn-icon"
-            style={{
-              background: "rgba(255, 255, 255, 0.05)",
-              border: "1px solid rgba(255, 255, 255, 0.15)",
-              cursor: "pointer",
-              padding: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "28px",
-              height: "28px",
-              borderRadius: "50%",
-              color: "white",
-              transition: "all 0.3s ease",
-            }}
-          >
-            <SkipForward size={11} />
-          </button>
+          {MUSIC_LIST.length > 1 && (
+            <button
+              onClick={handleNext}
+              className="mt-btn-icon"
+              style={{
+                background: "rgba(255, 255, 255, 0.05)",
+                border: "1px solid rgba(255, 255, 255, 0.15)",
+                cursor: "pointer",
+                padding: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "28px",
+                height: "28px",
+                borderRadius: "50%",
+                color: "white",
+                transition: "all 0.3s ease",
+              }}
+            >
+              <SkipForward size={11} />
+            </button>
+          )}
 
           <div style={{ display: "flex", flexDirection: "column", minWidth: "100px" }}>
             <span
@@ -468,9 +465,11 @@ export default function MemoryTree({
             >
               {MUSIC_LIST[currentTrack].title}
             </span>
-            <span style={{ fontSize: "9px", fontWeight: 500, opacity: 0.5 }}>
-              {currentTrack + 1} / {MUSIC_LIST.length}
-            </span>
+            {MUSIC_LIST.length > 1 && (
+              <span style={{ fontSize: "9px", fontWeight: 500, opacity: 0.5 }}>
+                {currentTrack + 1} / {MUSIC_LIST.length}
+              </span>
+            )}
             <MusicVisualizer isPlaying={isPlaying} />
           </div>
         </div>

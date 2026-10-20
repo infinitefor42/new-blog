@@ -54,6 +54,19 @@ function getOrCreateId(storage: Storage, key: string): string {
  */
 const inFlight = new Set<string>();
 
+/**
+ * 读取 UTM 参数：URL 中出现的值在会话内固化到 sessionStorage，
+ * 后续站内页面沿用首次来源，保证同会话归因一致。
+ */
+function getUtm(key: string): string | null {
+  const fromUrl = new URLSearchParams(window.location.search).get(key);
+  // 首次来源优先：会话内已记录则不被后续页面的新参数覆盖
+  if (fromUrl && !sessionStorage.getItem(key)) {
+    sessionStorage.setItem(key, fromUrl.slice(0, 100));
+  }
+  return sessionStorage.getItem(key);
+}
+
 export async function trackPageView(pagePath: string): Promise<void> {
   if (!isAnalyticsConfigured || !isTrackableHost()) return;
 
@@ -71,6 +84,9 @@ export async function trackPageView(pagePath: string): Promise<void> {
         session_id: getOrCreateId(sessionStorage, SESSION_KEY),
         referrer: document.referrer || null,
         user_agent: navigator.userAgent,
+        utm_source: getUtm("utm_source"),
+        utm_medium: getUtm("utm_medium"),
+        utm_campaign: getUtm("utm_campaign"),
       }),
     });
     // 仅成功才记为"本会话已上报"，失败允许下次路由/刷新重试

@@ -108,7 +108,7 @@ export function Navbar() {
         <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20 relative">
             <Link href="/" className="relative group flex items-center mr-6">
-              <span className="font-song text-xl lg:text-2xl font-bold text-ink-black dark:text-rice-white tracking-[0.15em]">
+              <span className="font-ai text-xl lg:text-2xl font-bold text-ink-black dark:text-rice-white tracking-[0.15em]">
                 {siteConfig.name}
               </span>
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-ink-black dark:bg-rice-white transition-all duration-300 group-hover:w-full" />

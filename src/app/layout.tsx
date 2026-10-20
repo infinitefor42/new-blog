@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { Providers } from "@/components/providers";
 import { ThemeScript } from "@/components/theme-script";
 import { ServiceWorkerRegister } from "@/components/common/service-worker-register";
@@ -17,6 +18,14 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
   display: "swap",
+});
+
+// 阿里妈妈数黑体（AI 设计字体，免费商用）——仅 Logo/强调文字，Latin 子集
+const alimamaShuHeiTi = localFont({
+  src: "../../public/fonts/alimama-shuheiti-latin.woff2",
+  variable: "--font-display-ai",
+  display: "swap",
+  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -59,7 +68,7 @@ export default function RootLayout({
     <html
       lang={siteConfig.lang}
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${alimamaShuHeiTi.variable} h-full antialiased`}
     >
       <head>
         <ThemeScript />
