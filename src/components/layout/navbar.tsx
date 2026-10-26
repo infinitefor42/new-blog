@@ -21,6 +21,7 @@ export function Navbar() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // 移动端通栏导航：滚动超过 20px 时出现毛玻璃背景（桌面端胶囊始终带背景，此状态仅影响 <md 样式）
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -99,16 +100,27 @@ export function Navbar() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled
-            ? "bg-paper-bg/80 dark:bg-ink-deep/80 backdrop-blur-xl shadow-lg shadow-black/5 dark:shadow-black/20"
-            : "bg-transparent"
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300
+          md:px-6 md:pt-[max(0.75rem,env(safe-area-inset-top))] md:pointer-events-none
+          md:bg-transparent md:backdrop-blur-none md:shadow-none
+          ${
+            scrolled
+              ? "bg-paper-bg/80 dark:bg-ink-deep/80 backdrop-blur-xl shadow-lg shadow-black/5 dark:shadow-black/20"
+              : "bg-transparent"
+          }`}
       >
-        <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 lg:h-20 relative">
+        {/* <md：与原通栏完全一致（透明起始、滚动出背景）；≥md：悬浮胶囊，始终带半透明背景 */}
+        <nav
+          className="nav-capsule mx-auto px-4 sm:px-6 sm:max-w-[640px]
+            md:max-w-2xl lg:max-w-5xl md:pl-5 md:pr-2 lg:pl-6 md:pointer-events-auto
+            md:rounded-full md:border md:border-black/5 md:dark:border-rice-white/10
+            md:bg-paper-bg/75 md:dark:bg-ink-deep/65 md:backdrop-blur-xl
+            md:shadow-[0_8px_30px_rgba(25,19,15,0.08)] md:dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)]
+            transition-[background-color,box-shadow] duration-300"
+        >
+          <div className="flex items-center h-16 md:h-13 lg:h-14 relative">
             <Link href="/" className="relative group flex items-center mr-6">
-              <span className="font-ai text-xl lg:text-2xl font-bold text-ink-black dark:text-rice-white tracking-[0.15em]">
+              <span className="font-ai text-xl md:text-lg lg:text-xl font-bold text-ink-black dark:text-rice-white tracking-[0.15em]">
                 {siteConfig.name}
               </span>
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-ink-black dark:bg-rice-white transition-all duration-300 group-hover:w-full" />
@@ -116,7 +128,7 @@ export function Navbar() {
 
             <div
               ref={dropdownRef}
-              className="hidden md:flex items-center gap-6 absolute left-1/2 -translate-x-1/2"
+              className="hidden md:flex items-center gap-1 lg:gap-2 ml-auto"
             >
               {siteConfig.nav.map((item) => {
                 const active = isActive(item.href);
@@ -154,7 +166,7 @@ export function Navbar() {
                       aria-haspopup={children ? "true" : undefined}
                       aria-expanded={children ? open : undefined}
                       onClick={() => setOpenDropdown(null)}
-                      className={`relative inline-flex items-center gap-1 px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg
+                      className={`relative inline-flex items-center gap-1 px-3 lg:px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-full
                         ${
                           active
                             ? "text-ink-black dark:text-rice-white"
@@ -174,7 +186,7 @@ export function Navbar() {
                       {active && (
                         <motion.div
                           layoutId="navbar-indicator"
-                          className="absolute inset-0 bg-ink-black/5 dark:bg-rice-white/10 rounded-lg -z-10"
+                          className="absolute inset-0 bg-ink-black/10 dark:bg-rice-white/15 rounded-full -z-10"
                           transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                         />
                       )}
@@ -217,7 +229,7 @@ export function Navbar() {
               })}
             </div>
 
-            <div className="flex items-center gap-2 relative">
+            <div className="flex items-center gap-2 relative ml-auto md:ml-2">
               <ThemeToggle />
 
               <button

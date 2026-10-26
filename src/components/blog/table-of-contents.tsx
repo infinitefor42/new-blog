@@ -92,18 +92,19 @@ export function TableOfContents({ markdown }: { markdown: string }) {
 
   return (
     <>
-      {/* 桌面端：右侧固定目录 */}
-      <nav className="hidden xl:block fixed right-8 top-28 w-56 max-h-[calc(100vh-10rem)] overflow-y-auto z-50
-        scrollbar-thin scrollbar-thumb-warm-gray/30 dark:scrollbar-thumb-warm-gray-dark/30">
+      {/* 桌面端：右侧固定目录（≥1360px 才展示，避免与 max-w-3xl 正文相贴） */}
+      <nav className="hidden min-[1360px]:block fixed right-8 top-28 w-56 max-h-[calc(100vh-10rem)] overflow-y-auto z-50">
         <div className="text-xs font-medium text-ink-gray/40 dark:text-rice-white-dim/40 mb-3 tracking-wider uppercase sticky top-0 bg-paper-bg/80 dark:bg-ink-deep/80 backdrop-blur-sm py-1">
           目录
         </div>
         <ul className="space-y-1">
-          {headings.map((h) => (
-            <li key={h.id}>
+          {headings.map((h, i) => (
+            // h2 分组上方留出更大间距（组间松于组内）
+            <li key={h.id} className={h.level === 2 && i > 0 ? "pt-2" : undefined}>
               <button
                 onClick={() => scrollTo(h.id)}
-                className={`block w-full text-left text-sm py-1 border-l-2 transition-all duration-200
+                title={h.text}
+                className={`block w-full text-left text-sm py-2 border-l-2 truncate transition-all duration-200
                   ${h.level === 3 ? "pl-6" : "pl-3"}
                   ${activeId === h.id
                     ? "border-ink-black dark:border-rice-white text-ink-black dark:text-rice-white font-medium"
@@ -118,7 +119,7 @@ export function TableOfContents({ markdown }: { markdown: string }) {
       </nav>
 
       {/* 移动端：浮动按钮 + 右侧滑入抽屉 */}
-      <div className="xl:hidden">
+      <div className="min-[1360px]:hidden">
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
           className="fixed bottom-6 right-6 z-50 w-11 h-11 rounded-full flex items-center justify-center
@@ -152,18 +153,21 @@ export function TableOfContents({ markdown }: { markdown: string }) {
                 className="fixed inset-y-0 right-0 z-[70] w-[85%] max-w-[320px]
                   bg-paper-bg dark:bg-ink-deep shadow-2xl flex flex-col"
               >
-                <div className="px-7 pt-8 pb-5 text-xs font-medium text-ink-gray/40 dark:text-rice-white-dim/40 tracking-widest">
+                <div className="px-6 pt-8 pb-5 text-xs font-medium text-ink-gray/40 dark:text-rice-white-dim/40 tracking-widest">
                   目录
                 </div>
-                <ul className="flex-1 overflow-y-auto px-5 space-y-3 pb-6">
+                <ul className="flex-1 overflow-y-auto px-6 space-y-3 pb-6">
                   {headings.map((h, i) => (
-                    <li key={h.id} className={h.level === 3 ? "ml-4" : ""}>
+                    <li
+                      key={h.id}
+                      className={`${h.level === 3 ? "ml-4" : ""} ${h.level === 2 && i > 0 ? "pt-2" : ""}`.trim()}
+                    >
                       <button
                         onClick={() => scrollTo(h.id)}
                         className={`w-full flex items-center justify-between gap-3 rounded-full px-5 py-3 text-left transition-all duration-200
                           ${activeId === h.id
-                            ? "bg-white dark:bg-rice-white/10 border border-ink-black dark:border-rice-white text-ink-black dark:text-rice-white font-medium"
-                            : "bg-white/60 dark:bg-rice-white/5 border border-transparent text-ink-gray/80 dark:text-rice-white-dim/80 hover:bg-white dark:hover:bg-rice-white/10"
+                            ? "bg-paper-bg-light dark:bg-rice-white/10 border border-ink-black dark:border-rice-white text-ink-black dark:text-rice-white font-medium"
+                            : "bg-paper-bg-light/60 dark:bg-rice-white/5 border border-transparent text-ink-gray/80 dark:text-rice-white-dim/80 hover:bg-paper-bg-light dark:hover:bg-rice-white/10"
                           }`}
                       >
                         <span className={`truncate font-song ${h.level === 3 ? "text-xs" : "text-sm"}`}>
@@ -177,7 +181,7 @@ export function TableOfContents({ markdown }: { markdown: string }) {
                   ))}
                 </ul>
                 {/* 底部关闭按钮 */}
-                <div className="px-7 pb-8 flex justify-end">
+                <div className="px-6 pb-8 flex justify-end">
                   <button
                     onClick={() => setMobileOpen(false)}
                     className="w-11 h-11 rounded-full border border-warm-gray/40 dark:border-warm-gray-dark/40
