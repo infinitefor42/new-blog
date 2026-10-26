@@ -188,7 +188,7 @@ Copy `.env.local` with your Giscus & Supabase variables (see `src/config/site.ts
 ## 📄 License
 
 - **Code**: open-sourced under the [MIT License](LICENSE)
-- **Articles** (posts under `src/posts/` and their illustrations): licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) — attribution to **INFINITE (caobowen.top)** with a link to the original article is required; no commercial use; derivatives must be shared under the same license
+- **Articles** (posts under `src/posts/`): licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) — attribution to **INFINITE (caobowen.top)** with a link to the original article is required; no commercial use; derivatives must be shared under the same license
 
 <div align="center">
 

@@ -231,7 +231,7 @@ my-new-blog/
 ## 📄 License
 
 - **代码**：以 [MIT License](LICENSE) 开源，可自由使用、修改与分发
-- **文章内容**（`src/posts/` 下的博客文章及配图）：采用 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans) 知识共享许可协议——转载请注明作者 **INFINITE（caobowen.top）** 与原文链接，不得用于商业用途，二次创作须以相同协议共享
+- **文章内容**（`src/posts/` 下的博客文章）：采用 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans) 知识共享许可协议——转载请注明作者 **INFINITE（caobowen.top）** 与原文链接，不得用于商业用途，二次创作须以相同协议共享
 
 <div align="center">
 
