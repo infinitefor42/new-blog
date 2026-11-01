@@ -22,6 +22,10 @@
   --color-accent-light: #D4967E;
   --color-accent-dark: #A85D3B;
 
+  /* 动态主题色（五色切换，由 html[data-accent] 驱动，见文件底部定义） */
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+
   /* 暗黑模式颜色 */
   --color-ink-deep: #121212;
   --color-ink-deep-light: #1e1e1e;
@@ -55,6 +59,9 @@
   --accent: #C47C6A;
   --accent-light: #D4967E;
   --accent-dark: #A85D3B;
+  /* 动态主题色默认档「墨」= 现状墨色 */
+  --brand: #19130f;
+  --brand-strong: #19130f;
   --card-bg: rgba(255, 255, 255, 0.4);
   --card-border: rgba(255, 255, 255, 0.2);
   --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
@@ -67,10 +74,51 @@
   --accent: #D4967E;
   --accent-light: #E0AB96;
   --accent-dark: #C47C6A;
+  --brand: #f5efe4;
+  --brand-strong: #f5efe4;
   --card-bg: rgba(30, 30, 30, 0.6);
   --card-border: rgba(255, 255, 255, 0.1);
   --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   --noise-opacity: 0.05;
+}
+
+/* ========================================
+   动态主题色：五色体系（墨/青瓷/黛蓝/赭石/绛红）
+   「墨」为默认档，不设置 data-accent，走 :root/.dark 基础变量
+   --brand        大标题等大尺寸元素（暖米底上对比度 ≥ 3:1）
+   --brand-strong 小字号文字（暖米底上对比度 ≥ 4.5:1，WCAG AA）
+   ======================================== */
+[data-accent="qingci"] {
+  --brand: #5f7a68;
+  --brand-strong: #4f6a5a;
+}
+[data-accent="qingci"].dark {
+  --brand: #8fb89d;
+  --brand-strong: #8fb89d;
+}
+[data-accent="dai"] {
+  --brand: #4a6478;
+  --brand-strong: #4a6478;
+}
+[data-accent="dai"].dark {
+  --brand: #8aa8c4;
+  --brand-strong: #8aa8c4;
+}
+[data-accent="zhe"] {
+  --brand: #b06a3b;
+  --brand-strong: #8f5a2b;
+}
+[data-accent="zhe"].dark {
+  --brand: #d99873;
+  --brand-strong: #d99873;
+}
+[data-accent="jiang"] {
+  --brand: #a04a4a;
+  --brand-strong: #a04a4a;
+}
+[data-accent="jiang"].dark {
+  --brand: #cd8484;
+  --brand-strong: #cd8484;
 }
 
 /* ========================================

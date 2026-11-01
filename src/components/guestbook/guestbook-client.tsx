@@ -797,7 +797,7 @@ export function GuestbookClient() {
         <h1 className="font-song text-4xl font-bold tracking-wide text-ink-black dark:text-rice-white lg:text-5xl">
           留言墙
         </h1>
-        <p className="mt-3 text-sm text-ink-gray dark:text-rice-white-dim lg:text-base">
+        <p className="mt-3 text-sm text-brand-strong lg:text-base transition-colors duration-300">
           留下你的足迹，每一张便签都是一份温暖。
         </p>
       </motion.header>

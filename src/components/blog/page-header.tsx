@@ -11,7 +11,7 @@ export function PageHeader({ title, subtitle }: PageHeaderProps) {
         {title}
       </h1>
       {subtitle && (
-        <p className="text-lg text-ink-gray/60 dark:text-rice-white-dim/60">
+        <p className="text-lg text-brand-strong transition-colors duration-300">
           {subtitle}
         </p>
       )}

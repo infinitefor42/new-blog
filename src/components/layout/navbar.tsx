@@ -9,6 +9,7 @@ import { siteConfig } from "@/config/site";
 import { appleEasing } from "@/lib/animations";
 import { MenuMorphIcon } from "@/components/common/morph-icon";
 import { ThemeToggle } from "./theme-toggle";
+import { AccentSwitcher } from "./accent-switcher";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -230,6 +231,7 @@ export function Navbar() {
             </div>
 
             <div className="flex items-center gap-2 relative ml-auto md:ml-2">
+              <AccentSwitcher />
               <ThemeToggle />
 
               <button

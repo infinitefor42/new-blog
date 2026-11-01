@@ -32,7 +32,7 @@ export function ProjectsSection() {
             </motion.h2>
             <motion.p
               variants={cardVariants}
-              className="text-lg text-ink-gray/50 dark:text-rice-white-dim/50"
+              className="text-lg text-brand-strong transition-colors duration-300"
             >
               {siteConfig.projects.subtitle}
             </motion.p>

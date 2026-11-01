@@ -21,6 +21,12 @@ export function ThemeScript() {
           document.documentElement.classList.remove('dark');
           document.documentElement.style.colorScheme = 'light';
         }
+
+        // 动态主题色（五色体系）：首屏前恢复，防闪烁；「墨」为默认档不落属性
+        var accent = localStorage.getItem('accent');
+        if (/^(qingci|dai|zhe|jiang)$/.test(accent || '')) {
+          document.documentElement.setAttribute('data-accent', accent);
+        }
       } catch (e) {
         document.documentElement.classList.remove('dark');
       }

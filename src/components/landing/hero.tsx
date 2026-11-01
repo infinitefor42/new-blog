@@ -74,14 +74,14 @@ export function Hero() {
               <SplitText
                 text={siteConfig.name}
                 as="h1"
-                className="font-song text-2xl sm:text-3xl md:text-4xl font-bold text-ink-black dark:text-rice-white tracking-wide leading-none"
+                className="font-song text-2xl sm:text-3xl md:text-4xl font-bold text-brand tracking-wide leading-none transition-colors duration-300"
                 delay={0.3}
                 staggerChildren={0.08}
               />
             </motion.div>
 
             <motion.div variants={itemVariants} className="mb-6">
-              <h2 className="text-xl sm:text-2xl text-ink-gray dark:text-rice-white-dim font-light">
+              <h2 className="text-xl sm:text-2xl text-brand-strong font-light transition-colors duration-300">
                 <Typewriter
                   texts={[siteConfig.hero.subtitle]}
                   typingSpeed={120}
@@ -92,15 +92,15 @@ export function Hero() {
 
             <motion.p
               variants={itemVariants}
-              className="text-base sm:text-lg text-ink-gray/70 dark:text-rice-white-dim/70 max-w-2xl mx-auto mb-8 leading-relaxed"
+              className="text-base sm:text-lg text-brand-strong max-w-2xl mx-auto mb-8 leading-relaxed transition-colors duration-300"
             >
               {siteConfig.hero.bio}
             </motion.p>
 
             <motion.blockquote
               variants={itemVariants}
-              className="text-sm sm:text-base text-ink-gray/50 dark:text-rice-white-dim/50 max-w-xl mx-auto mb-12
-                italic tracking-wide text-center w-full"
+              className="text-sm sm:text-base text-brand-strong max-w-xl mx-auto mb-12
+                italic tracking-wide text-center w-full transition-colors duration-300"
             >
               &ldquo;{siteConfig.hero.quote}&rdquo;
             </motion.blockquote>
