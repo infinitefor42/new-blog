@@ -122,6 +122,9 @@ export function AccentSwitcher() {
                 />
               ))}
             </div>
+            <p className="mt-2 px-1 text-[10px] leading-relaxed text-ink-gray/70 dark:text-rice-white-dim/70 whitespace-nowrap">
+              仅改变标题与副标题配色
+            </p>
           </motion.div>
         )}
       </AnimatePresence>

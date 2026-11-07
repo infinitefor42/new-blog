@@ -34,6 +34,9 @@ export const metadata: Metadata = {
     template: siteConfig.title.template,
   },
   description: siteConfig.description,
+  alternates: {
+    types: { "application/rss+xml": "https://caobowen.top/rss.xml" },
+  },
   icons: {
     icon: siteConfig.avatar,
     apple: siteConfig.avatar,

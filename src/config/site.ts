@@ -125,9 +125,4 @@ export const siteConfig = {
     lang: "zh-CN",
     themes: { dark: "noborder_dark", light: "noborder_light" },
   },
-
-  katex: {
-    version: "0.16.11",
-    integrity: "sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+",
-  },
 };

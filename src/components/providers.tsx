@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { RouterProvider } from "@heroui/react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { MotionConfig } from "framer-motion";
 import { type ReactNode, useEffect } from "react";
 
 interface ProvidersProps {
@@ -44,8 +45,11 @@ export function Providers({ children }: ProvidersProps) {
         disableTransitionOnChange
         storageKey="theme"
       >
-        <ThemeWatcher />
-        {children}
+        {/* 尊重系统「减少动态效果」偏好，自动降级 Framer Motion 动画 */}
+        <MotionConfig reducedMotion="user">
+          <ThemeWatcher />
+          {children}
+        </MotionConfig>
       </NextThemesProvider>
     </RouterProvider>
   );

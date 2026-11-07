@@ -21,6 +21,8 @@ export function Navbar() {
   const [canHover, setCanHover] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
 
   // 移动端通栏导航：滚动超过 20px 时出现毛玻璃背景（桌面端胶囊始终带背景，此状态仅影响 <md 样式）
   useEffect(() => {
@@ -65,6 +67,30 @@ export function Navbar() {
     },
     []
   );
+
+  // 移动端抽屉：Esc 关闭 + 背景滚动锁 + 关闭后焦点归还触发按钮
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsMenuOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    // 焦点进入抽屉第一个可交互元素，便于键盘/读屏用户
+    drawerRef.current
+      ?.querySelector<HTMLElement>("a, button")
+      ?.focus();
+
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+      menuButtonRef.current?.focus();
+    };
+  }, [isMenuOpen]);
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
@@ -235,12 +261,15 @@ export function Navbar() {
               <ThemeToggle />
 
               <button
+                ref={menuButtonRef}
                 onClick={handleMobileMenuToggle}
                 className="md:hidden flex items-center justify-center w-10 h-10 rounded-xl
                   text-ink-gray dark:text-rice-white-dim
                   hover:bg-ink-black/5 dark:hover:bg-rice-white/10
                   transition-all duration-200"
                 aria-label={isMenuOpen ? "关闭菜单" : "打开菜单"}
+                aria-expanded={isMenuOpen}
+                aria-controls="mobile-nav-drawer"
               >
                 <MenuMorphIcon open={isMenuOpen} className="w-5 h-5" />
               </button>
@@ -264,6 +293,11 @@ export function Navbar() {
             />
             {/* 右侧抽屉面板 - 固定在汉堡菜单按钮正下方，带入场动画 */}
             <motion.div
+              ref={drawerRef}
+              id="mobile-nav-drawer"
+              role="dialog"
+              aria-modal="true"
+              aria-label="站点导航"
               initial={{ opacity: 0, y: -8, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -8, scale: 0.95 }}

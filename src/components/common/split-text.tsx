@@ -44,6 +44,7 @@ export function SplitText({
   return (
     <MotionTag
       className={className}
+      aria-label={text}
       initial="hidden"
       animate="visible"
       variants={{
@@ -59,6 +60,7 @@ export function SplitText({
       {text.split("").map((char, i) => (
         <motion.span
           key={`${char}-${i}`}
+          aria-hidden="true"
           variants={childVariants}
           className="inline-block"
           style={{ whiteSpace: char === " " ? "pre" : "normal" }}

@@ -7,14 +7,14 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 import type { Components } from "react-markdown";
 import type { PostMeta } from "@/lib/posts";
 import { GiscusComments } from "./giscus-comments";
 import { ReadingProgress } from "./reading-progress";
 import { TableOfContents } from "./table-of-contents";
 import { BackToTop } from "@/components/common/back-to-top";
-import { Children, isValidElement, useEffect, useMemo } from "react";
-import { siteConfig } from "@/config/site";
+import { Children, isValidElement, useMemo } from "react";
 import { createHeadingIdGenerator } from "@/lib/slugify";
 import { CodeBlock } from "@/components/common/code-block";
 
@@ -190,22 +190,6 @@ export function BlogPost({ post }: BlogPostProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- post.slug 作为重置信号
     [post.slug]
   );
-
-  // 动态加载 KaTeX CSS（仅博客文章页需要）
-  useEffect(() => {
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = `https://cdn.jsdelivr.net/npm/katex@${siteConfig.katex.version}/dist/katex.min.css`;
-    link.integrity = siteConfig.katex.integrity;
-    link.crossOrigin = "anonymous";
-    document.head.appendChild(link);
-
-    return () => {
-      if (link.parentNode) {
-        document.head.removeChild(link);
-      }
-    };
-  }, []);
 
   return (
     <article className="max-w-3xl mx-auto">
