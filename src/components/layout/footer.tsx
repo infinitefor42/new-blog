@@ -2,7 +2,7 @@
 
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { FiHeart } from "react-icons/fi";
+import { FiHeart, FiRss } from "react-icons/fi";
 import { SiteVisitStats } from "@/components/common/visit-stats";
 
 export function Footer() {
@@ -30,6 +30,16 @@ export function Footer() {
             </p>
             <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 mt-3 text-xs text-ink-gray/40 dark:text-rice-white-dim/40">
               <SiteVisitStats />
+              <a
+                href="/rss.xml"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="RSS 订阅"
+                className="inline-flex items-center gap-1 hover:text-accent transition-colors duration-200"
+              >
+                <FiRss className="w-3.5 h-3.5" aria-hidden="true" />
+                RSS 订阅
+              </a>
             </div>
           </div>
         </motion.div>

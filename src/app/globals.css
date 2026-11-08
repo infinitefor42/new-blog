@@ -1,6 +1,12 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* 暗色模式绑定到 .dark 类（由 next-themes / theme-script 切换）。
+   Tailwind v4 默认 dark: 变体跟随系统 prefers-color-scheme，
+   与站内的 class 切换机制脱节，会导致「系统浅色 + 站点深色」时
+   dark: 工具类不生效（背景光斑、走马灯胶囊颜色错乱）。 */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ========================================
    中式纸质感极简 + 苹果玻璃拟态 主题配置
    ======================================== */
