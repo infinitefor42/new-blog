@@ -555,6 +555,57 @@ export function GuestbookClient() {
     });
   };
 
+  // 图案名称长按提示：移动端无 hover，title 属性不生效。
+  // 触摸按住 ≥500ms 在触摸点上方弹出名称气泡，松手/取消即消失；
+  // 位移超过 10px 视为滚动意图，取消计时；长按触发后抑制随后的 click，避免误选中。
+  const [avatarTip, setAvatarTip] = useState<{
+    label: string;
+    x: number;
+    y: number;
+  } | null>(null);
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pressPos = useRef<{ x: number; y: number } | null>(null);
+  const suppressClick = useRef(false);
+
+  const clearLongPress = useCallback(() => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+    pressPos.current = null;
+    setAvatarTip(null);
+  }, []);
+
+  // 卸载时清理定时器
+  useEffect(() => clearLongPress, [clearLongPress]);
+
+  const handleIconPointerDown = (e: React.PointerEvent, label: string) => {
+    if (e.pointerType !== "touch") return; // 桌面端用原生 title 提示
+    // 每次新按压重置抑制标记：上一轮的抑制只应被紧随其后的那次松开 click 消费，
+    // 若该 click 未落在按钮上（拖离后松手），不能误吞下一次正常点按
+    suppressClick.current = false;
+    const { clientX: x, clientY: y } = e;
+    pressPos.current = { x, y };
+    longPressTimer.current = setTimeout(() => {
+      suppressClick.current = true;
+      setAvatarTip({
+        label,
+        // 气泡水平位置夹在视口内，避免贴边时被裁剪
+        x: Math.min(Math.max(x, 44), window.innerWidth - 44),
+        y,
+      });
+    }, 500);
+  };
+
+  const handleIconPointerMove = (e: React.PointerEvent) => {
+    const start = pressPos.current;
+    if (!start || avatarTip || !longPressTimer.current) return;
+    if (Math.hypot(e.clientX - start.x, e.clientY - start.y) > 10) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  };
+
   // 逐行滚动：浏览器原生滚轮一格约滚 100~120px（≈3~4 行），
   // 这里拦截 wheel 事件，把每格折算为恰好一行（36px），平滑归位；
   // 触控板微小连续增量先累加，满 50px 阈值才滚一行，避免过敏。
@@ -1004,6 +1055,7 @@ export function GuestbookClient() {
                     <div
                       ref={pickerRef}
                       onScroll={handlePickerScroll}
+                      onContextMenu={(e) => e.preventDefault()}
                       style={{ maskImage, WebkitMaskImage: maskImage }}
                       className="grid max-h-[112px] snap-y snap-proximity grid-cols-8 gap-1 overflow-y-auto scroll-p-1 p-1 pr-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                     >
@@ -1013,8 +1065,20 @@ export function GuestbookClient() {
                     type="button"
                     aria-label={label}
                     title={label}
-                    onClick={() => setAvatar(key)}
-                    className={`flex h-8 w-8 snap-start items-center justify-center rounded-lg transition-all ${
+                    onClick={() => {
+                      // 长按提示触发后，松手伴随的 click 不再视为选中
+                      if (suppressClick.current) {
+                        suppressClick.current = false;
+                        return;
+                      }
+                      setAvatar(key);
+                    }}
+                    onPointerDown={(e) => handleIconPointerDown(e, label)}
+                    onPointerMove={handleIconPointerMove}
+                    onPointerUp={clearLongPress}
+                    onPointerCancel={clearLongPress}
+                    onPointerLeave={clearLongPress}
+                    className={`flex h-8 w-8 snap-start items-center justify-center rounded-lg transition-all select-none [-webkit-touch-callout:none] ${
                       AVATAR_COLORS[key] ?? "text-stone-400"
                     } ${
                       avatar === key
@@ -1039,6 +1103,21 @@ export function GuestbookClient() {
                   </div>
                 );
               })()}
+
+              {/* 长按图案弹出的名称气泡：fixed 定位到触摸点上方，松手消失 */}
+              {avatarTip && (
+                <div
+                  role="status"
+                  className="pointer-events-none fixed z-50 whitespace-nowrap rounded-md bg-ink-black px-2 py-1 text-[10px] leading-none text-rice-white shadow-lg dark:bg-rice-white dark:text-ink-black"
+                  style={{
+                    left: avatarTip.x,
+                    top: avatarTip.y - 10,
+                    transform: "translate(-50%, -100%)",
+                  }}
+                >
+                  {avatarTip.label}
+                </div>
+              )}
             </div>
 
             {submitError && (
