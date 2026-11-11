@@ -14,6 +14,9 @@ mathjax: true
 
 3.求函数 $z = 1 - \left( \frac{x^2}{a^2} + \frac{y^2}{b^2} \right)$ 在点 $\left( \frac{a}{\sqrt{2}}, \frac{b}{\sqrt{2}} \right)$ 处，沿曲线 $\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1$ 在该点的内法线方向的方向导数。
 
+4.设 $z = f(x, y)$ 是区域 $D = \{(x, y) \mid 0 \le x \le 1,\ 0 \le y \le 1\}$ 上的可微函数，$f(0, 0) = 0$，且 $\left. dz \right|_{(0, 0)} = 3\,dx + 2\,dy$，求极限
+$$\lim\limits_{x \to 0^+} \frac{\displaystyle\int_0^{x^2} dt \int_x^{\sqrt{t}} f(t, u)\,du}{1 - \sqrt[4]{1 - x^4}}$$
+
 ---
 
 ## 参考解答
@@ -60,3 +63,36 @@ $$\vec{n} = -\frac{1}{\sqrt{\frac{1}{a^2}+\frac{1}{b^2}}} \left(\frac{1}{a}, \fr
 $$\frac{\partial z}{\partial \vec{n}} = \left(-\frac{\sqrt{2}}{a}, -\frac{\sqrt{2}}{b}\right) \cdot \vec{n} = \frac{\sqrt{2}\left(\frac{1}{a^2}+\frac{1}{b^2}\right)}{\sqrt{\frac{1}{a^2}+\frac{1}{b^2}}} = \sqrt{2} \cdot \sqrt{\frac{1}{a^2}+\frac{1}{b^2}}$$
 
 $$\boxed{\frac{\partial z}{\partial \vec{n}} = \frac{\sqrt{2(a^2+b^2)}}{ab}}$$
+
+### 第 4 题
+
+**第一步：处理分母（等价无穷小）。**
+
+由 $(1 - x^4)^{1/4} - 1 \sim -\dfrac{1}{4}x^4$，得
+$$1 - \sqrt[4]{1 - x^4} \sim \frac{x^4}{4} \quad (x \to 0^+)$$
+
+**第二步：交换分子的积分次序。**
+
+注意当 $0 \le t \le x^2$ 时 $\sqrt{t} \le x$，内层积分下限大于上限，先变号：
+$$I(x) = \int_0^{x^2} dt \int_x^{\sqrt{t}} f(t, u)\,du = -\int_0^{x^2} dt \int_{\sqrt{t}}^{x} f(t, u)\,du$$
+
+积分区域为 $\{(t, u) \mid 0 \le t \le x^2,\ \sqrt{t} \le u \le x\}$，改写成先 $t$ 后 $u$：
+$$I(x) = -\int_0^x du \int_0^{u^2} f(t, u)\,dt$$
+
+**第三步：在原点对 $f$ 做微分展开。**
+
+由 $f$ 在 $(0,0)$ 可微、$f(0,0) = 0$ 及 $\left. dz \right|_{(0,0)} = 3\,dx + 2\,dy$，知 $f_x(0,0) = 3$，$f_y(0,0) = 2$，故
+$$f(t, u) = 3t + 2u + o\!\left(\sqrt{t^2 + u^2}\right)$$
+
+**第四步：洛必达求极限。**
+
+分子 $I(x)$ 对 $x$ 求导得 $I'(x) = -\displaystyle\int_0^{x^2} f(t, x)\,dt$，分母导数 $x^3(1-x^4)^{-3/4} \sim x^3$，于是
+$$\lim\limits_{x \to 0^+} \frac{I(x)}{x^4/4} = \lim\limits_{x \to 0^+} \frac{-\displaystyle\int_0^{x^2} f(t, x)\,dt}{x^3}$$
+
+代入展开式：
+$$\int_0^{x^2} f(t, x)\,dt = \int_0^{x^2} \big(3t + 2x + o(x)\big)\,dt = \frac{3}{2}x^4 + 2x^3 + o(x^3)$$
+
+因此
+$$\lim\limits_{x \to 0^+} \frac{-\left(\frac{3}{2}x^4 + 2x^3 + o(x^3)\right)}{x^3} = \lim\limits_{x \to 0^+} \left(-\frac{3}{2}x - 2\right) = -2$$
+
+$$\boxed{-2}$$

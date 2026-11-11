@@ -49,8 +49,8 @@ export function BorderGlow({ children, className = "" }: BorderGlowProps) {
           padding: "1px",
         }}
       />
-      {/* 内容 */}
-      <div className="relative z-10">
+      {/* 内容（h-full 传递高度：父级高度未定义时自动回退 auto，不影响其他用法） */}
+      <div className="relative z-10 h-full">
         {children}
       </div>
     </div>

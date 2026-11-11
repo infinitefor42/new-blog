@@ -6,6 +6,7 @@ import Link from "next/link";
 import { FiArrowRight, FiCalendar, FiClock, FiTag } from "react-icons/fi";
 import type { PostPreview } from "@/lib/posts";
 import { appleEasing, createContainerVariants, createCardVariants } from "@/lib/animations";
+import { BorderGlow } from "@/components/common/border-glow";
 
 interface BlogPreviewProps {
   posts: PostPreview[];
@@ -55,7 +56,8 @@ export function BlogPreview({ posts }: BlogPreviewProps) {
                 whileHover={{ y: -8, transition: { duration: 0.4, ease: appleEasing } }}
                 className={`group relative ${index === 0 ? "lg:col-span-2 lg:row-span-2" : ""}`}
               >
-                <Link href={`/blog/${post.slug}`}>
+                <Link href={`/blog/${post.slug}`} className="block h-full">
+                  <BorderGlow className="h-full rounded-3xl">
                   <div
                     className={`glass-card overflow-hidden h-full transition-all duration-500
                       ${index === 0 ? "p-8 sm:p-10" : "p-6 sm:p-8"}`}
@@ -115,6 +117,7 @@ export function BlogPreview({ posts }: BlogPreviewProps) {
                         transition-colors duration-300 group-hover:translate-x-0.5" />
                     </div>
                   </div>
+                  </BorderGlow>
                 </Link>
               </motion.article>
             ))}

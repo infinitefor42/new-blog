@@ -964,7 +964,7 @@ export function GuestbookClient() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.15 }}
-          className="glass-card order-2 mt-10 scroll-mt-28 p-8 lg:order-1 lg:sticky lg:top-24 lg:mt-0"
+          className="glass-card marquee-border relative order-2 mt-10 scroll-mt-28 p-8 lg:order-1 lg:sticky lg:top-24 lg:mt-0"
         >
           <h2 className="flex items-center gap-2 font-song text-lg font-bold text-ink-black dark:text-rice-white">
             <FiEdit3 className="h-4 w-4" />

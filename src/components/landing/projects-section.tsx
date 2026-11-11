@@ -50,7 +50,7 @@ export function ProjectsSection() {
                 whileHover={{ y: -12, transition: { duration: 0.5, ease: appleEasing } }}
               >
                 <BorderGlow
-                  className="glass-card overflow-hidden group cursor-pointer rounded-3xl"
+                  className="glass-card marquee-border overflow-hidden group cursor-pointer rounded-3xl"
                 >
                 {/* 图片区域 */}
                 <div className="relative h-48 sm:h-56 bg-gradient-to-br from-warm-gray/20 to-warm-gray/10 dark:from-warm-gray/10 dark:to-warm-gray/5 overflow-hidden">

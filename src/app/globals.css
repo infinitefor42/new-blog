@@ -1717,3 +1717,81 @@ body > * {
   background-position: 0 0 !important;
 }
 
+
+/* ========================================
+   跑马灯流动描边（项目卡片，仅暗色模式）
+   锥形渐变压出约 1/10 周长的暖金亮弧，沿边框循环绕行；
+   mask 抠出 1px 描边层，不影响卡片内容与布局。
+   浅色模式无 .dark 前缀命中，完全回退到 glass-card 原始边框。
+   ======================================== */
+@property --marquee-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.dark .marquee-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  /* 亮弧颜色：默认暖金+米白；选择其他主题色时由下方规则覆盖为对应色系 */
+  --marquee-glow: rgba(212, 175, 55, 0.85);
+  --marquee-glow-soft: rgba(212, 175, 55, 0.12);
+  --marquee-core: rgba(245, 239, 228, 0.95);
+  background: conic-gradient(
+    from var(--marquee-angle),
+    transparent 0deg,
+    var(--marquee-glow-soft) 14deg,
+    var(--marquee-glow) 28deg,
+    var(--marquee-core) 36deg,
+    var(--marquee-glow) 44deg,
+    var(--marquee-glow-soft) 58deg,
+    transparent 72deg
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  animation: marquee-border-spin 5s linear infinite;
+}
+
+/* 主题色联动：青瓷 / 黛蓝 / 赭石 / 绛红（对应各自 dark 档的 --brand 色系） */
+.dark[data-accent="qingci"] .marquee-border::before {
+  --marquee-glow: rgba(143, 184, 157, 0.85);
+  --marquee-glow-soft: rgba(143, 184, 157, 0.12);
+  --marquee-core: rgba(216, 236, 224, 0.95);
+}
+
+.dark[data-accent="dai"] .marquee-border::before {
+  --marquee-glow: rgba(138, 168, 196, 0.85);
+  --marquee-glow-soft: rgba(138, 168, 196, 0.12);
+  --marquee-core: rgba(219, 231, 243, 0.95);
+}
+
+.dark[data-accent="zhe"] .marquee-border::before {
+  --marquee-glow: rgba(217, 152, 115, 0.85);
+  --marquee-glow-soft: rgba(217, 152, 115, 0.12);
+  --marquee-core: rgba(243, 221, 208, 0.95);
+}
+
+.dark[data-accent="jiang"] .marquee-border::before {
+  --marquee-glow: rgba(205, 132, 132, 0.85);
+  --marquee-glow-soft: rgba(205, 132, 132, 0.12);
+  --marquee-core: rgba(240, 219, 219, 0.95);
+}
+
+@keyframes marquee-border-spin {
+  to {
+    --marquee-angle: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dark .marquee-border::before {
+    animation: none;
+  }
+}

@@ -2,6 +2,7 @@ import { PageHeader } from "@/components/blog/page-header";
 import { getAllPosts } from "@/lib/posts";
 import Link from "next/link";
 import { FiCalendar, FiClock } from "react-icons/fi";
+import { BorderGlow } from "@/components/common/border-glow";
 
 export default function ArchivePage() {
   const posts = getAllPosts();
@@ -36,6 +37,7 @@ export default function ArchivePage() {
                   href={`/blog/${post.slug}`}
                   className="group block"
                 >
+                  <BorderGlow className="rounded-3xl">
                   <div className="glass-card p-5 sm:p-6 transition-all duration-300 hover:shadow-lg">
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1 min-w-0">
@@ -63,6 +65,7 @@ export default function ArchivePage() {
                       </div>
                     </div>
                   </div>
+                  </BorderGlow>
                 </Link>
               ))}
             </div>
